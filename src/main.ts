@@ -45,25 +45,45 @@ const createWindow = (): void => {
     mainWindow.webContents.openDevTools();
   }
 
+  // Handle window events
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  // Handle close attempt (before window actually closes)
+  mainWindow.on('close', (event) => {
+    // Optional: Add confirmation dialog for unsaved work
+    // For now, allow normal close behavior
+    // event.preventDefault(); // Uncomment to prevent closing
   });
 };
 
 // App event handlers
 app.whenReady().then(() => {
   createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
 });
 
 app.on('window-all-closed', () => {
+  // On macOS, apps typically stay active until explicitly quit
+  // On other platforms, quit when all windows are closed
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+// Handle app activation (macOS)
+app.on('activate', () => {
+  // Re-create window if none exist (common on macOS)
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// Ensure app quits completely
+app.on('before-quit', () => {
+  // Clean up any resources before quitting
+  if (mainWindow) {
+    mainWindow.removeAllListeners('close');
   }
 });
 

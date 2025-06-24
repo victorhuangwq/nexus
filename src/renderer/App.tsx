@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import theme from './theme';
 import { OmniPrompt } from './components/OmniPrompt';
 import { DevHUD } from './components/DevHUD';
-import { GraphingCalculator, TokyoTrip, BTCChart } from './components/static';
+import { GraphingCalculator, TokyoTrip, BTCChart, WeatherWidget, PhysicsHomework } from './components/static';
 import { matchIntent, type IntentMatch } from './utils/intentMatcher';
 
 const MotionBox = motion(Box);
@@ -176,7 +176,6 @@ export const App: React.FC = () => {
         minH="100vh" 
         bg="linear-gradient(135deg, #FAFAFA 0%, #F0F9FF 100%)"
         position="relative"
-        overflow="hidden"
       >
         {/* Subtle background effects */}
         <Box
@@ -198,7 +197,7 @@ export const App: React.FC = () => {
           bgGradient="radial(circle at 75% 75%, accent.purple 0%, transparent 60%)"
         />
 
-        <Container maxW="container.lg" h="100vh" display="flex" flexDirection="column" px={6}>
+        <Container maxW="container.xl" minH="100vh" px={6}>
           {/* Header */}
           <HStack justify="space-between" align="center" py={4} mb={2}>
             <MotionBox
@@ -224,7 +223,7 @@ export const App: React.FC = () => {
           </HStack>
 
           {/* Main content area */}
-          <Box flex="1" display="flex" flexDirection="column" justify="center" align="center" px={4}>
+          <Box px={4} py={4}>
             <AnimatePresence mode="wait">
               {renderedContent.length === 0 ? (
                 <MotionVStack
@@ -239,6 +238,8 @@ export const App: React.FC = () => {
                   w="full"
                   maxW="600px"
                   mx="auto"
+                  justify="center"
+                  minH="60vh"
                 >
                   <VStack spacing={3} textAlign="center">
                     <Text
@@ -262,7 +263,7 @@ export const App: React.FC = () => {
                   <OmniPrompt
                     onSubmit={handleIntentSubmit}
                     isLoading={isLoading}
-                    placeholder="calculator, tokyo trip, bitcoin chart..."
+                    placeholder="tools for my physics homework, plan a trip to tokyo, bitcoin chart..."
                   />
                 </MotionVStack>
               ) : (
@@ -276,8 +277,9 @@ export const App: React.FC = () => {
                   spacing={4}
                   align="center"
                   w="full"
-                  maxW="1200px"
+                  maxW="1400px"
                   mx="auto"
+                  pb={8}
                 >
                   {renderedContent.map(content => (
                     <MotionBox
@@ -294,6 +296,8 @@ export const App: React.FC = () => {
                           {content.component === 'GraphingCalculator' && <GraphingCalculator />}
                           {content.component === 'TokyoTrip' && <TokyoTrip />}
                           {content.component === 'BTCChart' && <BTCChart />}
+                          {content.component === 'WeatherWidget' && <WeatherWidget />}
+                          {content.component === 'PhysicsHomework' && <PhysicsHomework />}
                         </Box>
                       ) : (
                         <Box

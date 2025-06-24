@@ -95,7 +95,7 @@ export const TokyoTrip: React.FC = () => {
         </Badge>
       </HStack>
 
-      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={6}>
+      <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={6}>
         {/* Itinerary */}
         <GridItem>
           <VStack spacing={4} align="stretch">
@@ -160,7 +160,7 @@ export const TokyoTrip: React.FC = () => {
         {/* Map & Info */}
         <GridItem>
           <VStack spacing={4} align="stretch">
-            {/* Map */}
+            {/* Interactive Google Map */}
             <MotionCard
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -171,77 +171,167 @@ export const TokyoTrip: React.FC = () => {
               border="1px solid rgba(0, 0, 0, 0.05)"
             >
               <CardBody p={0}>
-                <AspectRatio ratio={1} w="full">
-                  <iframe
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=139.6917%2C35.6762%2C139.7672%2C35.7126&layer=mapnik&marker=35.6762%2C139.7294"
-                    style={{
-                      border: 'none',
-                      borderRadius: '20px',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    title="Tokyo Map"
-                  />
-                </AspectRatio>
-              </CardBody>
-            </MotionCard>
-
-            {/* Weather */}
-            <MotionCard
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              bg="rgba(255, 255, 255, 0.7)"
-              backdropFilter="blur(16px)"
-              borderRadius="16px"
-              border="1px solid rgba(0, 0, 0, 0.05)"
-            >
-              <CardBody>
-                <VStack spacing={3} align="start">
-                  <Text fontSize="lg" fontWeight="600" color="gray.800">
-                    Weather
-                  </Text>
-                  <HStack justify="space-between" w="full">
-                    <VStack spacing={1}>
-                      <Text fontSize="xs" color="gray.600">Fri</Text>
-                      <Text fontSize="lg">☀️</Text>
-                      <Text fontSize="sm" fontWeight="500">22°C</Text>
-                    </VStack>
-                    <VStack spacing={1}>
-                      <Text fontSize="xs" color="gray.600">Sat</Text>
-                      <Text fontSize="lg">⛅</Text>
-                      <Text fontSize="sm" fontWeight="500">19°C</Text>
-                    </VStack>
-                    <VStack spacing={1}>
-                      <Text fontSize="xs" color="gray.600">Sun</Text>
-                      <Text fontSize="lg">☀️</Text>
-                      <Text fontSize="sm" fontWeight="500">24°C</Text>
-                    </VStack>
-                  </HStack>
+                <VStack spacing={0}>
+                  <Box p={4} w="full">
+                    <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                      Tokyo Interactive Map
+                    </Text>
+                  </Box>
+                  <AspectRatio ratio={16/10} w="full">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207628.91828313952!2d139.52563842473145!3d35.677583483966404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b2423e6f3d1%3A0x6c0d289a8292810d!2sTokyo%2C%20Japan!5e0!3m2!1sen!2sus!4v1703696400000!5m2!1sen!2sus"
+                      style={{
+                        border: 'none',
+                        borderRadius: '0 0 20px 20px',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      title="Tokyo Google Map"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </AspectRatio>
                 </VStack>
               </CardBody>
             </MotionCard>
 
-            {/* Tips */}
+            {/* Live Weather */}
+            <MotionCard
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              bg="rgba(255, 255, 255, 0.8)"
+              backdropFilter="blur(16px)"
+              borderRadius="16px"
+              border="1px solid rgba(0, 0, 0, 0.05)"
+            >
+              <CardBody p={0}>
+                <VStack spacing={0}>
+                  <Box p={4} w="full">
+                    <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                      Tokyo Weather
+                    </Text>
+                  </Box>
+                  <AspectRatio ratio={16/12} w="full">
+                    <iframe
+                      src="https://wttr.in/Tokyo?format=v2&M&T&Q&F&lang=en"
+                      style={{
+                        border: 'none',
+                        borderRadius: '0 0 16px 16px',
+                        width: '100%',
+                        height: '100%',
+                        background: 'white',
+                      }}
+                      title="Tokyo Live Weather"
+                      loading="lazy"
+                    />
+                  </AspectRatio>
+                </VStack>
+              </CardBody>
+            </MotionCard>
+
+            {/* JR Pass Calculator */}
             <MotionCard
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
+              bg="rgba(255, 255, 255, 0.8)"
+              backdropFilter="blur(16px)"
+              borderRadius="16px"
+              border="1px solid rgba(0, 0, 0, 0.05)"
+            >
+              <CardBody p={0}>
+                <VStack spacing={0}>
+                  <Box p={4} w="full">
+                    <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                      JR Pass Calculator
+                    </Text>
+                  </Box>
+                  <AspectRatio ratio={16/10} w="full">
+                    <iframe
+                      src="https://www.jrpass.com/calculator"
+                      style={{
+                        border: 'none',
+                        borderRadius: '0 0 16px 16px',
+                        width: '100%',
+                        height: '100%',
+                        background: 'white',
+                      }}
+                      title="JR Pass Cost Calculator"
+                      loading="lazy"
+                    />
+                  </AspectRatio>
+                </VStack>
+              </CardBody>
+            </MotionCard>
+
+            {/* Currency Converter */}
+            <MotionCard
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              bg="rgba(255, 255, 255, 0.8)"
+              backdropFilter="blur(16px)"
+              borderRadius="16px"
+              border="1px solid rgba(0, 0, 0, 0.05)"
+            >
+              <CardBody p={0}>
+                <VStack spacing={0}>
+                  <Box p={4} w="full">
+                    <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                      USD → JPY Converter
+                    </Text>
+                  </Box>
+                  <AspectRatio ratio={16/10} w="full">
+                    <iframe
+                      src="https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=JPY"
+                      style={{
+                        border: 'none',
+                        borderRadius: '0 0 16px 16px',
+                        width: '100%',
+                        height: '100%',
+                        background: 'white',
+                      }}
+                      title="USD to JPY Currency Converter"
+                      loading="lazy"
+                    />
+                  </AspectRatio>
+                </VStack>
+              </CardBody>
+            </MotionCard>
+
+            {/* Local Tips & Quick Facts */}
+            <MotionCard
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
               bg="rgba(255, 255, 255, 0.7)"
               backdropFilter="blur(16px)"
               borderRadius="16px"
               border="1px solid rgba(0, 0, 0, 0.05)"
             >
               <CardBody>
-                <VStack spacing={3} align="start">
+                <VStack spacing={4} align="start">
                   <Text fontSize="lg" fontWeight="600" color="gray.800">
-                    Tips
+                    Essential Tips
                   </Text>
                   <VStack spacing={2} align="start" fontSize="sm" color="gray.700">
-                    <Text>💳 Get a JR Pass for trains</Text>
-                    <Text>📱 Download Google Translate</Text>
-                    <Text>🍜 Bring cash for restaurants</Text>
-                    <Text>🚇 Avoid rush hours (7-9, 5-7)</Text>
+                    <Text>💳 Use JR Pass calculator above for savings</Text>
+                    <Text>📱 Download Google Translate offline</Text>
+                    <Text>🍜 Cash only at most restaurants</Text>
+                    <Text>🚇 Avoid rush hours (7-9 AM, 5-7 PM)</Text>
+                    <Text>🗾 Check live weather before heading out</Text>
+                    <Text>💱 Currency rates change daily</Text>
+                  </VStack>
+                  
+                  <Text fontSize="md" fontWeight="500" color="brand.600" mt={2}>
+                    Quick Facts
+                  </Text>
+                  <VStack spacing={1} align="start" fontSize="xs" color="gray.600">
+                    <Text>🌐 Free WiFi at all stations</Text>
+                    <Text>🚶‍♂️ Walk on left, stand on left (escalators)</Text>
+                    <Text>🎌 Bow instead of handshakes</Text>
+                    <Text>🔇 Phone calls silent on trains</Text>
                   </VStack>
                 </VStack>
               </CardBody>

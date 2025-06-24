@@ -15,20 +15,47 @@ const intentPatterns: IntentPattern[] = [
   {
     component: 'GraphingCalculator',
     keywords: ['calculator', 'calc', 'math', 'graph', 'equation', 'function', 'plot'],
-    aliases: ['desmos', 'graphing', 'mathematics', 'algebra', 'calculus'],
+    aliases: ['desmos', 'graphing', 'mathematics', 'algebra', 'calculus', 'trigonometry', 'geometry'],
     phrases: [
       'graphing calculator',
       'math calculator',
       'plot functions',
       'solve equations',
       'mathematical graphing',
-      'desmos calculator'
+      'desmos calculator',
+      'plot graphs',
+      'calculate functions'
+    ]
+  },
+  {
+    component: 'PhysicsHomework',
+    keywords: ['physics', 'homework', 'chemistry', 'engineering', 'study', 'solve', 'formula', 'tools', 'help', 'science', 'lab', 'experiment'],
+    aliases: ['scientific', 'mechanics', 'thermodynamics', 'electricity', 'magnetism', 'waves', 'optics', 'kinematics', 'dynamics'],
+    phrases: [
+      'tools for my physics homework',
+      'help with physics homework',
+      'physics calculations',
+      'chemistry calculations',
+      'engineering calculations',
+      'physics tools',
+      'scientific calculator',
+      'homework help',
+      'study tools',
+      'solve physics problems',
+      'physics formulas',
+      'science homework',
+      'physics lab',
+      'chemistry lab',
+      'physics study guide',
+      'periodic table',
+      'unit converter',
+      'physics simulator'
     ]
   },
   {
     component: 'TokyoTrip',
-    keywords: ['tokyo', 'japan', 'trip', 'travel', 'itinerary', 'vacation', 'visit'],
-    aliases: ['japanese', 'asia', 'sightseeing', 'tourist', 'holiday'],
+    keywords: ['tokyo', 'japan', 'trip', 'travel', 'itinerary', 'vacation', 'visit', 'plan', 'weekend', 'holiday', 'sightseeing', 'tourist', 'guide'],
+    aliases: ['japanese', 'asia', 'planning', 'adventure', 'explore', 'destinations', 'places'],
     phrases: [
       'trip to tokyo',
       'tokyo itinerary', 
@@ -37,13 +64,23 @@ const intentPatterns: IntentPattern[] = [
       'japan trip',
       'tokyo vacation',
       'tokyo sightseeing',
-      'weekend in tokyo'
+      'weekend in tokyo',
+      'plan a trip to tokyo',
+      'tokyo travel guide',
+      'what to do in tokyo',
+      'tokyo attractions',
+      'plan my tokyo trip',
+      'help me plan tokyo',
+      'tokyo travel planner',
+      'tokyo itinerary planner',
+      'explore tokyo',
+      'tokyo adventure'
     ]
   },
   {
     component: 'BTCChart',
-    keywords: ['bitcoin', 'btc', 'crypto', 'price', 'chart', 'cryptocurrency', 'trading'],
-    aliases: ['blockchain', 'digital currency', 'investment', 'market', 'stocks'],
+    keywords: ['bitcoin', 'btc', 'crypto', 'price', 'chart', 'cryptocurrency', 'trading', 'coin'],
+    aliases: ['blockchain', 'digital currency', 'investment', 'market', 'stocks', 'currency'],
     phrases: [
       'bitcoin price',
       'crypto chart',
@@ -52,7 +89,36 @@ const intentPatterns: IntentPattern[] = [
       'cryptocurrency prices',
       'crypto market',
       'bitcoin trading',
-      'digital currency'
+      'digital currency',
+      'bitcoin',
+      'crypto',
+      'btc'
+    ]
+  },
+  {
+    component: 'WeatherWidget',
+    keywords: ['weather', 'forecast', 'temperature', 'climate', 'rain', 'snow', 'wind', 'sunny', 'cloudy', 'hot', 'cold', 'humidity'],
+    aliases: ['meteorology', 'conditions', 'pressure', 'storm', 'today', 'tomorrow', 'week'],
+    phrases: [
+      'weather forecast',
+      'weather report',
+      'temperature today',
+      'weather conditions',
+      'local weather',
+      'weather widget',
+      'forecast widget',
+      'weather',
+      'what is the weather like',
+      'how is the weather',
+      'weather today',
+      'weather tomorrow',
+      'weekly weather',
+      'check the weather',
+      'weather for my city',
+      'current weather',
+      'weather update',
+      'is it going to rain',
+      'temperature forecast'
     ]
   }
 ];
@@ -134,8 +200,9 @@ export function getAvailableComponents(): string[] {
 
 export function getComponentSuggestions(): string[] {
   return [
-    'Try "calculator" for math functions',
-    'Try "tokyo trip" for travel planning', 
-    'Try "bitcoin chart" for crypto prices'
+    'Try "tools for my physics homework"',
+    'Try "plan a trip to tokyo"', 
+    'Try "bitcoin chart" for crypto prices',
+    'Try "what is the weather like" for forecasts'
   ];
 }

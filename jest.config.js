@@ -11,7 +11,7 @@ module.exports = {
     }],
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/renderer/$1',
   },
   collectCoverageFrom: [

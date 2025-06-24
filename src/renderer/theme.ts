@@ -46,11 +46,14 @@ const theme = extendTheme({
   },
   styles: {
     global: {
+      '@keyframes spin': {
+        '0%': { transform: 'rotate(0deg)' },
+        '100%': { transform: 'rotate(360deg)' },
+      },
       body: {
         bg: 'linear-gradient(135deg, #FAFAFA 0%, #F0F9FF 100%)',
         color: 'gray.800',
         fontFamily: 'Inter',
-        overflow: 'hidden',
       },
       '*': {
         boxSizing: 'border-box',

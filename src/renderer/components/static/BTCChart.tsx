@@ -41,21 +41,29 @@ interface PriceData {
 const generateMockData = (days: number): PriceData[] => {
   const data: PriceData[] = [];
   const now = new Date();
-  const basePrice = 45000;
+  const basePrice = 67000; // More realistic current BTC price
+  let currentPrice = basePrice;
   
   for (let i = days; i >= 0; i--) {
     const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-    const randomChange = (Math.random() - 0.5) * 0.1; // ±5% daily change
-    const price = Math.round(basePrice * (1 + randomChange * (i / days)));
+    
+    // More realistic price movement (smaller daily changes)
+    const dailyChange = (Math.random() - 0.5) * 0.08; // ±4% daily change
+    currentPrice = currentPrice * (1 + dailyChange);
+    
+    // Add some intraday volatility
+    const intradayNoise = (Math.random() - 0.5) * 0.02;
+    const finalPrice = currentPrice * (1 + intradayNoise);
     
     data.push({
       time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      price: price + Math.random() * 2000 - 1000,
-      volume: Math.random() * 1000000000,
+      price: Math.round(finalPrice),
+      volume: Math.random() * 2000000000 + 500000000, // 0.5B - 2.5B volume
     });
   }
   
-  return data;
+  // Ensure the data is in chronological order
+  return data.reverse();
 };
 
 const formatPrice = (price: number) => {
@@ -78,18 +86,63 @@ export const BTCChart: React.FC = () => {
   const [timeframe, setTimeframe] = useState('7d');
   const [data, setData] = useState<PriceData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPrice, setCurrentPrice] = useState(67000);
 
   useEffect(() => {
-    // Simulate API call
-    setIsLoading(true);
-    setTimeout(() => {
-      const days = timeframe === '1d' ? 1 : timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
-      setData(generateMockData(days));
-      setIsLoading(false);
-    }, 500);
+    const fetchRealBitcoinData = async () => {
+      setIsLoading(true);
+      try {
+        const days = timeframe === '1d' ? 1 : timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
+        
+        // Fetch real Bitcoin data from CoinGecko API
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=${days <= 1 ? 'hourly' : 'daily'}`
+        );
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch Bitcoin data');
+        }
+        
+        const apiData = await response.json();
+        
+        // Transform API data to our format
+        const transformedData: PriceData[] = apiData.prices.map((pricePoint: [number, number], index: number) => {
+          const [timestamp, price] = pricePoint;
+          const volume = apiData.total_volumes[index] ? apiData.total_volumes[index][1] : 0;
+          
+          return {
+            time: new Date(timestamp).toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric',
+              ...(days <= 1 ? { hour: 'numeric' } : {})
+            }),
+            price: Math.round(price),
+            volume: volume
+          };
+        });
+        
+        setData(transformedData);
+        if (transformedData.length > 0) {
+          setCurrentPrice(transformedData[transformedData.length - 1].price);
+        }
+        
+      } catch (error) {
+        console.error('Failed to fetch real Bitcoin data, falling back to mock data:', error);
+        // Fallback to mock data if API fails
+        const days = timeframe === '1d' ? 1 : timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
+        const newData = generateMockData(days);
+        setData(newData);
+        if (newData.length > 0) {
+          setCurrentPrice(newData[newData.length - 1].price);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRealBitcoinData();
   }, [timeframe]);
 
-  const currentPrice = data.length > 0 ? data[data.length - 1].price : 0;
   const previousPrice = data.length > 1 ? data[data.length - 2].price : currentPrice;
   const priceChange = currentPrice - previousPrice;
   const priceChangePercent = previousPrice !== 0 ? (priceChange / previousPrice) * 100 : 0;
@@ -176,16 +229,20 @@ export const BTCChart: React.FC = () => {
                     <Text fontSize="3xl" fontWeight="700" color="gray.800">
                       {formatPrice(currentPrice)}
                     </Text>
-                    <HStack>
-                      <StatArrow type={priceChange >= 0 ? 'increase' : 'decrease'} />
-                      <Text
-                        fontSize="sm"
-                        fontWeight="600"
-                        color={priceChange >= 0 ? 'green.500' : 'red.500'}
-                      >
-                        {formatPrice(Math.abs(priceChange))} ({Math.abs(priceChangePercent).toFixed(2)}%)
-                      </Text>
-                    </HStack>
+                    <Stat>
+                      <StatHelpText>
+                        <StatArrow type={priceChange >= 0 ? 'increase' : 'decrease'} />
+                        <Text
+                          as="span"
+                          fontSize="sm"
+                          fontWeight="600"
+                          color={priceChange >= 0 ? 'green.500' : 'red.500'}
+                          ml={1}
+                        >
+                          {formatPrice(Math.abs(priceChange))} ({Math.abs(priceChangePercent).toFixed(2)}%)
+                        </Text>
+                      </StatHelpText>
+                    </Stat>
                   </VStack>
                 </HStack>
 
