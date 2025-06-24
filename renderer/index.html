@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntentOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 2rem;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00E5FF, #0099CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .status {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #00E5FF;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-results {
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .test-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .test-pass {
+            border-color: #00FF88;
+            color: #00FF88;
+        }
+        
+        .test-fail {
+            border-color: #FF4444;
+            color: #FF4444;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">IntentOS</div>
+        <div class="message">Phase 1: Electron Shell Foundation</div>
+        <div class="status" id="status">Initializing...</div>
+        
+        <div class="test-results" id="testResults">
+            <!-- Test results will be populated by JavaScript -->
+        </div>
+        
+        <div class="footer">
+            Press F12 to open DevTools • Bridge available at window.bridge
+        </div>
+    </div>
+
+    <script>
+        // Test the bridge functionality
+        async function runTests() {
+            const results = [];
+            const statusEl = document.getElementById('status');
+            const resultsEl = document.getElementById('testResults');
+            
+            statusEl.textContent = 'Running bridge tests...';
+            
+            // Test 1: Bridge exists
+            try {
+                if (window.bridge) {
+                    results.push({ name: 'Bridge exists', status: 'pass', details: 'window.bridge is available' });
+                } else {
+                    results.push({ name: 'Bridge exists', status: 'fail', details: 'window.bridge is undefined' });
+                }
+            } catch (error) {
+                results.push({ name: 'Bridge exists', status: 'fail', details: error.message });
+            }
+            
+            // Test 2: Bridge test method
+            try {
+                const testResult = await window.bridge.test();
+                if (testResult && testResult.message) {
+                    results.push({ 
+                        name: 'Bridge test()', 
+                        status: 'pass', 
+                        details: `${testResult.message} (${testResult.timestamp})` 
+                    });
+                } else {
+                    results.push({ name: 'Bridge test()', status: 'fail', details: 'Invalid response' });
+                }
+            } catch (error) {
+                results.push({ name: 'Bridge test()', status: 'fail', details: error.message });
+            }
+            
+            // Test 3: Environment variable access
+            try {
+                const nodeEnv = await window.bridge.getEnv('NODE_ENV');
+                results.push({ 
+                    name: 'Environment access', 
+                    status: 'pass', 
+                    details: `NODE_ENV = ${nodeEnv || 'undefined'}` 
+                });
+            } catch (error) {
+                results.push({ name: 'Environment access', status: 'fail', details: error.message });
+            }
+            
+            // Test 4: Claude integration placeholder
+            try {
+                const claudeResult = await window.bridge.callClaude('schema', { test: true });
+                if (claudeResult && claudeResult.success) {
+                    results.push({ 
+                        name: 'Claude integration (placeholder)', 
+                        status: 'pass', 
+                        details: 'Placeholder responds correctly' 
+                    });
+                } else {
+                    results.push({ name: 'Claude integration (placeholder)', status: 'fail', details: 'Invalid response' });
+                }
+            } catch (error) {
+                results.push({ name: 'Claude integration (placeholder)', status: 'fail', details: error.message });
+            }
+            
+            // Render results
+            resultsEl.innerHTML = results.map(result => `
+                <div class="test-item test-${result.status}">
+                    <strong>${result.name}:</strong> ${result.status.toUpperCase()}<br>
+                    <span style="opacity: 0.8;">${result.details}</span>
+                </div>
+            `).join('');
+            
+            const passCount = results.filter(r => r.status === 'pass').length;
+            statusEl.textContent = `Tests completed: ${passCount}/${results.length} passed`;
+            
+            console.log('Bridge test results:', results);
+        }
+        
+        // Run tests when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runTests, 500); // Small delay to ensure bridge is ready
+        });
+        
+        // Global access for debugging
+        window.runTests = runTests;
+    </script>
+</body>
+</html>
