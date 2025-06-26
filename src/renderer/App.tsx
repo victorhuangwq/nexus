@@ -60,6 +60,10 @@ export const App: React.FC = () => {
       const intentMatch = matchIntent(intent);
       
       if (intentMatch && intentMatch.confidence >= 70) {
+        // Add artificial loading delay for demo sites to feel more realistic
+        const loadingDelayMs = 800 + Math.random() * 400; // 800-1200ms random delay
+        await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
+        
         // Use static component
         const endTime = Date.now();
         const processingTime = endTime - startTime;
@@ -70,7 +74,7 @@ export const App: React.FC = () => {
           renderTiming: {
             ...prev.renderTiming,
             T_schema: processingTime,
-            T_components: 0, // Static components are instant
+            T_components: loadingDelayMs, // Track the artificial loading time
             T_firstRender: processingTime,
           },
         }));
@@ -217,9 +221,6 @@ export const App: React.FC = () => {
                 IntentOS
               </Text>
             </MotionBox>
-            <Text fontSize="xs" color="gray.500" fontWeight="400">
-              Phase 3: Static Components
-            </Text>
           </HStack>
 
           {/* Main content area */}

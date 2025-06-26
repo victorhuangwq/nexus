@@ -87,6 +87,7 @@ export const BTCChart: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPrice, setCurrentPrice] = useState(67000);
+  const [dayChange, setDayChange] = useState(0);
 
   useEffect(() => {
     const fetchRealBitcoinData = async () => {
@@ -94,16 +95,20 @@ export const BTCChart: React.FC = () => {
       try {
         const days = timeframe === '1d' ? 1 : timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
         
-        // Fetch real Bitcoin data from CoinGecko API
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=${days <= 1 ? 'hourly' : 'daily'}`
-        );
+        // Fetch both historical chart data and current price
+        const [chartResponse, currentPriceResponse] = await Promise.all([
+          fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=daily`),
+          fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
+        ]);
         
-        if (!response.ok) {
+        if (!chartResponse.ok || !currentPriceResponse.ok) {
           throw new Error('Failed to fetch Bitcoin data');
         }
         
-        const apiData = await response.json();
+        const [apiData, currentPriceData] = await Promise.all([
+          chartResponse.json(),
+          currentPriceResponse.json()
+        ]);
         
         // Transform API data to our format
         const transformedData: PriceData[] = apiData.prices.map((pricePoint: [number, number], index: number) => {
@@ -113,8 +118,7 @@ export const BTCChart: React.FC = () => {
           return {
             time: new Date(timestamp).toLocaleDateString('en-US', { 
               month: 'short', 
-              day: 'numeric',
-              ...(days <= 1 ? { hour: 'numeric' } : {})
+              day: 'numeric'
             }),
             price: Math.round(price),
             volume: volume
@@ -122,9 +126,12 @@ export const BTCChart: React.FC = () => {
         });
         
         setData(transformedData);
-        if (transformedData.length > 0) {
-          setCurrentPrice(transformedData[transformedData.length - 1].price);
-        }
+        
+        // Use the most current price from the separate API call
+        const livePrice = currentPriceData.bitcoin?.usd || (transformedData.length > 0 ? transformedData[transformedData.length - 1].price : 67000);
+        const dayChangePercent = currentPriceData.bitcoin?.usd_24h_change || 0;
+        setCurrentPrice(Math.round(livePrice));
+        setDayChange(dayChangePercent);
         
       } catch (error) {
         console.error('Failed to fetch real Bitcoin data, falling back to mock data:', error);
@@ -143,9 +150,9 @@ export const BTCChart: React.FC = () => {
     fetchRealBitcoinData();
   }, [timeframe]);
 
-  const previousPrice = data.length > 1 ? data[data.length - 2].price : currentPrice;
-  const priceChange = currentPrice - previousPrice;
-  const priceChangePercent = previousPrice !== 0 ? (priceChange / previousPrice) * 100 : 0;
+  // Use real 24h change from API, or calculate from chart data as fallback
+  const priceChangePercent = dayChange !== 0 ? dayChange : (data.length > 1 ? ((currentPrice - data[data.length - 2].price) / data[data.length - 2].price) * 100 : 0);
+  const priceChange = (currentPrice * priceChangePercent) / 100;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {

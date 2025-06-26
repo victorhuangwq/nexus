@@ -4,7 +4,6 @@ import {
   HStack,
   Box,
   Text,
-  AspectRatio,
   Card,
   CardBody,
   Badge,
@@ -43,7 +42,7 @@ export const GraphingCalculator: React.FC = () => {
         boxShadow="0 8px 32px rgba(0, 0, 0, 0.06)"
       >
         <CardBody p={0}>
-          <AspectRatio ratio={16/10} w="full">
+          <Box w="full" h="500px">
             <iframe
               src="https://www.desmos.com/calculator"
               style={{
@@ -55,7 +54,7 @@ export const GraphingCalculator: React.FC = () => {
               title="Desmos Graphing Calculator"
               allow="fullscreen"
             />
-          </AspectRatio>
+          </Box>
         </CardBody>
       </MotionCard>
 
