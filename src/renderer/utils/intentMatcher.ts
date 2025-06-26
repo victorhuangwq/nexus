@@ -54,27 +54,33 @@ const intentPatterns: IntentPattern[] = [
   },
   {
     component: 'TokyoTrip',
-    keywords: ['tokyo', 'japan', 'trip', 'travel', 'itinerary', 'vacation', 'visit', 'plan', 'weekend', 'holiday', 'sightseeing', 'tourist', 'guide'],
-    aliases: ['japanese', 'asia', 'planning', 'adventure', 'explore', 'destinations', 'places'],
+    keywords: ['kyoto', 'japan', 'trip', 'travel', 'itinerary', 'vacation', 'visit', 'plan', 'weekend', 'holiday', 'sightseeing', 'tourist', 'guide', 'temple', 'shrine', 'bamboo', 'geisha', 'traditional'],
+    aliases: ['japanese', 'asia', 'planning', 'adventure', 'explore', 'destinations', 'places', 'cultural', 'historic', 'ancient'],
     phrases: [
-      'trip to tokyo',
-      'tokyo itinerary', 
-      'visit tokyo',
-      'tokyo travel',
+      'kyoto trip',
+      'kyoto weekend plan',
+      'trip to kyoto', 
+      'kyoto itinerary', 
+      'visit kyoto',
+      'kyoto travel',
       'japan trip',
-      'tokyo vacation',
-      'tokyo sightseeing',
-      'weekend in tokyo',
-      'plan a trip to tokyo',
-      'tokyo travel guide',
-      'what to do in tokyo',
-      'tokyo attractions',
-      'plan my tokyo trip',
-      'help me plan tokyo',
-      'tokyo travel planner',
-      'tokyo itinerary planner',
-      'explore tokyo',
-      'tokyo adventure'
+      'kyoto vacation',
+      'kyoto sightseeing',
+      'weekend in kyoto',
+      'plan a trip to kyoto',
+      'kyoto travel guide',
+      'what to do in kyoto',
+      'kyoto attractions',
+      'plan my kyoto trip',
+      'help me plan kyoto',
+      'kyoto travel planner',
+      'kyoto itinerary planner',
+      'explore kyoto',
+      'kyoto adventure',
+      'kyoto temples',
+      'kyoto shrines',
+      'bamboo forest',
+      'gion district'
     ]
   },
   {
@@ -201,7 +207,7 @@ export function getAvailableComponents(): string[] {
 export function getComponentSuggestions(): string[] {
   return [
     'Try "tools for my physics homework"',
-    'Try "plan a trip to tokyo"', 
+    'Try "kyoto weekend plan" for travel planning', 
     'Try "bitcoin chart" for crypto prices',
     'Try "what is the weather like" for forecasts'
   ];
