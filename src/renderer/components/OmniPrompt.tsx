@@ -112,15 +112,6 @@ export const OmniPrompt: React.FC<OmniPromptProps> = ({
         </InputGroup>
       </MotionBox>
 
-      {/* Help text */}
-      <Text
-        fontSize="sm"
-        color="gray.500"
-        textAlign="center"
-        fontWeight="400"
-      >
-        I'll build the right tool for what you need
-      </Text>
     </VStack>
   );
 };

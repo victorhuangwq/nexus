@@ -179,18 +179,19 @@ export const App: React.FC = () => {
     <ChakraProvider theme={theme}>
       <Box 
         minH="100vh" 
-        bg="linear-gradient(135deg, #FAFAFA 0%, #F0F9FF 100%)"
+        bg="linear-gradient(135deg, #0F0F23 0%, #1A1A2E 25%, #16213E 50%, #0F0F23 100%)"
         position="relative"
+        overflow="hidden"
       >
-        {/* Subtle background effects */}
+        {/* Premium background effects */}
         <Box
           position="absolute"
           top="0"
           left="0"
           right="0"
           bottom="0"
-          opacity="0.03"
-          bgGradient="radial(circle at 25% 25%, brand.500 0%, transparent 60%)"
+          opacity="0.15"
+          bgGradient="radial(circle at 20% 20%, #FF6B6B 0%, transparent 50%)"
         />
         <Box
           position="absolute"
@@ -198,13 +199,66 @@ export const App: React.FC = () => {
           left="0"
           right="0"
           bottom="0"
-          opacity="0.02"
-          bgGradient="radial(circle at 75% 75%, accent.purple 0%, transparent 60%)"
+          opacity="0.12"
+          bgGradient="radial(circle at 80% 30%, #4ECDC4 0%, transparent 50%)"
+        />
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          opacity="0.08"
+          bgGradient="radial(circle at 50% 80%, #FFE66D 0%, transparent 60%)"
+        />
+        
+        {/* Animated floating elements - positioned to avoid content */}
+        <MotionBox
+          position="absolute"
+          top="5%"
+          right="5%"
+          w="150px"
+          h="150px"
+          borderRadius="50%"
+          bg="rgba(255, 107, 107, 0.02)"
+          filter="blur(30px)"
+          zIndex={1}
+          animate={{
+            y: [0, -15, 0],
+            scale: [1, 1.05, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <MotionBox
+          position="absolute"
+          bottom="10%"
+          left="5%"
+          w="120px"
+          h="120px"
+          borderRadius="50%"
+          bg="rgba(78, 205, 196, 0.02)"
+          filter="blur(25px)"
+          zIndex={1}
+          animate={{
+            y: [0, 10, 0],
+            x: [0, 5, 0],
+            scale: [1, 0.95, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
         />
 
-        <Container maxW="container.xl" minH="100vh" px={6}>
+        <Container maxW="100%" minH="100vh" px={8} position="relative" zIndex={1}>
           {/* Header */}
-          <HStack justify="space-between" align="center" py={4} mb={2}>
+          <HStack justify="space-between" align="center" py={6} mb={4}>
             <MotionBox
               variants={logoVariants}
               initial="idle"
@@ -212,20 +266,63 @@ export const App: React.FC = () => {
               onClick={handleLogoClick}
               cursor="pointer"
             >
-              <Text
-                fontSize="xl"
-                fontWeight="600"
-                bgGradient="linear(to-r, brand.500, accent.purple)"
-                bgClip="text"
-                userSelect="none"
-              >
-                IntentOS
-              </Text>
+              <HStack spacing={3} align="center">
+                <Box
+                  w="32px"
+                  h="32px"
+                  borderRadius="8px"
+                  bgGradient="linear(135deg, #FF6B6B 0%, #4ECDC4 50%, #FFE66D 100%)"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  position="relative"
+                  _before={{
+                    content: '""',
+                    position: "absolute",
+                    inset: "2px",
+                    borderRadius: "6px",
+                    bg: "rgba(15, 15, 35, 0.9)",
+                  }}
+                >
+                  <Text
+                    fontSize="sm"
+                    fontWeight="700"
+                    color="white"
+                    position="relative"
+                    zIndex={1}
+                  >
+                    S
+                  </Text>
+                </Box>
+                <Text
+                  fontSize="2xl"
+                  fontWeight="700"
+                  bgGradient="linear(135deg, #FFFFFF 0%, #E0E0E0 100%)"
+                  bgClip="text"
+                  userSelect="none"
+                  letterSpacing="-0.02em"
+                >
+                  SquashOS
+                </Text>
+              </HStack>
             </MotionBox>
+            
+            <Box
+              px={4}
+              py={2}
+              bg="rgba(255, 255, 255, 0.05)"
+              borderRadius="full"
+              border="1px solid rgba(255, 255, 255, 0.1)"
+              backdropFilter="blur(10px)"
+            >
+              <Text fontSize="xs" color="rgba(255, 255, 255, 0.6)" fontWeight="500">
+                v2.0 Beta
+              </Text>
+            </Box>
           </HStack>
 
           {/* Main content area */}
-          <Box px={4} py={4}>
+          <Box px={4} py={4} position="relative" zIndex={10}>
             <AnimatePresence mode="wait">
               {renderedContent.length === 0 ? (
                 <MotionVStack
@@ -235,38 +332,66 @@ export const App: React.FC = () => {
                   exit="exit"
                   variants={contentVariants}
                   transition={{ duration: 0.5 }}
-                  spacing={6}
+                  spacing={8}
                   align="center"
                   w="full"
-                  maxW="600px"
+                  maxW="900px"
                   mx="auto"
                   justify="center"
-                  minH="60vh"
+                  minH="70vh"
                 >
-                  <VStack spacing={3} textAlign="center">
-                    <Text
-                      fontSize="3xl"
-                      fontWeight="600"
-                      color="gray.800"
-                      lineHeight="1.2"
+                  <VStack spacing={6} textAlign="center">
+                    <MotionBox
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
                     >
-                      What can I help you with?
-                    </Text>
-                    <Text
-                      fontSize="md"
-                      color="gray.600"
-                      fontWeight="400"
-                      lineHeight="1.5"
+                      <Text
+                        fontSize="6xl"
+                        fontWeight="800"
+                        bgGradient="linear(135deg, #FFFFFF 0%, #FFE66D 30%, #4ECDC4 70%, #FF6B6B 100%)"
+                        bgClip="text"
+                        lineHeight="1.1"
+                        letterSpacing="-0.02em"
+                        mb={6}
+                      >
+                        The Internet.
+                        <br />
+                        Without the mess.
+                      </Text>
+                    </MotionBox>
+                    
+                    <MotionBox
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
                     >
-                      Describe what you need and I'll build it for you
-                    </Text>
+                      <Text
+                        fontSize="2xl"
+                        color="rgba(255, 255, 255, 0.8)"
+                        fontWeight="400"
+                        lineHeight="1.6"
+                        maxW="700px"
+                      >
+                        Just describe what you need. No tabs, no hunting.
+                      </Text>
+                    </MotionBox>
+                    
                   </VStack>
                   
-                  <OmniPrompt
-                    onSubmit={handleIntentSubmit}
-                    isLoading={isLoading}
-                    placeholder="tools for my physics homework, plan a trip to tokyo, bitcoin chart..."
-                  />
+                  <MotionBox
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    w="full"
+                    maxW="700px"
+                  >
+                    <OmniPrompt
+                      onSubmit={handleIntentSubmit}
+                      isLoading={isLoading}
+                      placeholder="check my gmail, weather in tokyo, latest crypto prices, news about AI..."
+                    />
+                  </MotionBox>
                 </MotionVStack>
               ) : (
                 <MotionVStack
@@ -279,7 +404,7 @@ export const App: React.FC = () => {
                   spacing={4}
                   align="center"
                   w="full"
-                  maxW="1400px"
+                  maxW="1600px"
                   mx="auto"
                   pb={8}
                 >
@@ -294,7 +419,17 @@ export const App: React.FC = () => {
                       justifyContent="center"
                     >
                       {content.type === 'static' && content.component ? (
-                        <Box>
+                        <Box
+                          position="relative"
+                          zIndex={20}
+                          w="full"
+                          bg="rgba(15, 15, 35, 0.8)"
+                          borderRadius="24px"
+                          p={6}
+                          backdropFilter="blur(20px)"
+                          border="1px solid rgba(255, 255, 255, 0.1)"
+                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
+                        >
                           {content.component === 'GraphingCalculator' && <GraphingCalculator />}
                           {content.component === 'TokyoTrip' && <TokyoTrip />}
                           {content.component === 'BTCChart' && <BTCChart />}
@@ -304,28 +439,48 @@ export const App: React.FC = () => {
                       ) : (
                         <Box
                           p={8}
-                          bg="rgba(255, 255, 255, 0.8)"
+                          bg="rgba(255, 255, 255, 0.05)"
                           backdropFilter="blur(20px)"
-                          border="1px solid rgba(255, 255, 255, 0.9)"
+                          border="1px solid rgba(255, 255, 255, 0.1)"
                           borderRadius="24px"
                           textAlign="center"
-                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.04)"
+                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.2)"
                           maxW="600px"
+                          position="relative"
+                          zIndex={20}
+                          overflow="hidden"
+                          _before={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: "1px",
+                            bgGradient: "linear(to-r, transparent, rgba(255, 255, 255, 0.3), transparent)"
+                          }}
                         >
-                          <VStack spacing={4}>
-                            <Text fontSize="2xl" fontWeight="600" color="brand.600">
+                          <VStack spacing={6}>
+                            <Text fontSize="2xl" fontWeight="700" color="white">
                               "{content.content.intent}"
                             </Text>
-                            <Text fontSize="lg" color="gray.700" fontWeight="400">
+                            <Text fontSize="lg" color="rgba(255, 255, 255, 0.8)" fontWeight="400" lineHeight="1.6">
                               {content.content.message}
                             </Text>
                             {content.content.intentMatch && (
-                              <Text fontSize="sm" color="gray.500" fontWeight="400">
-                                Partial match ({content.content.intentMatch.confidence}% confidence)
-                              </Text>
+                              <Box
+                                px={3}
+                                py={1}
+                                bg="rgba(255, 230, 109, 0.1)"
+                                borderRadius="full"
+                                border="1px solid rgba(255, 230, 109, 0.2)"
+                              >
+                                <Text fontSize="sm" color="rgba(255, 230, 109, 0.9)" fontWeight="500">
+                                  {content.content.intentMatch.confidence}% match found
+                                </Text>
+                              </Box>
                             )}
-                            <Text fontSize="sm" color="gray.500" fontWeight="400">
-                              Click IntentOS to start over
+                            <Text fontSize="sm" color="rgba(255, 255, 255, 0.5)" fontWeight="400">
+                              Click SquashOS to start over
                             </Text>
                           </VStack>
                         </Box>
@@ -338,10 +493,16 @@ export const App: React.FC = () => {
           </Box>
 
           {/* Footer */}
-          <HStack justify="center" py={3}>
-            <Text fontSize="xs" color="gray.400" fontWeight="400">
-              Press ⌥ + D for debug info
-            </Text>
+          <HStack justify="center" py={6} mt={8}>
+            <HStack spacing={6}>
+              <Text fontSize="xs" color="rgba(255, 255, 255, 0.4)" fontWeight="400">
+                Press ⌥ + D for dev tools
+              </Text>
+              <Box w="1px" h="12px" bg="rgba(255, 255, 255, 0.1)" />
+              <Text fontSize="xs" color="rgba(255, 255, 255, 0.4)" fontWeight="400">
+                The Future of Browsing • No Tabs Required
+              </Text>
+            </HStack>
           </HStack>
         </Container>
 

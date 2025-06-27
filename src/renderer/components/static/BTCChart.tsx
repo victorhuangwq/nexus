@@ -291,10 +291,10 @@ export const BTCChart: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="gray.800">
+          <Text fontSize="2xl" fontWeight="600" color="white">
             Crypto Trading Dashboard
           </Text>
-          <Text fontSize="md" color="gray.600" fontWeight="400">
+          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
             BTC/ETH live data • Whale alerts • Community sentiment
           </Text>
         </VStack>
@@ -303,8 +303,9 @@ export const BTCChart: React.FC = () => {
             value={timeframe}
             onChange={(e) => setTimeframe(e.target.value)}
             size="sm"
-            bg="rgba(255, 255, 255, 0.8)"
-            borderColor="gray.300"
+            bg="rgba(255, 255, 255, 0.1)"
+            borderColor="rgba(255, 255, 255, 0.2)"
+            color="white"
             _focus={{ borderColor: 'brand.500' }}
             borderRadius="12px"
             w="100px"
@@ -316,7 +317,7 @@ export const BTCChart: React.FC = () => {
           </Select>
           <Badge
             colorScheme="green"
-            variant="subtle"
+            variant="solid"
             px={3}
             py={1}
           >
@@ -331,19 +332,19 @@ export const BTCChart: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          bg="rgba(255, 255, 255, 0.9)"
+          bg="rgba(255, 255, 255, 0.05)"
           backdropFilter="blur(20px)"
           borderRadius="20px"
-          border="1px solid rgba(0, 0, 0, 0.05)"
+          border="1px solid rgba(255, 255, 255, 0.1)"
         >
           <CardBody p={6}>
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={2}>
                 <HStack>
                   <Avatar size="sm" src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" />
-                  <Text fontSize="lg" fontWeight="600" color="gray.800">Bitcoin</Text>
+                  <Text fontSize="lg" fontWeight="600" color="white">Bitcoin</Text>
                 </HStack>
-                <Text fontSize="3xl" fontWeight="700" color="gray.800">
+                <Text fontSize="3xl" fontWeight="700" color="white">
                   {formatPrice(currentPrice)}
                 </Text>
                 <Stat>
@@ -370,19 +371,19 @@ export const BTCChart: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          bg="rgba(255, 255, 255, 0.9)"
+          bg="rgba(255, 255, 255, 0.05)"
           backdropFilter="blur(20px)"
           borderRadius="20px"
-          border="1px solid rgba(0, 0, 0, 0.05)"
+          border="1px solid rgba(255, 255, 255, 0.1)"
         >
           <CardBody p={6}>
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={2}>
                 <HStack>
                   <Avatar size="sm" src="https://cryptologos.cc/logos/ethereum-eth-logo.png" />
-                  <Text fontSize="lg" fontWeight="600" color="gray.800">Ethereum</Text>
+                  <Text fontSize="lg" fontWeight="600" color="white">Ethereum</Text>
                 </HStack>
-                <Text fontSize="3xl" fontWeight="700" color="gray.800">
+                <Text fontSize="3xl" fontWeight="700" color="white">
                   {formatPrice(ethPrice)}
                 </Text>
                 <Stat>
@@ -414,10 +415,10 @@ export const BTCChart: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            bg="rgba(255, 255, 255, 0.9)"
+            bg="rgba(255, 255, 255, 0.05)"
             backdropFilter="blur(20px)"
             borderRadius="24px"
-            border="1px solid rgba(0, 0, 0, 0.05)"
+            border="1px solid rgba(255, 255, 255, 0.1)"
             overflow="hidden"
           >
             <CardBody p={0}>

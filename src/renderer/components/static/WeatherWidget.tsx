@@ -21,8 +21,22 @@ export const WeatherWidget: React.FC = () => {
   const [unit, setUnit] = useState('metric');
 
   const getWeatherUrl = () => {
-    const unitParam = unit === 'metric' ? 'M' : 'F';
-    return `https://wttr.in/${encodeURIComponent(city)}?format=v2&${unitParam}&T&Q&F&lang=en`;
+    // Use windy.com for better weather visualization
+    const coordinates = getCoordinates(city);
+    return `https://embed.windy.com/embed2.html?lat=${coordinates.lat}&lon=${coordinates.lon}&detailLat=${coordinates.lat}&detailLon=${coordinates.lon}&width=650&height=450&zoom=8&level=surface&overlay=temp&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=${unit === 'metric' ? 'C' : 'F'}&radarRange=-1`;
+  };
+
+  const getCoordinates = (cityName: string) => {
+    const cityCoords: { [key: string]: { lat: number; lon: number } } = {
+      'Tokyo': { lat: 35.6762, lon: 139.6503 },
+      'New York': { lat: 40.7128, lon: -74.0060 },
+      'London': { lat: 51.5074, lon: -0.1278 },
+      'Paris': { lat: 48.8566, lon: 2.3522 },
+      'Sydney': { lat: -33.8688, lon: 151.2093 },
+      'Dubai': { lat: 25.2048, lon: 55.2708 },
+      'Kyoto': { lat: 35.0116, lon: 135.7681 }
+    };
+    return cityCoords[cityName] || cityCoords['Tokyo'];
   };
 
   const handleCityChange = (newCity: string) => {
@@ -36,14 +50,14 @@ export const WeatherWidget: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="gray.800">
-            Weather
+          <Text fontSize="2xl" fontWeight="600" color="white">
+            Weather Radar
           </Text>
-          <Text fontSize="md" color="gray.600" fontWeight="400">
-            Live weather data for any city
+          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+            Interactive weather maps powered by Windy
           </Text>
         </VStack>
-        <Badge colorScheme="blue" variant="subtle" px={3} py={1}>
+        <Badge colorScheme="blue" variant="solid" px={3} py={1}>
           Live
         </Badge>
       </HStack>
@@ -53,15 +67,15 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        bg="rgba(255, 255, 255, 0.8)"
+        bg="rgba(255, 255, 255, 0.05)"
         backdropFilter="blur(16px)"
         borderRadius="20px"
-        border="1px solid rgba(0, 0, 0, 0.05)"
+        border="1px solid rgba(255, 255, 255, 0.1)"
       >
         <CardBody p={6}>
           <HStack spacing={4}>
             <VStack align="start" spacing={2} flex="1">
-              <Text fontSize="sm" fontWeight="500" color="gray.700">
+              <Text fontSize="sm" fontWeight="500" color="rgba(255, 255, 255, 0.8)">
                 City
               </Text>
               <Input
@@ -70,22 +84,24 @@ export const WeatherWidget: React.FC = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handleCityChange(city)}
                 placeholder="Enter city name"
                 size="md"
-                bg="rgba(255, 255, 255, 0.9)"
-                borderColor="gray.300"
+                bg="rgba(255, 255, 255, 0.1)"
+                borderColor="rgba(255, 255, 255, 0.2)"
+                color="white"
                 _focus={{ borderColor: 'brand.500' }}
                 borderRadius="12px"
               />
             </VStack>
             <VStack align="start" spacing={2}>
-              <Text fontSize="sm" fontWeight="500" color="gray.700">
+              <Text fontSize="sm" fontWeight="500" color="rgba(255, 255, 255, 0.8)">
                 Units
               </Text>
               <Select
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 size="md"
-                bg="rgba(255, 255, 255, 0.9)"
-                borderColor="gray.300"
+                bg="rgba(255, 255, 255, 0.1)"
+                borderColor="rgba(255, 255, 255, 0.2)"
+                color="white"
                 _focus={{ borderColor: 'brand.500' }}
                 borderRadius="12px"
                 w="120px"
@@ -117,16 +133,16 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        bg="rgba(255, 255, 255, 0.8)"
+        bg="rgba(255, 255, 255, 0.05)"
         backdropFilter="blur(16px)"
         borderRadius="24px"
-        border="1px solid rgba(0, 0, 0, 0.05)"
+        border="1px solid rgba(255, 255, 255, 0.1)"
       >
         <CardBody p={0}>
           <VStack spacing={0}>
             <Box p={6} w="full">
-              <Text fontSize="xl" fontWeight="600" color="gray.800" textAlign="center">
-                {city} Weather Forecast
+              <Text fontSize="xl" fontWeight="600" color="white" textAlign="center">
+                {city} Live Weather Map
               </Text>
             </Box>
             <AspectRatio ratio={16/14} w="full">
@@ -140,7 +156,7 @@ export const WeatherWidget: React.FC = () => {
                   height: '100%',
                   background: 'white',
                 }}
-                title={`${city} Weather Forecast`}
+                title={`${city} Live Weather Map`}
                 loading="lazy"
               />
             </AspectRatio>
@@ -153,14 +169,14 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        bg="rgba(255, 255, 255, 0.7)"
+        bg="rgba(255, 255, 255, 0.05)"
         backdropFilter="blur(16px)"
         borderRadius="16px"
-        border="1px solid rgba(0, 0, 0, 0.05)"
+        border="1px solid rgba(255, 255, 255, 0.1)"
       >
         <CardBody>
           <VStack spacing={3} align="start">
-            <Text fontSize="lg" fontWeight="600" color="gray.800">
+            <Text fontSize="lg" fontWeight="600" color="white">
               Popular Cities
             </Text>
             <HStack spacing={2} wrap="wrap">

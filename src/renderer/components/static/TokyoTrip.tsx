@@ -246,18 +246,18 @@ export const TokyoTrip: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="gray.800">
+          <Text fontSize="2xl" fontWeight="600" color="white">
             Kyoto Weekend Plan
           </Text>
-          <Text fontSize="md" color="gray.600" fontWeight="400">
+          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
             Complete guide • Maps • Accommodations • Ramen insights
           </Text>
         </VStack>
         <HStack spacing={3}>
-          <Badge colorScheme="purple" variant="subtle" px={3} py={1}>
+          <Badge colorScheme="purple" variant="solid" px={3} py={1}>
             2 days
           </Badge>
-          <Badge colorScheme="green" variant="subtle" px={3} py={1}>
+          <Badge colorScheme="green" variant="solid" px={3} py={1}>
             Live Data
           </Badge>
         </HStack>
@@ -284,17 +284,17 @@ export const TokyoTrip: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: dayIndex * 0.1 }}
-                      bg="rgba(255, 255, 255, 0.9)"
+                      bg="rgba(255, 255, 255, 0.05)"
                       backdropFilter="blur(20px)"
                       borderRadius="24px"
-                      border="1px solid rgba(0, 0, 0, 0.05)"
+                      border="1px solid rgba(255, 255, 255, 0.1)"
                     >
                       <CardBody p={6}>
                         <HStack justify="space-between" mb={4}>
-                          <Text fontSize="xl" fontWeight="600" color="gray.800">
+                          <Text fontSize="xl" fontWeight="600" color="white">
                             {day.day}
                           </Text>
-                          <Badge colorScheme="purple" variant="subtle">
+                          <Badge colorScheme="purple" variant="solid">
                             {day.activities.length} stops
                           </Badge>
                         </HStack>
@@ -306,9 +306,9 @@ export const TokyoTrip: React.FC = () => {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.3, delay: (dayIndex * 0.1) + (actIndex * 0.05) }}
                             >
-                              <HStack spacing={4} align="start" p={3} borderRadius="16px" bg="rgba(0, 0, 0, 0.02)">
+                              <HStack spacing={4} align="start" p={3} borderRadius="16px" bg="rgba(255, 255, 255, 0.05)">
                                 <VStack spacing={1} minW="80px" align="start">
-                                  <Text fontSize="sm" fontWeight="600" color="gray.700">
+                                  <Text fontSize="sm" fontWeight="600" color="rgba(255, 255, 255, 0.8)">
                                     {activity.time}
                                   </Text>
                                   <Text fontSize="lg">
@@ -317,13 +317,13 @@ export const TokyoTrip: React.FC = () => {
                                 </VStack>
                                 <Box flex="1">
                                   <VStack spacing={1} align="start">
-                                    <Text fontSize="md" fontWeight="600" color="gray.800">
+                                    <Text fontSize="md" fontWeight="600" color="white">
                                       {activity.title}
                                     </Text>
                                     <Text fontSize="sm" color={getTypeColor(activity.type)} fontWeight="500">
                                       {activity.location}
                                     </Text>
-                                    <Text fontSize="sm" color="gray.600" fontWeight="400">
+                                    <Text fontSize="sm" color="rgba(255, 255, 255, 0.7)" fontWeight="400">
                                       {activity.description}
                                     </Text>
                                   </VStack>
@@ -346,19 +346,19 @@ export const TokyoTrip: React.FC = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    bg="rgba(255, 255, 255, 0.9)"
+                    bg="rgba(255, 255, 255, 0.05)"
                     backdropFilter="blur(20px)"
                     borderRadius="24px"
-                    border="1px solid rgba(0, 0, 0, 0.05)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                     overflow="hidden"
                   >
                     <CardBody p={0}>
                       <VStack spacing={0}>
                         <Box p={4} w="full">
-                          <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                          <Text fontSize="lg" fontWeight="600" color="white" textAlign="center">
                             🗺️ Kyoto Interactive Map
                           </Text>
-                          <Text fontSize="sm" color="gray.600" textAlign="center">
+                          <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)" textAlign="center">
                             All locations marked
                           </Text>
                         </Box>
@@ -385,27 +385,27 @@ export const TokyoTrip: React.FC = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    bg="rgba(255, 255, 255, 0.9)"
+                    bg="rgba(255, 255, 255, 0.05)"
                     backdropFilter="blur(20px)"
                     borderRadius="20px"
-                    border="1px solid rgba(0, 0, 0, 0.05)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                   >
                     <CardBody>
                       <VStack spacing={3} align="stretch">
-                        <Text fontSize="lg" fontWeight="600" color="gray.800" textAlign="center">
+                        <Text fontSize="lg" fontWeight="600" color="white" textAlign="center">
                           🌤️ Kyoto Weather
                         </Text>
-                        <Box h="280px" bg="gray.50" borderRadius="16px" p={2}>
+                        <Box h="280px" bg="rgba(255, 255, 255, 0.05)" borderRadius="16px" p={2}>
                           <iframe
-                            src="https://wttr.in/Kyoto?format=v2&M&T&Q&F&lang=en"
+                            src="https://embed.windy.com/embed2.html?lat=35.0116&lon=135.7681&detailLat=35.0116&detailLon=135.7681&width=650&height=450&zoom=10&level=surface&overlay=temp&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=C&radarRange=-1"
                             style={{
                               border: 'none',
                               borderRadius: '12px',
                               width: '100%',
                               height: '100%',
-                              background: 'white',
+                              background: 'transparent',
                             }}
-                            title="Kyoto Live Weather"
+                            title="Kyoto Live Weather Map"
                             loading="lazy"
                           />
                         </Box>
@@ -418,35 +418,35 @@ export const TokyoTrip: React.FC = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
-                    bg="rgba(255, 255, 255, 0.9)"
+                    bg="rgba(255, 255, 255, 0.05)"
                     backdropFilter="blur(20px)"
                     borderRadius="20px"
-                    border="1px solid rgba(0, 0, 0, 0.05)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                   >
                     <CardBody>
                       <VStack spacing={4} align="stretch">
-                        <Text fontSize="lg" fontWeight="600" color="gray.800">
+                        <Text fontSize="lg" fontWeight="600" color="white">
                           📊 Trip Stats
                         </Text>
                         <SimpleGrid columns={2} spacing={4}>
                           <Stat>
-                            <StatLabel fontSize="xs" color="gray.600">Total Distance</StatLabel>
-                            <StatNumber fontSize="lg" color="gray.800">23 km</StatNumber>
+                            <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Total Distance</StatLabel>
+                            <StatNumber fontSize="lg" color="white">23 km</StatNumber>
                             <StatHelpText fontSize="xs">Walking + Train</StatHelpText>
                           </Stat>
                           <Stat>
-                            <StatLabel fontSize="xs" color="gray.600">Est. Budget</StatLabel>
-                            <StatNumber fontSize="lg" color="gray.800">¥8,500</StatNumber>
+                            <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Est. Budget</StatLabel>
+                            <StatNumber fontSize="lg" color="white">¥8,500</StatNumber>
                             <StatHelpText fontSize="xs">Per person</StatHelpText>
                           </Stat>
                           <Stat>
-                            <StatLabel fontSize="xs" color="gray.600">Temples</StatLabel>
-                            <StatNumber fontSize="lg" color="gray.800">4</StatNumber>
+                            <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Temples</StatLabel>
+                            <StatNumber fontSize="lg" color="white">4</StatNumber>
                             <StatHelpText fontSize="xs">UNESCO sites</StatHelpText>
                           </Stat>
                           <Stat>
-                            <StatLabel fontSize="xs" color="gray.600">Food Stops</StatLabel>
-                            <StatNumber fontSize="lg" color="gray.800">6</StatNumber>
+                            <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Food Stops</StatLabel>
+                            <StatNumber fontSize="lg" color="white">6</StatNumber>
                             <StatHelpText fontSize="xs">Local favorites</StatHelpText>
                           </Stat>
                         </SimpleGrid>
@@ -465,22 +465,22 @@ export const TokyoTrip: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                bg="rgba(255, 255, 255, 0.9)"
+                bg="rgba(255, 255, 255, 0.05)"
                 backdropFilter="blur(20px)"
                 borderRadius="24px"
-                border="1px solid rgba(0, 0, 0, 0.05)"
+                border="1px solid rgba(255, 255, 255, 0.1)"
               >
                 <CardBody p={6}>
                   <VStack spacing={4} align="stretch">
                     <HStack justify="space-between">
-                      <Text fontSize="xl" fontWeight="600" color="gray.800">
+                      <Text fontSize="xl" fontWeight="600" color="white">
                         🏠 Kyoto Accommodations
                       </Text>
-                      <Badge colorScheme="blue" variant="subtle">
+                      <Badge colorScheme="blue" variant="solid">
                         {airbnbListings.length} options
                       </Badge>
                     </HStack>
-                    <Text fontSize="sm" color="gray.600">
+                    <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
                       Hand-picked stays near major attractions with great reviews
                     </Text>
                   </VStack>
@@ -494,10 +494,10 @@ export const TokyoTrip: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    bg="rgba(255, 255, 255, 0.9)"
+                    bg="rgba(255, 255, 255, 0.05)"
                     backdropFilter="blur(20px)"
                     borderRadius="20px"
-                    border="1px solid rgba(0, 0, 0, 0.05)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                     cursor="pointer"
                     _hover={{ transform: 'translateY(-4px)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)' }}
                     onClick={() => setSelectedListing(selectedListing === listing.id ? null : listing.id)}
@@ -507,15 +507,15 @@ export const TokyoTrip: React.FC = () => {
                         <HStack justify="space-between" align="start">
                           <Text fontSize="2xl">{listing.image}</Text>
                           <VStack spacing={1} align="end">
-                            <Text fontSize="lg" fontWeight="700" color="gray.800">
+                            <Text fontSize="lg" fontWeight="700" color="white">
                               ${listing.price}
                             </Text>
-                            <Text fontSize="xs" color="gray.600">per night</Text>
+                            <Text fontSize="xs" color="rgba(255, 255, 255, 0.7)">per night</Text>
                           </VStack>
                         </HStack>
                         
                         <VStack spacing={2} align="start">
-                          <Text fontSize="md" fontWeight="600" color="gray.800" noOfLines={2}>
+                          <Text fontSize="md" fontWeight="600" color="white" noOfLines={2}>
                             {listing.title}
                           </Text>
                           <Text fontSize="sm" color="purple.600" fontWeight="500">
@@ -528,14 +528,14 @@ export const TokyoTrip: React.FC = () => {
 
                         <HStack justify="space-between">
                           <HStack spacing={1}>
-                            <Text fontSize="sm" fontWeight="600" color="gray.800">
+                            <Text fontSize="sm" fontWeight="600" color="white">
                               ⭐ {listing.rating}
                             </Text>
-                            <Text fontSize="xs" color="gray.600">
+                            <Text fontSize="xs" color="rgba(255, 255, 255, 0.7)">
                               ({listing.reviews})
                             </Text>
                           </HStack>
-                          <Text fontSize="xs" color="gray.500">
+                          <Text fontSize="xs" color="rgba(255, 255, 255, 0.5)">
                             {selectedListing === listing.id ? '↑ Hide' : '↓ Details'}
                           </Text>
                         </HStack>
@@ -547,8 +547,8 @@ export const TokyoTrip: React.FC = () => {
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                             >
-                              <VStack spacing={2} align="start" mt={3} pt={3} borderTop="1px solid" borderColor="gray.200">
-                                <Text fontSize="sm" fontWeight="600" color="gray.800">
+                              <VStack spacing={2} align="start" mt={3} pt={3} borderTop="1px solid" borderColor="rgba(255, 255, 255, 0.2)">
+                                <Text fontSize="sm" fontWeight="600" color="white">
                                   Amenities:
                                 </Text>
                                 <Flex wrap="wrap" gap={1}>
@@ -580,33 +580,33 @@ export const TokyoTrip: React.FC = () => {
               >
                 <CardBody p={6}>
                   <VStack spacing={4} align="stretch">
-                    <Text fontSize="lg" fontWeight="600" color="gray.800">
+                    <Text fontSize="lg" fontWeight="600" color="white">
                       📊 Price Comparison by Neighborhood
                     </Text>
                     <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4}>
                       <Stat>
-                        <StatLabel fontSize="xs" color="gray.600">Gion District</StatLabel>
-                        <StatNumber fontSize="lg" color="gray.800">$145</StatNumber>
+                        <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Gion District</StatLabel>
+                        <StatNumber fontSize="lg" color="white">$145</StatNumber>
                         <StatHelpText fontSize="xs">avg/night</StatHelpText>
                       </Stat>
                       <Stat>
-                        <StatLabel fontSize="xs" color="gray.600">Higashiyama</StatLabel>
-                        <StatNumber fontSize="lg" color="gray.800">$152</StatNumber>
+                        <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Higashiyama</StatLabel>
+                        <StatNumber fontSize="lg" color="white">$152</StatNumber>
                         <StatHelpText fontSize="xs">avg/night</StatHelpText>
                       </Stat>
                       <Stat>
-                        <StatLabel fontSize="xs" color="gray.600">Arashiyama</StatLabel>
-                        <StatNumber fontSize="lg" color="gray.800">$207</StatNumber>
+                        <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Arashiyama</StatLabel>
+                        <StatNumber fontSize="lg" color="white">$207</StatNumber>
                         <StatHelpText fontSize="xs">avg/night</StatHelpText>
                       </Stat>
                       <Stat>
-                        <StatLabel fontSize="xs" color="gray.600">Kyoto Station</StatLabel>
-                        <StatNumber fontSize="lg" color="gray.800">$60</StatNumber>
+                        <StatLabel fontSize="xs" color="rgba(255, 255, 255, 0.7)">Kyoto Station</StatLabel>
+                        <StatNumber fontSize="lg" color="white">$60</StatNumber>
                         <StatHelpText fontSize="xs">avg/night</StatHelpText>
                       </Stat>
                     </SimpleGrid>
                     <Progress value={75} colorScheme="purple" size="sm" borderRadius="full" />
-                    <Text fontSize="xs" color="gray.600" textAlign="center">
+                    <Text fontSize="xs" color="rgba(255, 255, 255, 0.7)" textAlign="center">
                       Booking rates: 75% occupancy this weekend
                     </Text>
                   </VStack>
@@ -622,22 +622,22 @@ export const TokyoTrip: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                bg="rgba(255, 255, 255, 0.9)"
+                bg="rgba(255, 255, 255, 0.05)"
                 backdropFilter="blur(20px)"
                 borderRadius="24px"
-                border="1px solid rgba(0, 0, 0, 0.05)"
+                border="1px solid rgba(255, 255, 255, 0.1)"
               >
                 <CardBody p={6}>
                   <VStack spacing={4} align="stretch">
                     <HStack justify="space-between">
-                      <Text fontSize="xl" fontWeight="600" color="gray.800">
+                      <Text fontSize="xl" fontWeight="600" color="white">
                         🍜 Reddit: r/ramen • Kyoto Thread
                       </Text>
-                      <Badge colorScheme="orange" variant="subtle">
+                      <Badge colorScheme="orange" variant="solid">
                         Live Feed
                       </Badge>
                     </HStack>
-                    <Text fontSize="sm" color="gray.600">
+                    <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
                       Real insights from ramen enthusiasts who've explored Kyoto
                     </Text>
                   </VStack>
@@ -651,16 +651,16 @@ export const TokyoTrip: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    bg="rgba(255, 255, 255, 0.9)"
+                    bg="rgba(255, 255, 255, 0.05)"
                     backdropFilter="blur(20px)"
                     borderRadius="20px"
-                    border="1px solid rgba(0, 0, 0, 0.05)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                   >
                     <CardBody p={5}>
                       <VStack spacing={3} align="stretch">
                         <HStack justify="space-between" align="start">
                           <VStack spacing={1} align="start" flex="1">
-                            <Text fontSize="md" fontWeight="600" color="gray.800" noOfLines={2}>
+                            <Text fontSize="md" fontWeight="600" color="white" noOfLines={2}>
                               {post.title}
                             </Text>
                             <HStack spacing={3}>
@@ -670,24 +670,24 @@ export const TokyoTrip: React.FC = () => {
                               <Text fontSize="sm" color="purple.600" fontWeight="500">
                                 📍 {post.location}
                               </Text>
-                              <Text fontSize="xs" color="gray.500">
+                              <Text fontSize="xs" color="rgba(255, 255, 255, 0.5)">
                                 {post.timestamp}
                               </Text>
                             </HStack>
                           </VStack>
                           <VStack spacing={1} align="end">
                             <HStack>
-                              <Text fontSize="sm" fontWeight="600" color="gray.700">
+                              <Text fontSize="sm" fontWeight="600" color="rgba(255, 255, 255, 0.8)">
                                 ↑ {post.score}
                               </Text>
                             </HStack>
-                            <Text fontSize="xs" color="gray.500">
+                            <Text fontSize="xs" color="rgba(255, 255, 255, 0.5)">
                               💬 {post.comments}
                             </Text>
                           </VStack>
                         </HStack>
                         
-                        <Text fontSize="sm" color="gray.700" bg="rgba(0, 0, 0, 0.02)" p={3} borderRadius="12px">
+                        <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)" bg="rgba(255, 255, 255, 0.05)" p={3} borderRadius="12px">
                           {post.content}
                         </Text>
                         
@@ -700,7 +700,7 @@ export const TokyoTrip: React.FC = () => {
                               🏮 Kyoto
                             </Badge>
                           </HStack>
-                          <Text fontSize="xs" color="gray.500">
+                          <Text fontSize="xs" color="rgba(255, 255, 255, 0.5)">
                             r/ramen
                           </Text>
                         </HStack>
