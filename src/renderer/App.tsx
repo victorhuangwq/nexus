@@ -61,7 +61,7 @@ export const App: React.FC = () => {
       
       if (intentMatch && intentMatch.confidence >= 70) {
         // Add artificial loading delay for demo sites to feel more realistic
-        const baseDelay = 1500; // Increased base delay for better demo presentation
+        const baseDelay = 1000; // Increased base delay for better demo presentation
         const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
         await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
         
