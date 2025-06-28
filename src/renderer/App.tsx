@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import theme from './theme';
 import { OmniPrompt } from './components/OmniPrompt';
 import { DevHUD } from './components/DevHUD';
+import { FloatingInputBar } from './components/FloatingInputBar';
 import { GraphingCalculator, TokyoTrip, BTCChart, WeatherWidget, PhysicsHomework } from './components/static';
 import { matchIntent, type IntentMatch } from './utils/intentMatcher';
 
@@ -505,6 +506,17 @@ export const App: React.FC = () => {
             </HStack>
           </HStack>
         </Container>
+
+        {/* Floating Input Bar - only show when viewing generated content */}
+        <AnimatePresence>
+          {renderedContent.length > 0 && (
+            <FloatingInputBar
+              onSubmit={handleIntentSubmit}
+              isLoading={isLoading}
+              placeholder="Ask for something else..."
+            />
+          )}
+        </AnimatePresence>
 
         {/* Dev HUD */}
         <DevHUD
