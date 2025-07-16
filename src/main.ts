@@ -96,9 +96,237 @@ ipcMain.handle('get-env', async (_, key: string) => {
   return process.env[key] || null;
 });
 
-// Placeholder for Claude API calls
+// Claude API integration using built-in fetch
+async function callClaudeAPI(prompt: string): Promise<any> {
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY or CLAUDE_API_KEY not found in environment variables');
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json() as any;
+    return data.content[0].text;
+  } catch (error) {
+    console.error('Claude API call failed:', error);
+    throw error;
+  }
+}
+
+// Layout selection IPC handler
+ipcMain.handle('select-layout', async (_, intent: string) => {
+  const layoutPrompt = `
+Intent: "${intent}"
+Available layouts: SingleWebsite: Full-screen iframe for single website, SplitView: Two side-by-side panels, Dashboard: Grid of 2-6 widgets/cards, ListDetail: Left sidebar list, right detail view, MediaFocus: Large media area with controls, ComparisonView: Side-by-side comparison table/cards, FeedLayout: Vertical scrolling feed of content
+
+Analyze the intent and select the best layout. Consider:
+- Single website access → SingleWebsite
+- Comparison/research → SplitView or ComparisonView  
+- Multiple tools/data → Dashboard
+- Media consumption → MediaFocus
+- Sequential content → FeedLayout
+
+Return only valid JSON: {"layout": "LayoutName", "confidence": 0.95}
+`;
+
+  try {
+    const response = await callClaudeAPI(layoutPrompt);
+    // Extract JSON from response (Claude sometimes adds explanation text)
+    const jsonMatch = response.match(/\{[^}]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No valid JSON found in response');
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    
+    // Validate the response
+    if (!parsed.layout || typeof parsed.confidence !== 'number') {
+      throw new Error('Invalid response format');
+    }
+    
+    return {
+      layout: parsed.layout,
+      confidence: parsed.confidence,
+      reasoning: 'AI-selected layout'
+    };
+  } catch (error) {
+    console.error('Layout selection failed:', error);
+    
+    // Simple intent-based fallback
+    const lowerIntent = intent.toLowerCase();
+    let fallbackLayout = 'Dashboard';
+    
+    if (lowerIntent.includes('email') || lowerIntent.includes('gmail') || lowerIntent.includes('website')) {
+      fallbackLayout = 'SingleWebsite';
+    } else if (lowerIntent.includes('compare') || lowerIntent.includes('vs')) {
+      fallbackLayout = 'SplitView';
+    } else if (lowerIntent.includes('video') || lowerIntent.includes('music') || lowerIntent.includes('media')) {
+      fallbackLayout = 'MediaFocus';
+    }
+    
+    return {
+      layout: fallbackLayout,
+      confidence: 0.6,
+      reasoning: 'Fallback layout selection based on keywords'
+    };
+  }
+});
+
+// Content planning IPC handler
+ipcMain.handle('plan-content', async (_, intent: string, layoutTemplate: any) => {
+  // Create a serializable copy of the layout template
+  const serializableTemplate = {
+    name: layoutTemplate.name,
+    description: layoutTemplate.description,
+    slotDefinitions: layoutTemplate.slotDefinitions
+  };
+  const contentPrompt = `
+Intent: "${intent}"
+Layout: ${serializableTemplate.name}
+Available slots: ${JSON.stringify(serializableTemplate.slotDefinitions)}
+
+Plan content for each slot. Prioritize real websites when possible:
+- Prefer iframe embeds over custom HTML
+- Use established sites (YouTube, GitHub, Wikipedia, Gmail, etc.)
+- Only generate custom widgets when necessary
+
+Return only valid JSON:
+{
+  "slots": [
+    {
+      "id": "main",
+      "type": "iframe", 
+      "props": {
+        "url": "https://www.example.com",
+        "title": "Description"
+      }
+    }
+  ]
+}
+`;
+
+  try {
+    const response = await callClaudeAPI(contentPrompt);
+    // Extract JSON from response
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No valid JSON found in response');
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    return parsed;
+  } catch (error) {
+    console.error('Content planning failed:', error);
+    
+    // Generate fallback content based on intent and layout
+    const lowerIntent = intent.toLowerCase();
+    const fallbackSlots = [];
+    
+    // Simple content generation based on layout and intent
+    for (const slotDef of layoutTemplate.slotDefinitions) {
+      if (slotDef.type.includes('iframe')) {
+        let url = 'https://example.com';
+        let title = 'Content';
+        
+        if (lowerIntent.includes('gmail') || lowerIntent.includes('email')) {
+          url = 'https://gmail.com';
+          title = 'Gmail';
+        } else if (lowerIntent.includes('youtube') || lowerIntent.includes('video')) {
+          url = 'https://youtube.com';
+          title = 'YouTube';
+        } else if (lowerIntent.includes('github') || lowerIntent.includes('code')) {
+          url = 'https://github.com';
+          title = 'GitHub';
+        } else if (lowerIntent.includes('weather')) {
+          url = 'https://weather.com';
+          title = 'Weather';
+        }
+        
+        fallbackSlots.push({
+          id: slotDef.id,
+          type: 'iframe',
+          props: { url, title }
+        });
+      } else {
+        fallbackSlots.push({
+          id: slotDef.id,
+          type: 'widget',
+          props: { 
+            content: `Content for ${slotDef.purpose}`,
+            purpose: slotDef.purpose 
+          }
+        });
+      }
+    }
+    
+    return { slots: fallbackSlots };
+  }
+});
+
+// Enhanced Claude component generation
 ipcMain.handle('call-claude', async (_, type: string, payload: any) => {
   console.log(`Claude call: ${type}`, payload);
-  // TODO: Implement actual Claude API integration in Phase 4
+  
+  if (type === 'component') {
+    const widgetPrompt = `
+Generate a Chakra UI widget for: ${payload.slot.props.purpose || 'general widget'}
+Intent context: "${payload.intent}"
+Widget type: ${payload.slot.type}
+
+Return only the JSX component code using these Chakra components:
+Box, Text, VStack, HStack, Button, Input, Image, Grid, Card, Badge, Progress, Spinner
+
+Use placeholder data. Make it functional and visually appealing.
+Start with: import { ... } from '@chakra-ui/react';
+End with: export default function Widget() { return (...); }
+`;
+
+    try {
+      const response = await callClaudeAPI(widgetPrompt);
+      return { success: true, data: response, type, payload };
+    } catch (error) {
+      console.error('Widget generation failed:', error);
+      return { 
+        success: false, 
+        data: `
+import { Box, Text, Alert, AlertIcon } from '@chakra-ui/react';
+
+export default function ErrorWidget() {
+  return (
+    <Box p={4}>
+      <Alert status="error" borderRadius="md">
+        <AlertIcon />
+        <Text fontSize="sm">Widget generation failed</Text>
+      </Alert>
+    </Box>
+  );
+}`, 
+        type, 
+        payload 
+      };
+    }
+  }
+
+  // Legacy schema generation for fallback
   return { success: true, data: null, type, payload };
 });

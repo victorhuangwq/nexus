@@ -8,12 +8,27 @@ export interface ElectronBridge {
   // Environment variable access
   getEnv: (key: string) => Promise<string | null>;
   
-  // Claude API integration (placeholder for Phase 4)
+  // Claude API integration (Phase 4)
   callClaude: (type: 'schema' | 'component', payload: any) => Promise<{
     success: boolean;
     data: any;
     type: string;
     payload: any;
+  }>;
+  
+  // AI Pipeline methods
+  selectLayout: (intent: string) => Promise<{
+    layout: string;
+    confidence: number;
+    reasoning?: string;
+  }>;
+  
+  planContent: (intent: string, layoutTemplate: any) => Promise<{
+    slots: Array<{
+      id: string;
+      type: string;
+      props: Record<string, any>;
+    }>;
   }>;
   
   // Future methods for Phase 2+
@@ -27,6 +42,10 @@ const bridge: ElectronBridge = {
   getEnv: (key: string) => ipcRenderer.invoke('get-env', key),
   callClaude: (type: 'schema' | 'component', payload: any) => 
     ipcRenderer.invoke('call-claude', type, payload),
+  selectLayout: (intent: string) => 
+    ipcRenderer.invoke('select-layout', intent),
+  planContent: (intent: string, layoutTemplate: any) => 
+    ipcRenderer.invoke('plan-content', intent, layoutTemplate),
 };
 
 // Expose the bridge via contextBridge

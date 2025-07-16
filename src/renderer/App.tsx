@@ -15,32 +15,23 @@ import { DevHUD } from './components/DevHUD';
 import { FloatingInputBar } from './components/FloatingInputBar';
 import { GraphingCalculator, TokyoTrip, BTCChart, WeatherWidget, PhysicsHomework } from './components/static';
 import { matchIntent, type IntentMatch } from './utils/intentMatcher';
+import { aiPipeline } from './services/AIPipeline';
+import { getLayoutByName } from './layouts/LayoutTemplates';
+import type { DynamicContent } from './layouts/types';
 
 const MotionBox = motion(Box);
 const MotionVStack = motion(VStack);
 
-// Extend the window interface to include our bridge
-declare global {
-  interface Window {
-    bridge: {
-      test: () => Promise<{ message: string; timestamp: number }>;
-      getEnv: (key: string) => Promise<string | null>;
-      callClaude: (type: 'schema' | 'component', payload: any) => Promise<{
-        success: boolean;
-        data: any;
-        type: string;
-        payload: any;
-      }>;
-    };
-  }
-}
+// Bridge interface is defined in preload.ts
 
 interface RenderedContent {
   id: string;
-  type: 'static' | 'generated';
+  type: 'static' | 'generated' | 'dynamic';
   component?: string;
   content: any;
   timestamp: number;
+  layout?: string;
+  slots?: any[];
 }
 
 export const App: React.FC = () => {
@@ -70,7 +61,7 @@ export const App: React.FC = () => {
         const endTime = Date.now();
         const processingTime = endTime - startTime;
         
-        setDebugData(prev => ({
+        setDebugData((prev: any) => ({
           ...prev,
           intentMatch,
           renderTiming: {
@@ -94,30 +85,32 @@ export const App: React.FC = () => {
         
         setRenderedContent([newContent]);
       } else {
-        // Fall back to Claude API for dynamic generation
-        const result = await window.bridge.callClaude('schema', { intent });
+        // Use dynamic layout system powered by AI pipeline
+        const pipelineResult = await aiPipeline.process(intent);
         
         const endTime = Date.now();
-        const schemaTime = endTime - startTime;
+        const processingTime = endTime - startTime;
         
-        setDebugData(prev => ({
+        setDebugData((prev: any) => ({
           ...prev,
-          schema: result.data,
-          intentMatch: intentMatch || null,
+          pipelineResult,
           renderTiming: {
             ...prev.renderTiming,
-            T_schema: schemaTime,
+            T_schema: pipelineResult.metrics.layoutSelectionTime,
+            T_components: pipelineResult.metrics.contentPlanningTime,
+            T_widgets: pipelineResult.metrics.widgetGenerationTime,
+            T_firstRender: processingTime,
           },
         }));
         
         const newContent: RenderedContent = {
           id: `content-${Date.now()}`,
-          type: 'generated',
+          type: 'dynamic',
+          layout: pipelineResult.layout,
+          slots: pipelineResult.slots,
           content: {
             intent,
-            message: 'I can help with this, but need more details to build something specific.',
-            result,
-            intentMatch,
+            result: pipelineResult,
           },
           timestamp: Date.now(),
         };
@@ -127,9 +120,40 @@ export const App: React.FC = () => {
       
     } catch (error) {
       console.error('Intent processing failed:', error);
-      setDebugData(prev => ({
+      
+      // Emergency fallback: try static matching
+      const intentMatch = matchIntent(intent);
+      if (intentMatch && intentMatch.confidence >= 50) {
+        const newContent: RenderedContent = {
+          id: `content-${Date.now()}`,
+          type: 'static',
+          component: intentMatch.component,
+          content: {
+            intent,
+            match: intentMatch,
+            fallback: true,
+          },
+          timestamp: Date.now(),
+        };
+        setRenderedContent([newContent]);
+      } else {
+        // Show error state
+        const newContent: RenderedContent = {
+          id: `content-${Date.now()}`,
+          type: 'generated',
+          content: {
+            intent,
+            message: 'Sorry, I encountered an error processing your request. Please try again.',
+            error: error instanceof Error ? error.message : String(error),
+          },
+          timestamp: Date.now(),
+        };
+        setRenderedContent([newContent]);
+      }
+      
+      setDebugData((prev: any) => ({
         ...prev,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }));
     } finally {
       setIsLoading(false);
@@ -436,6 +460,32 @@ export const App: React.FC = () => {
                           {content.component === 'BTCChart' && <BTCChart />}
                           {content.component === 'WeatherWidget' && <WeatherWidget />}
                           {content.component === 'PhysicsHomework' && <PhysicsHomework />}
+                        </Box>
+                      ) : content.type === 'dynamic' && content.layout && content.slots ? (
+                        <Box
+                          position="relative"
+                          zIndex={20}
+                          w="full"
+                          bg="rgba(15, 15, 35, 0.8)"
+                          borderRadius="24px"
+                          p={6}
+                          backdropFilter="blur(20px)"
+                          border="1px solid rgba(255, 255, 255, 0.1)"
+                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
+                          minH="500px"
+                        >
+                          {(() => {
+                            const layoutTemplate = getLayoutByName(content.layout);
+                            if (layoutTemplate) {
+                              const LayoutComponent = layoutTemplate.component;
+                              return <LayoutComponent slots={content.slots} />;
+                            }
+                            return (
+                              <Box p={8} textAlign="center" color="rgba(255, 255, 255, 0.6)">
+                                <Text>Unknown layout: {content.layout}</Text>
+                              </Box>
+                            );
+                          })()}
                         </Box>
                       ) : (
                         <Box

@@ -240,30 +240,248 @@ npm run dev
 
 ---
 
-### Phase 4: Claude Integration + Dynamic Generation
-**Goal**: Full AI-powered component generation with caching.
+### Phase 4: Dynamic Layout System + AI Content Generation
+**Goal**: Three-step AI pipeline: Intent → Layout Selection → Content Generation.
+
+**Technical Architecture**:
+
+#### 4.1 Pre-built Layout Templates
+Create 7 reusable React layout components with defined content slots:
+
+```typescript
+// Layout Registry
+interface LayoutSlot {
+  id: string;
+  type: 'iframe' | 'widget' | 'text' | 'media' | 'custom';
+  props: Record<string, any>;
+}
+
+interface LayoutTemplate {
+  name: string;
+  description: string;
+  component: React.FC<{slots: LayoutSlot[]}>;
+  slotDefinitions: Array<{id: string, type: string, purpose: string}>;
+}
+
+const LAYOUTS: LayoutTemplate[] = [
+  {
+    name: 'SingleWebsite',
+    description: 'Full-screen iframe for single website',
+    slotDefinitions: [{id: 'main', type: 'iframe', purpose: 'primary website'}]
+  },
+  {
+    name: 'SplitView', 
+    description: 'Two side-by-side panels',
+    slotDefinitions: [
+      {id: 'left', type: 'iframe|widget', purpose: 'primary content'},
+      {id: 'right', type: 'iframe|widget', purpose: 'secondary content'}
+    ]
+  },
+  {
+    name: 'Dashboard',
+    description: 'Grid of 2-6 widgets/cards',
+    slotDefinitions: Array.from({length: 6}, (_, i) => ({
+      id: `widget-${i}`, type: 'widget', purpose: 'dashboard item'
+    }))
+  },
+  {
+    name: 'ListDetail',
+    description: 'Left sidebar list, right detail view',
+    slotDefinitions: [
+      {id: 'list', type: 'widget', purpose: 'navigation/list'},
+      {id: 'detail', type: 'iframe|widget', purpose: 'detail view'}
+    ]
+  },
+  {
+    name: 'MediaFocus',
+    description: 'Large media area with controls',
+    slotDefinitions: [
+      {id: 'media', type: 'media', purpose: 'primary media'},
+      {id: 'controls', type: 'widget', purpose: 'media controls'},
+      {id: 'info', type: 'text', purpose: 'media information'}
+    ]
+  },
+  {
+    name: 'ComparisonView',
+    description: 'Side-by-side comparison table/cards',
+    slotDefinitions: Array.from({length: 4}, (_, i) => ({
+      id: `item-${i}`, type: 'widget', purpose: 'comparison item'
+    }))
+  },
+  {
+    name: 'FeedLayout',
+    description: 'Vertical scrolling feed of content',
+    slotDefinitions: Array.from({length: 10}, (_, i) => ({
+      id: `feed-${i}`, type: 'widget', purpose: 'feed item'
+    }))
+  }
+];
+```
+
+#### 4.2 Three-Step AI Pipeline
+
+**Step 1: Layout Selection (Fast & Cheap)**
+```typescript
+// New IPC method: bridge.selectLayout(intent)
+const layoutPrompt = `
+Intent: "${intent}"
+Available layouts: ${LAYOUTS.map(l => `${l.name}: ${l.description}`).join(', ')}
+
+Analyze the intent and select the best layout. Consider:
+- Single website access → SingleWebsite
+- Comparison/research → SplitView or ComparisonView  
+- Multiple tools/data → Dashboard
+- Media consumption → MediaFocus
+- Sequential content → FeedLayout
+
+Return only: {"layout": "LayoutName", "confidence": 0.95}
+`;
+```
+
+**Step 2: Content Strategy Planning**
+```typescript
+// New IPC method: bridge.planContent(intent, selectedLayout)
+const contentPrompt = `
+Intent: "${intent}"
+Layout: ${selectedLayout.name}
+Available slots: ${JSON.stringify(selectedLayout.slotDefinitions)}
+
+Plan content for each slot. Prioritize real websites when possible:
+- Prefer iframe embeds over custom HTML
+- Use established sites (YouTube, GitHub, Wikipedia, etc.)
+- Only generate custom widgets when necessary
+
+Return JSON:
+{
+  "slots": [
+    {
+      "id": "main",
+      "type": "iframe", 
+      "url": "https://www.example.com",
+      "title": "Description"
+    }
+  ]
+}
+`;
+```
+
+**Step 3: Widget Generation (Only When Needed)**
+```typescript
+// Existing IPC method enhanced: bridge.callClaude('component', widgetSpec)
+const widgetPrompt = `
+Generate a Chakra UI widget for: ${widgetSpec.purpose}
+Intent context: "${intent}"
+Widget type: ${widgetSpec.type}
+
+Return JSX using only these Chakra components:
+Box, Text, VStack, HStack, Button, Input, Image, Grid, Card
+
+No external APIs. Use placeholder data.
+`;
+```
+
+#### 4.3 Implementation Pipeline
+
+```typescript
+// Enhanced App.tsx flow
+const handleIntentSubmit = async (intent: string) => {
+  try {
+    // Step 1: Layout selection (< 500ms)
+    const {layout, confidence} = await bridge.selectLayout(intent);
+    
+    if (confidence < 0.7) {
+      // Fallback to static matching or default layout
+      layout = 'Dashboard';
+    }
+    
+    // Step 2: Content planning (< 1s)
+    const contentPlan = await bridge.planContent(intent, layout);
+    
+    // Step 3: Generate any custom widgets (parallel, < 2s each)
+    const slots = await Promise.all(
+      contentPlan.slots.map(async (slot) => {
+        if (slot.type === 'iframe') {
+          return slot; // Use as-is
+        } else {
+          // Generate custom widget
+          const widget = await bridge.callClaude('component', slot);
+          return {...slot, component: widget};
+        }
+      })
+    );
+    
+    // Render with selected layout
+    setRenderedContent([{
+      id: `intent-${Date.now()}`,
+      type: 'dynamic',
+      layout: layout,
+      slots: slots,
+      timestamp: Date.now()
+    }]);
+    
+  } catch (error) {
+    // Fallback to static components or error state
+  }
+};
+```
+
+#### 4.4 Caching Strategy
+
+```typescript
+// IndexedDB schema
+interface CachedLayout {
+  intent: string;
+  intentHash: string; // SHA-256 for privacy
+  layout: string;
+  slots: LayoutSlot[];
+  confidence: number;
+  timestamp: number;
+  expiresAt: number; // URLs may become stale
+}
+
+// Cache management
+class LayoutCache {
+  async get(intent: string): Promise<CachedLayout | null> {
+    const hash = await sha256(intent);
+    const cached = await db.layouts.where('intentHash').equals(hash).first();
+    return cached && cached.expiresAt > Date.now() ? cached : null;
+  }
+  
+  async set(intent: string, result: Omit<CachedLayout, 'intentHash' | 'timestamp'>) {
+    const hash = await sha256(intent);
+    await db.layouts.put({
+      ...result,
+      intent: intent,
+      intentHash: hash,
+      timestamp: Date.now(),
+      expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24h TTL
+    });
+  }
+}
+```
 
 **Deliverables**:
-- Claude API integration (schema + component generation)
-- Dynamic component compilation and loading
-- IndexedDB caching (dexie)
-- Error handling and fallbacks
-- Performance metrics
+- 7 pre-built layout templates with slot system
+- Three-step AI pipeline (layout → content → widgets)
+- Smart caching with 24h TTL for dynamic content
+- Fallback system for low-confidence selections
+- Performance monitoring for each pipeline step
 
 **Test Suite**:
-- API integration tests (mocked Claude responses)
-- Component generation pipeline tests
-- Caching strategy tests
-- Error recovery tests
-- Performance benchmarks
+- Layout template rendering tests
+- AI pipeline integration tests (mocked responses)
+- Cache hit/miss performance tests
+- Content slot validation tests
+- Error recovery and fallback tests
 
 **Testable Outcome**:
 ```bash
 npm run dev
-# Type "funny cat videos" → AI generates YouTube grid
-# Type "buy wedding shoes" → AI generates product carousel
-# Type "pomodoro timer" → AI generates functional timer
-# Components cached, work offline on repeat
+# Type "funny cat videos" → Selects MediaFocus layout → YouTube iframe + custom controls
+# Type "compare phones" → Selects ComparisonView → Phone spec widgets side-by-side  
+# Type "weather dashboard" → Selects Dashboard → Weather widget grid with real data
+# Type "plan tokyo trip" → Selects ListDetail → Itinerary list + Google Maps iframe
+# All responses cached, <3s generation time, graceful fallbacks
 ```
 
 ---
