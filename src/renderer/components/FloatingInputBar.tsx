@@ -20,7 +20,7 @@ interface FloatingInputBarProps {
 export const FloatingInputBar: React.FC<FloatingInputBarProps> = ({
   onSubmit,
   isLoading = false,
-  placeholder = "Ask for something else...",
+  placeholder = "Type another task...",
 }) => {
   const [value, setValue] = useState('');
 

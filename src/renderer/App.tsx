@@ -309,15 +309,21 @@ export const App: React.FC = () => {
                     bg: "rgba(15, 15, 35, 0.9)",
                   }}
                 >
-                  <Text
-                    fontSize="sm"
-                    fontWeight="700"
-                    color="white"
+                  <Box
                     position="relative"
                     zIndex={1}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    S
-                  </Text>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="3" cy="3" r="2" fill="white" />
+                      <circle cx="13" cy="3" r="2" fill="white" />
+                      <circle cx="3" cy="13" r="2" fill="white" />
+                      <circle cx="13" cy="13" r="2" fill="white" />
+                      <path d="M3 3L13 13M13 3L3 13" stroke="white" strokeWidth="1.5" opacity="0.6" />
+                    </svg>
+                  </Box>
                 </Box>
                 <Text
                   fontSize="2xl"
@@ -327,7 +333,7 @@ export const App: React.FC = () => {
                   userSelect="none"
                   letterSpacing="-0.02em"
                 >
-                  SquashOS
+                  Nexus
                 </Text>
               </HStack>
             </MotionBox>
@@ -380,9 +386,9 @@ export const App: React.FC = () => {
                         letterSpacing="-0.02em"
                         mb={6}
                       >
-                        The Internet.
+                        Type a task.
                         <br />
-                        Without the mess.
+                        Nexus builds the workspace.
                       </Text>
                     </MotionBox>
                     
@@ -398,7 +404,7 @@ export const App: React.FC = () => {
                         lineHeight="1.6"
                         maxW="700px"
                       >
-                        Just describe what you need. No tabs, no hunting.
+                        Stop chasing menus and juggling tabs. Just work.
                       </Text>
                     </MotionBox>
                     
@@ -414,7 +420,7 @@ export const App: React.FC = () => {
                     <OmniPrompt
                       onSubmit={handleIntentSubmit}
                       isLoading={isLoading}
-                      placeholder="check my gmail, weather in tokyo, latest crypto prices, news about AI..."
+                      placeholder="plan a weekend in Kyoto, track BTC/ETH, export slides + email Alice..."
                     />
                   </MotionBox>
                 </MotionVStack>
@@ -531,7 +537,7 @@ export const App: React.FC = () => {
                               </Box>
                             )}
                             <Text fontSize="sm" color="rgba(255, 255, 255, 0.5)" fontWeight="400">
-                              Click SquashOS to start over
+                              Click Nexus to start over
                             </Text>
                           </VStack>
                         </Box>
@@ -563,7 +569,7 @@ export const App: React.FC = () => {
             <FloatingInputBar
               onSubmit={handleIntentSubmit}
               isLoading={isLoading}
-              placeholder="Ask for something else..."
+              placeholder="Type another task..."
             />
           )}
         </AnimatePresence>

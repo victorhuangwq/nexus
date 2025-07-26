@@ -24,7 +24,7 @@ interface OmniPromptProps {
 export const OmniPrompt: React.FC<OmniPromptProps> = ({
   onSubmit,
   isLoading = false,
-  placeholder = "What can I help you with?",
+  placeholder = "What task do you need to do?",
 }) => {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
