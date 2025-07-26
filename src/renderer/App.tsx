@@ -557,7 +557,7 @@ export const App: React.FC = () => {
               </Text>
               <Box w="1px" h="12px" bg="rgba(255, 255, 255, 0.1)" />
               <Text fontSize="xs" color="rgba(255, 255, 255, 0.4)" fontWeight="400">
-                The Future of Browsing • No Tabs Required
+                Your AI workspace builder • One task at a time
               </Text>
             </HStack>
           </HStack>

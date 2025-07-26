@@ -24,7 +24,7 @@
 **Nexus** is a desktop command bar that turns any job-to-be-done—"plan a weekend in Kyoto," "track BTC/ETH," "export slides + email Alice"—into an instant, single-window workspace. It embeds the right web apps, pre-filters them, and remembers your layout so you stop chasing menus and juggling tabs.
 
 <div align="center">
-  <img src="https://via.placeholder.com/600x400/6B57FF/FFFFFF?text=Nexus+Demo" alt="Nexus Demo" width="600">
+  <img src="screenshots/nexus-homepage.png" alt="Nexus Homepage" width="600">
   <p><i>Type. Generate. Use. It's that simple.</i></p>
 </div>
 
@@ -67,34 +67,39 @@ Direct access to what you need - no navigating through endless menus
   <table>
     <tr>
       <td align="center">
-        <img src="https://via.placeholder.com/250x200/FF6B6B/FFFFFF?text=Calculator" alt="Calculator Demo" width="250">
+        <img src="screenshots/nexus-kyoto-weekend.png" alt="Kyoto Weekend Plan" width="250">
         <br />
-        <b>📊 "calculator"</b>
+        <b>✈️ "plan a weekend in Kyoto"</b>
         <br />
-        <i>Instant graphing calculator</i>
-      </td>
-      <td align="center">
-        <img src="https://via.placeholder.com/250x200/4ECDC4/FFFFFF?text=Travel+Planner" alt="Travel Demo" width="250">
-        <br />
-        <b>✈️ "tokyo trip"</b>
-        <br />
-        <i>Travel planner with maps</i>
+        <i>Complete itinerary with maps & weather</i>
       </td>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://via.placeholder.com/250x200/45B7D1/FFFFFF?text=Crypto+Tracker" alt="Crypto Demo" width="250">
+        <img src="screenshots/nexus-crypto-dashboard.png" alt="Crypto Trading Dashboard" width="250">
         <br />
-        <b>💰 "bitcoin"</b>
+        <b>💰 "track BTC/ETH"</b>
         <br />
-        <i>Live crypto charts</i>
+        <i>Live crypto data with whale alerts</i>
       </td>
       <td align="center">
-        <img src="https://via.placeholder.com/250x200/F7DC6F/FFFFFF?text=Weather+App" alt="Weather Demo" width="250">
+        <img src="screenshots/nexus-physics-homework.png" alt="Physics Homework Toolkit" width="250">
         <br />
-        <b>🌤️ "weather"</b>
+        <b>📐 "physics homework"</b>
         <br />
-        <i>Beautiful weather widget</i>
+        <i>Calculator + formulas for high school physics</i>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="screenshots/nexus-weather-radar.png" alt="Weather Radar" width="250">
+        <br />
+        <b>🌤️ "weather in Sydney"</b>
+        <br />
+        <i>Live weather radar powered by Windy</i>
+      </td>
+      <td align="center">
+        <!-- Empty cell for balanced layout -->
       </td>
     </tr>
   </table>
@@ -124,35 +129,6 @@ cp .env.example .env
 # Launch Nexus! 🎉
 npm run dev
 ```
-
-## 🛠️ Tech Stack
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="96">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg" width="48" height="48" alt="Electron" />
-        <br>Electron
-      </td>
-      <td align="center" width="96">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="48" height="48" alt="React" />
-        <br>React
-      </td>
-      <td align="center" width="96">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="48" height="48" alt="TypeScript" />
-        <br>TypeScript
-      </td>
-      <td align="center" width="96">
-        <img src="https://raw.githubusercontent.com/chakra-ui/chakra-ui/main/media/logo-colored@2x.png" width="48" height="48" alt="Chakra UI" />
-        <br>Chakra UI
-      </td>
-      <td align="center" width="96">
-        <img src="https://vitejs.dev/logo.svg" width="48" height="48" alt="Vite" />
-        <br>Vite
-      </td>
-    </tr>
-  </table>
-</div>
 
 ## 📚 Documentation
 
