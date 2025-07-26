@@ -4,6 +4,8 @@
 
 ### ✨ Type a task, Nexus builds the workspace ✨
 
+> ⚠️ **Work in Progress**: This project is under active development. Features may change and bugs may exist.
+
 [![Built with React](https://img.shields.io/badge/Built%20with-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20AI-6B57FF?style=for-the-badge)](https://anthropic.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
