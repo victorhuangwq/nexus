@@ -105,7 +105,7 @@ Direct access to what you need - no navigating through endless menus
 ### Prerequisites
 - Node.js 16+ 
 - npm or yarn
-- Anthropic API key ([Get one here](https://console.anthropic.com/))
+- Anthropic API key ([Get one here](https://console.anthropic.com/)) - **Optional for demo**
 
 ### 🚀 Installation
 
@@ -117,7 +117,7 @@ cd nexus
 # Install dependencies 📦
 npm install
 
-# Set up your API key 🔑
+# Set up your API key 🔑 (Optional - demo works without it)
 cp .env.example .env
 # Edit .env and add: ANTHROPIC_API_KEY=your_key_here
 
