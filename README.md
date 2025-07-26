@@ -67,39 +67,34 @@ Direct access to what you need - no navigating through endless menus
   <table>
     <tr>
       <td align="center">
-        <img src="screenshots/nexus-kyoto-weekend.png" alt="Kyoto Weekend Plan" width="250">
+        <img src="screenshots/nexus-kyoto-weekend.png" alt="Kyoto Weekend Plan" width="400">
         <br />
         <b>✈️ "plan a weekend in Kyoto"</b>
         <br />
         <i>Complete itinerary with maps & weather</i>
       </td>
-    </tr>
-    <tr>
       <td align="center">
-        <img src="screenshots/nexus-crypto-dashboard.png" alt="Crypto Trading Dashboard" width="250">
+        <img src="screenshots/nexus-crypto-dashboard.png" alt="Crypto Trading Dashboard" width="400">
         <br />
         <b>💰 "track BTC/ETH"</b>
         <br />
         <i>Live crypto data with whale alerts</i>
       </td>
+    </tr>
+    <tr>
       <td align="center">
-        <img src="screenshots/nexus-physics-homework.png" alt="Physics Homework Toolkit" width="250">
+        <img src="screenshots/nexus-physics-homework.png" alt="Physics Homework Toolkit" width="400">
         <br />
         <b>📐 "physics homework"</b>
         <br />
         <i>Calculator + formulas for high school physics</i>
       </td>
-    </tr>
-    <tr>
       <td align="center">
-        <img src="screenshots/nexus-weather-radar.png" alt="Weather Radar" width="250">
+        <img src="screenshots/nexus-weather-radar.png" alt="Weather Radar" width="400">
         <br />
         <b>🌤️ "weather in Sydney"</b>
         <br />
         <i>Live weather radar powered by Windy</i>
-      </td>
-      <td align="center">
-        <!-- Empty cell for balanced layout -->
       </td>
     </tr>
   </table>
