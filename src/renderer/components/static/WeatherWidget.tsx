@@ -13,6 +13,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { tokens } from '../../design-tokens';
 
 const MotionCard = motion(Card);
 
@@ -67,15 +68,15 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        bg="rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(16px)"
-        borderRadius="20px"
-        border="1px solid rgba(255, 255, 255, 0.1)"
+        bg={tokens.glass.light.background}
+        backdropFilter={tokens.glass.light.blur}
+        borderRadius={tokens.radius.xl}
+        border={tokens.glass.light.border}
       >
-        <CardBody p={6}>
-          <HStack spacing={4}>
-            <VStack align="start" spacing={2} flex="1">
-              <Text fontSize="sm" fontWeight="500" color="rgba(255, 255, 255, 0.8)">
+        <CardBody p={tokens.space[3]}>
+          <HStack spacing={tokens.space[2]} align="flex-end">
+            <Box flex="1">
+              <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.medium} color={tokens.colors.text.secondary} mb={tokens.space[1]}>
                 City
               </Text>
               <Input
@@ -84,46 +85,48 @@ export const WeatherWidget: React.FC = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handleCityChange(city)}
                 placeholder="Enter city name"
                 size="md"
-                bg="rgba(255, 255, 255, 0.1)"
-                borderColor="rgba(255, 255, 255, 0.2)"
-                color="white"
-                _focus={{ borderColor: 'brand.500' }}
-                borderRadius="12px"
+                bg={tokens.glass.light.background}
+                borderColor={tokens.colors.border.default}
+                color={tokens.colors.text.primary}
+                _hover={{ borderColor: tokens.colors.border.hover }}
+                _focus={{ borderColor: tokens.colors.border.focus, boxShadow: tokens.shadow.focus }}
+                borderRadius={tokens.radius.md}
               />
-            </VStack>
-            <VStack align="start" spacing={2}>
-              <Text fontSize="sm" fontWeight="500" color="rgba(255, 255, 255, 0.8)">
+            </Box>
+            <Box>
+              <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.medium} color={tokens.colors.text.secondary} mb={tokens.space[1]}>
                 Units
               </Text>
               <Select
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 size="md"
-                bg="rgba(255, 255, 255, 0.1)"
-                borderColor="rgba(255, 255, 255, 0.2)"
-                color="white"
-                _focus={{ borderColor: 'brand.500' }}
-                borderRadius="12px"
-                w="120px"
+                bg={tokens.glass.light.background}
+                borderColor={tokens.colors.border.default}
+                color={tokens.colors.text.primary}
+                _hover={{ borderColor: tokens.colors.border.hover }}
+                _focus={{ borderColor: tokens.colors.border.focus, boxShadow: tokens.shadow.focus }}
+                borderRadius={tokens.radius.md}
+                w="140px"
               >
                 <option value="metric">Celsius</option>
                 <option value="imperial">Fahrenheit</option>
               </Select>
-            </VStack>
-            <VStack align="end" spacing={2}>
-              <Text fontSize="sm" color="transparent">
-                Action
-              </Text>
-              <Button
-                onClick={() => handleCityChange(city)}
-                variant="clean"
-                size="md"
-                borderRadius="12px"
-                minW="80px"
-              >
-                Update
-              </Button>
-            </VStack>
+            </Box>
+            <Button
+              onClick={() => handleCityChange(city)}
+              bg={tokens.colors.brand.primaryAlpha}
+              color="rgba(0, 0, 0, 0.9)"
+              size="md"
+              borderRadius={tokens.radius.md}
+              px={tokens.space[3]}
+              fontWeight={tokens.typography.fontWeight.medium}
+              _hover={{ bg: tokens.colors.brand.primaryHover, transform: 'translateY(-1px)' }}
+              _active={{ transform: 'scale(0.98)' }}
+              transition={`all ${tokens.transition.duration.fast}`}
+            >
+              Update
+            </Button>
           </HStack>
         </CardBody>
       </MotionCard>
@@ -133,10 +136,10 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        bg="rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(16px)"
-        borderRadius="24px"
-        border="1px solid rgba(255, 255, 255, 0.1)"
+        bg={tokens.glass.light.background}
+        backdropFilter={tokens.glass.light.blur}
+        borderRadius={tokens.radius['2xl']}
+        border={tokens.glass.light.border}
       >
         <CardBody p={0}>
           <VStack spacing={0}>
@@ -169,28 +172,36 @@ export const WeatherWidget: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        bg="rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(16px)"
-        borderRadius="16px"
-        border="1px solid rgba(255, 255, 255, 0.1)"
+        bg={tokens.glass.light.background}
+        backdropFilter={tokens.glass.light.blur}
+        borderRadius={tokens.radius.lg}
+        border={tokens.glass.light.border}
       >
-        <CardBody>
-          <VStack spacing={3} align="start">
-            <Text fontSize="lg" fontWeight="600" color="white">
+        <CardBody p={tokens.space[3]}>
+          <VStack spacing={tokens.space[2]} align="start">
+            <Text fontSize={tokens.typography.fontSize.lg} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
               Popular Cities
             </Text>
-            <HStack spacing={2} wrap="wrap">
+            <HStack spacing={tokens.space[1]} wrap="wrap">
               {['Tokyo', 'New York', 'London', 'Paris', 'Sydney', 'Dubai'].map((cityName) => (
                 <Button
                   key={cityName}
                   onClick={() => handleCityChange(cityName)}
-                  variant="glass"
+                  variant="ghost"
                   size="sm"
-                  borderRadius="10px"
-                  fontSize="sm"
+                  borderRadius={tokens.radius.md}
+                  fontSize={tokens.typography.fontSize.sm}
+                  color={tokens.colors.text.secondary}
+                  border="1px solid"
+                  borderColor={tokens.colors.border.default}
+                  bg="transparent"
                   _hover={{
+                    bg: tokens.glass.medium.background,
+                    color: tokens.colors.text.primary,
+                    borderColor: tokens.colors.border.hover,
                     transform: 'translateY(-1px)',
                   }}
+                  transition={`all ${tokens.transition.duration.fast}`}
                 >
                   {cityName}
                 </Button>

@@ -6,26 +6,29 @@ import {
   InputRightElement,
   IconButton,
   VStack,
-  Text,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { tokens } from '../design-tokens';
 
 const MotionBox = motion(Box);
 const MotionInput = motion(Input);
 
-interface OmniPromptProps {
+interface MinimalistOmniPromptProps {
   onSubmit: (intent: string) => void;
   isLoading?: boolean;
   placeholder?: string;
 }
 
-export const OmniPrompt: React.FC<OmniPromptProps> = ({
+/**
+ * Minimalist OmniPrompt following the design philosophy
+ * - Subtle glass morphism that blends with dark background
+ * - Consistent border radius and spacing
+ * - Refined focus states with smooth transitions
+ */
+export const MinimalistOmniPrompt: React.FC<MinimalistOmniPromptProps> = ({
   onSubmit,
   isLoading = false,
-  placeholder = "What task do you need to do?",
+  placeholder = "What do you want to work on?",
 }) => {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -51,24 +54,14 @@ export const OmniPrompt: React.FC<OmniPromptProps> = ({
     }
   }, []);
 
-  const focusEffect = {
-    boxShadow: isFocused 
-      ? `0 0 0 3px ${tokens.colors.brand.primarySubtle}`
-      : 'none',
-    transform: isFocused ? 'translateY(-1px)' : 'translateY(0px)',
-    background: isFocused 
-      ? tokens.glass.medium.background
-      : tokens.glass.light.background,
-    borderColor: isFocused
-      ? tokens.colors.border.focus
-      : tokens.colors.border.default,
-  };
-
   return (
     <VStack spacing={4} align="center" w="full">
       <MotionBox
         w="full"
-        maxW="480px"
+        maxW="600px"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <InputGroup size="lg">
           <MotionInput
@@ -79,56 +72,61 @@ export const OmniPrompt: React.FC<OmniPromptProps> = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder={placeholder}
-            variant="unstyled"
-            fontSize={tokens.typography.fontSize.base}
-            h={tokens.space[6]}
-            pl={tokens.space[2]}
-            pr="56px"
-            animate={focusEffect}
-            transition={{ duration: 0.2 }}
-            bg={tokens.glass.light.background}
-            backdropFilter={tokens.glass.light.blur}
-            style={{ WebkitBackdropFilter: tokens.glass.light.blur }}
+            fontSize="15px"
+            h="56px"
+            pl={6}
+            pr={16}
+            bg="rgba(255, 255, 255, 0.03)"
+            backdropFilter="blur(40px)"
             border="1px solid"
-            borderColor={tokens.colors.border.default}
-            borderRadius={tokens.radius.lg}
-            color={tokens.colors.text.primary}
-            fontWeight={tokens.typography.fontWeight.normal}
+            borderColor={isFocused ? "rgba(78, 205, 196, 0.3)" : "rgba(255, 255, 255, 0.06)"}
+            borderRadius="16px"
+            color="rgba(255, 255, 255, 0.95)"
+            fontWeight="400"
+            transition="all 0.2s ease"
+            boxShadow={isFocused ? "0 0 0 3px rgba(78, 205, 196, 0.1)" : "none"}
             _placeholder={{
-              color: tokens.colors.text.placeholder,
-              fontSize: tokens.typography.fontSize.base,
-              fontWeight: tokens.typography.fontWeight.normal,
+              color: 'rgba(255, 255, 255, 0.4)',
+              fontSize: '15px',
+              fontWeight: '400',
             }}
             _hover={{
-              borderColor: tokens.colors.border.hover,
+              borderColor: isFocused ? "rgba(78, 205, 196, 0.3)" : "rgba(255, 255, 255, 0.08)",
+              bg: "rgba(255, 255, 255, 0.04)",
             }}
             disabled={isLoading}
+            animate={{
+              scale: isFocused ? 1.01 : 1,
+              y: isFocused ? -1 : 0,
+            }}
           />
-          <InputRightElement h={tokens.space[6]} pr={tokens.space[1]}>
+          <InputRightElement h="56px" pr={2}>
             <IconButton
               aria-label="Submit"
               icon={<ArrowForwardIcon />}
-              variant="ghost"
-              size="sm"
-              borderRadius={tokens.radius.md}
+              size="md"
+              h="40px"
+              w="40px"
+              borderRadius="12px"
               onClick={handleSubmit}
               isLoading={isLoading}
               disabled={!value.trim() || isLoading}
-              color={tokens.colors.text.secondary}
+              bg={value.trim() ? "rgba(78, 205, 196, 0.9)" : "transparent"}
+              color={value.trim() ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.3)"}
+              border="1px solid"
+              borderColor={value.trim() ? "transparent" : "rgba(255, 255, 255, 0.1)"}
               _hover={{
+                bg: value.trim() ? "rgba(78, 205, 196, 1)" : "rgba(255, 255, 255, 0.05)",
                 transform: 'scale(1.05)',
-                bg: tokens.colors.brand.primarySubtle,
-                color: tokens.colors.brand.primary,
               }}
               _active={{
                 transform: 'scale(0.98)',
               }}
-              transition={`all ${tokens.transition.duration.fast}`}
+              transition="all 0.2s ease"
             />
           </InputRightElement>
         </InputGroup>
       </MotionBox>
-
     </VStack>
   );
 };

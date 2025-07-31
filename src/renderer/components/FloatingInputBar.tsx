@@ -6,8 +6,9 @@ import {
   HStack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
+import { tokens } from '../design-tokens';
 
 const MotionBox = motion(Box);
 
@@ -56,44 +57,59 @@ export const FloatingInputBar: React.FC<FloatingInputBarProps> = ({
       <Box
         as="form"
         onSubmit={handleSubmit}
-        bg="rgba(15, 15, 35, 0.95)"
-        backdropFilter="blur(20px)"
-        borderRadius="full"
-        border="1px solid rgba(255, 255, 255, 0.1)"
-        boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
-        p={2}
+        bg={tokens.glass.medium.background}
+        backdropFilter={tokens.glass.medium.blur}
+        borderRadius={tokens.radius.lg}
+        border={tokens.glass.medium.border}
+        boxShadow={tokens.shadow.lg}
+        h={tokens.space[6]}
+        position="relative"
+        transition={`all ${tokens.transition.duration.fast}`}
+        _hover={{
+          borderColor: tokens.colors.border.hover,
+          boxShadow: tokens.shadow.xl,
+        }}
       >
-        <HStack spacing={2}>
+        <HStack spacing={0} h="full">
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
             variant="unstyled"
-            color="white"
-            fontSize="md"
-            px={4}
-            py={2}
+            color={tokens.colors.text.primary}
+            fontSize={tokens.typography.fontSize.base}
+            px={tokens.space[2]}
+            h="full"
             _placeholder={{
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: tokens.colors.text.placeholder,
+              fontSize: tokens.typography.fontSize.base,
+            }}
+            _focus={{
+              outline: 'none',
             }}
             disabled={isLoading}
           />
           <IconButton
             type="submit"
             aria-label="Submit intent"
-            icon={<SearchIcon />}
+            icon={<ArrowForwardIcon />}
             size="sm"
-            colorScheme="blue"
             variant="ghost"
-            borderRadius="full"
+            borderRadius={tokens.radius.md}
             isLoading={isLoading}
             disabled={!value.trim() || isLoading}
-            color="rgba(255, 255, 255, 0.8)"
+            color={tokens.colors.text.secondary}
+            mr={tokens.space[1]}
             _hover={{
-              bg: 'rgba(255, 255, 255, 0.1)',
-              color: 'white',
+              bg: tokens.colors.brand.primarySubtle,
+              color: tokens.colors.brand.primary,
+              transform: 'scale(1.05)',
             }}
+            _active={{
+              transform: 'scale(0.98)',
+            }}
+            transition={`all ${tokens.transition.duration.fast}`}
           />
         </HStack>
       </Box>

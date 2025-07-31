@@ -17,6 +17,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { tokens } from '../design-tokens';
 
 const MotionBox = motion(Box);
 
@@ -80,15 +81,15 @@ export const DevHUD: React.FC<DevHUDProps> = ({
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
       <DrawerOverlay bg="rgba(0, 0, 0, 0.8)" backdropFilter="blur(4px)" />
       <DrawerContent
-        bg="rgba(250, 250, 250, 0.95)"
-        backdropFilter="blur(20px)"
-        border="1px solid rgba(255, 255, 255, 0.8)"
-        color="gray.800"
+        bg={tokens.glass.dark.background}
+        backdropFilter={tokens.glass.dark.blur}
+        border={tokens.glass.dark.border}
+        color={tokens.colors.text.primary}
       >
         <DrawerCloseButton color="brand.500" />
-        <DrawerHeader borderBottomWidth="1px" borderColor="gray.200">
+        <DrawerHeader borderBottomWidth="1px" borderColor={tokens.colors.border.default}>
           <HStack>
-            <Text fontSize="xl" fontWeight="600" color="brand.600">
+            <Text fontSize={tokens.typography.fontSize.xl} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
               Debug Info
             </Text>
             <Badge colorScheme={getBridgeStatusColor()} variant="subtle">
@@ -109,10 +110,10 @@ export const DevHUD: React.FC<DevHUDProps> = ({
                 Connection
               </Text>
               <Box
-                p={4}
-                bg="rgba(255, 255, 255, 0.6)"
-                borderRadius="12px"
-                border="1px solid rgba(0, 0, 0, 0.05)"
+                p={tokens.space[2]}
+                bg={tokens.glass.light.background}
+                borderRadius={tokens.radius.md}
+                border={tokens.glass.light.border}
               >
                 <HStack justify="space-between" mb={2}>
                   <Text fontSize="sm">Connection</Text>
@@ -121,7 +122,7 @@ export const DevHUD: React.FC<DevHUDProps> = ({
                   </Badge>
                 </HStack>
                 {bridgeData && (
-                  <Code fontSize="xs" bg="rgba(0, 0, 0, 0.3)" p={2} borderRadius="8px" w="full">
+                  <Code fontSize="xs" bg={tokens.colors.canvas.section} p={tokens.space[1]} borderRadius={tokens.radius.sm} w="full" color={tokens.colors.text.secondary}>
                     {formatJSON(bridgeData)}
                   </Code>
                 )}
@@ -175,13 +176,14 @@ export const DevHUD: React.FC<DevHUDProps> = ({
                 </Text>
                 <Code 
                   fontSize="xs" 
-                  bg="rgba(0, 0, 0, 0.3)" 
-                  p={4} 
-                  borderRadius="8px" 
+                  bg={tokens.colors.canvas.section} 
+                  p={tokens.space[2]} 
+                  borderRadius={tokens.radius.sm} 
                   w="full"
                   maxH="300px"
                   overflowY="auto"
                   whiteSpace="pre-wrap"
+                  color={tokens.colors.text.secondary}
                 >
                   {formatJSON(debugData.schema)}
                 </Code>
@@ -217,8 +219,8 @@ export const DevHUD: React.FC<DevHUDProps> = ({
           </VStack>
         </DrawerBody>
 
-        <DrawerFooter borderTopWidth="1px" borderColor="gray.200">
-          <Text fontSize="xs" color="gray.400">
+        <DrawerFooter borderTopWidth="1px" borderColor={tokens.colors.border.default}>
+          <Text fontSize={tokens.typography.fontSize.xs} color={tokens.colors.text.muted}>
             Press ⌥ + D to close
           </Text>
         </DrawerFooter>

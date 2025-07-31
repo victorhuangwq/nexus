@@ -1,4 +1,5 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { tokens } from './design-tokens';
 
 const config: ThemeConfig = {
   initialColorMode: 'light',
@@ -63,37 +64,39 @@ const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        fontWeight: '500',
-        borderRadius: '16px',
+        fontWeight: tokens.typography.fontWeight.medium,
+        borderRadius: tokens.radius.md,
+        transition: `all ${tokens.transition.duration.fast}`,
       },
       variants: {
         clean: {
-          bg: 'brand.500',
-          color: 'white',
+          bg: tokens.colors.brand.primaryAlpha,
+          color: 'rgba(0, 0, 0, 0.9)',
+          fontSize: tokens.typography.fontSize.sm,
+          padding: `${tokens.space[1]} ${tokens.space[2]}`,
           _hover: {
-            bg: 'brand.600',
+            bg: tokens.colors.brand.primaryHover,
             transform: 'translateY(-1px)',
-            boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
           },
           _active: {
-            transform: 'translateY(0)',
+            transform: 'scale(0.98)',
           },
-          transition: 'all 0.2s ease',
         },
         glass: {
-          bg: 'rgba(255, 255, 255, 0.7)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.8)',
-          color: 'gray.700',
+          bg: 'transparent',
+          color: tokens.colors.text.secondary,
+          border: '1px solid',
+          borderColor: tokens.colors.border.default,
+          fontSize: tokens.typography.fontSize.sm,
           _hover: {
-            bg: 'rgba(255, 255, 255, 0.9)',
+            bg: tokens.glass.medium.background,
+            color: tokens.colors.text.primary,
+            borderColor: tokens.colors.border.hover,
             transform: 'translateY(-1px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           },
           _active: {
-            transform: 'translateY(0)',
+            transform: 'scale(0.98)',
           },
-          transition: 'all 0.2s ease',
         },
       },
     },
@@ -101,20 +104,23 @@ const theme = extendTheme({
       variants: {
         glass: {
           field: {
-            bg: 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.9)',
-            borderRadius: '16px',
-            color: 'gray.800',
-            fontSize: 'lg',
+            bg: tokens.glass.light.background,
+            backdropFilter: tokens.glass.light.blur,
+            border: '1px solid',
+            borderColor: tokens.colors.border.default,
+            borderRadius: tokens.radius.lg,
+            color: tokens.colors.text.primary,
+            fontSize: tokens.typography.fontSize.base,
             _placeholder: {
-              color: 'gray.500',
+              color: tokens.colors.text.placeholder,
+            },
+            _hover: {
+              borderColor: tokens.colors.border.hover,
             },
             _focus: {
-              border: '2px solid',
-              borderColor: 'brand.500',
-              boxShadow: '0 0 0 1px rgba(14, 165, 233, 0.1)',
-              bg: 'rgba(255, 255, 255, 0.95)',
+              borderColor: tokens.colors.border.focus,
+              boxShadow: tokens.shadow.focus,
+              bg: tokens.glass.medium.background,
             },
           },
         },
@@ -123,11 +129,11 @@ const theme = extendTheme({
     Card: {
       baseStyle: {
         container: {
-          bg: 'rgba(255, 255, 255, 0.8)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.9)',
-          borderRadius: '20px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.04)',
+          bg: tokens.glass.light.background,
+          backdropFilter: tokens.glass.light.blur,
+          border: tokens.glass.light.border,
+          borderRadius: tokens.radius.xl,
+          boxShadow: tokens.shadow.md,
         },
       },
     },

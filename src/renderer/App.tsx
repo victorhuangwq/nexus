@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import theme from './theme';
+import { tokens } from './design-tokens';
 import { OmniPrompt } from './components/OmniPrompt';
 import { DevHUD } from './components/DevHUD';
 import { FloatingInputBar } from './components/FloatingInputBar';
@@ -204,82 +205,26 @@ export const App: React.FC = () => {
     <ChakraProvider theme={theme}>
       <Box 
         minH="100vh" 
-        bg="linear-gradient(135deg, #0F0F23 0%, #1A1A2E 25%, #16213E 50%, #0F0F23 100%)"
+        bg={`
+          radial-gradient(
+            ellipse at top left, 
+            rgba(78, 205, 196, 0.03) 0%, 
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at bottom right, 
+            rgba(255, 107, 107, 0.02) 0%, 
+            transparent 50%
+          ),
+          linear-gradient(
+            135deg, 
+            #0F0F23 0%, 
+            #1A1A2E 100%
+          )
+        `}
         position="relative"
         overflow="hidden"
       >
-        {/* Premium background effects */}
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          opacity="0.15"
-          bgGradient="radial(circle at 20% 20%, #FF6B6B 0%, transparent 50%)"
-        />
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          opacity="0.12"
-          bgGradient="radial(circle at 80% 30%, #4ECDC4 0%, transparent 50%)"
-        />
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          opacity="0.08"
-          bgGradient="radial(circle at 50% 80%, #FFE66D 0%, transparent 60%)"
-        />
-        
-        {/* Animated floating elements - positioned to avoid content */}
-        <MotionBox
-          position="absolute"
-          top="5%"
-          right="5%"
-          w="150px"
-          h="150px"
-          borderRadius="50%"
-          bg="rgba(255, 107, 107, 0.02)"
-          filter="blur(30px)"
-          zIndex={1}
-          animate={{
-            y: [0, -15, 0],
-            scale: [1, 1.05, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <MotionBox
-          position="absolute"
-          bottom="10%"
-          left="5%"
-          w="120px"
-          h="120px"
-          borderRadius="50%"
-          bg="rgba(78, 205, 196, 0.02)"
-          filter="blur(25px)"
-          zIndex={1}
-          animate={{
-            y: [0, 10, 0],
-            x: [0, 5, 0],
-            scale: [1, 0.95, 1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-        />
 
         <Container maxW="100%" minH="100vh" px={8} position="relative" zIndex={1}>
           {/* Header */}
@@ -295,7 +240,7 @@ export const App: React.FC = () => {
                 <Box
                   w="32px"
                   h="32px"
-                  borderRadius="8px"
+                  borderRadius={tokens.radius.sm}
                   bgGradient="linear(135deg, #FF6B6B 0%, #4ECDC4 50%, #FFE66D 100%)"
                   display="flex"
                   alignItems="center"
@@ -339,12 +284,12 @@ export const App: React.FC = () => {
             </MotionBox>
             
             <Box
-              px={4}
-              py={2}
-              bg="rgba(255, 255, 255, 0.05)"
-              borderRadius="full"
-              border="1px solid rgba(255, 255, 255, 0.1)"
-              backdropFilter="blur(10px)"
+              px={tokens.space[2]}
+              py={tokens.space[1]}
+              bg={tokens.glass.light.background}
+              borderRadius={tokens.radius.full}
+              border={tokens.glass.light.border}
+              backdropFilter={tokens.glass.light.blur}
             >
               <Text fontSize="xs" color="rgba(255, 255, 255, 0.6)" fontWeight="500">
                 v2.0 Beta
@@ -454,12 +399,12 @@ export const App: React.FC = () => {
                           position="relative"
                           zIndex={20}
                           w="full"
-                          bg="rgba(15, 15, 35, 0.8)"
-                          borderRadius="24px"
-                          p={6}
-                          backdropFilter="blur(20px)"
-                          border="1px solid rgba(255, 255, 255, 0.1)"
-                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
+                          bg={tokens.glass.dark.background}
+                          borderRadius={tokens.radius['2xl']}
+                          p={tokens.space[3]}
+                          backdropFilter={tokens.glass.dark.blur}
+                          border={tokens.glass.dark.border}
+                          boxShadow={tokens.shadow.lg}
                         >
                           {content.component === 'GraphingCalculator' && <GraphingCalculator />}
                           {content.component === 'TokyoTrip' && <TokyoTrip />}
@@ -472,12 +417,12 @@ export const App: React.FC = () => {
                           position="relative"
                           zIndex={20}
                           w="full"
-                          bg="rgba(15, 15, 35, 0.8)"
-                          borderRadius="24px"
-                          p={6}
-                          backdropFilter="blur(20px)"
-                          border="1px solid rgba(255, 255, 255, 0.1)"
-                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
+                          bg={tokens.glass.dark.background}
+                          borderRadius={tokens.radius['2xl']}
+                          p={tokens.space[3]}
+                          backdropFilter={tokens.glass.dark.blur}
+                          border={tokens.glass.dark.border}
+                          boxShadow={tokens.shadow.lg}
                           minH="500px"
                         >
                           {(() => {
@@ -495,13 +440,13 @@ export const App: React.FC = () => {
                         </Box>
                       ) : (
                         <Box
-                          p={8}
-                          bg="rgba(255, 255, 255, 0.05)"
-                          backdropFilter="blur(20px)"
-                          border="1px solid rgba(255, 255, 255, 0.1)"
-                          borderRadius="24px"
+                          p={tokens.space[4]}
+                          bg={tokens.glass.medium.background}
+                          backdropFilter={tokens.glass.medium.blur}
+                          border={tokens.glass.medium.border}
+                          borderRadius={tokens.radius['2xl']}
                           textAlign="center"
-                          boxShadow="0 8px 32px rgba(0, 0, 0, 0.2)"
+                          boxShadow={tokens.shadow.md}
                           maxW="600px"
                           position="relative"
                           zIndex={20}
