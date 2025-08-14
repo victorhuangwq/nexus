@@ -29,8 +29,8 @@ const intentPatterns: IntentPattern[] = [
   },
   {
     component: 'PhysicsHomework',
-    keywords: ['physics', 'homework', 'chemistry', 'engineering', 'study', 'solve', 'formula', 'tools', 'help', 'science', 'lab', 'experiment'],
-    aliases: ['scientific', 'mechanics', 'thermodynamics', 'electricity', 'magnetism', 'waves', 'optics', 'kinematics', 'dynamics'],
+    keywords: ['physics', 'chemistry', 'engineering', 'formula', 'science', 'lab', 'experiment'],
+    aliases: ['scientific', 'mechanics', 'thermodynamics', 'electricity', 'magnetism', 'waves', 'optics', 'kinematics', 'dynamics', 'periodic', 'molecule'],
     phrases: [
       'tools for my physics homework',
       'help with physics homework',
@@ -39,8 +39,8 @@ const intentPatterns: IntentPattern[] = [
       'engineering calculations',
       'physics tools',
       'scientific calculator',
-      'homework help',
-      'study tools',
+      'physics homework',
+      'chemistry homework',
       'solve physics problems',
       'physics formulas',
       'science homework',
@@ -54,8 +54,8 @@ const intentPatterns: IntentPattern[] = [
   },
   {
     component: 'TokyoTrip',
-    keywords: ['kyoto', 'japan', 'trip', 'travel', 'itinerary', 'vacation', 'visit', 'plan', 'weekend', 'holiday', 'sightseeing', 'tourist', 'guide', 'temple', 'shrine', 'bamboo', 'geisha', 'traditional'],
-    aliases: ['japanese', 'asia', 'planning', 'adventure', 'explore', 'destinations', 'places', 'cultural', 'historic', 'ancient'],
+    keywords: ['kyoto', 'japan', 'temple', 'shrine', 'bamboo', 'geisha'],
+    aliases: ['japanese', 'fushimi', 'arashiyama', 'gion', 'kiyomizu', 'nijo'],
     phrases: [
       'kyoto trip',
       'kyoto weekend plan',
@@ -136,40 +136,40 @@ function normalizeText(text: string): string {
 function calculateScore(intent: string, pattern: IntentPattern): number {
   const normalizedIntent = normalizeText(intent);
   let score = 0;
+  let matchedKeywords = 0;
 
   // Check for exact phrase matches (highest weight)
   for (const phrase of pattern.phrases) {
     if (normalizedIntent.includes(normalizeText(phrase))) {
-      score += 100;
+      score += 80;
+      // If we have an exact phrase match, it's very likely the right component
+      return Math.min(score, 100);
     }
   }
 
-  // Check for keyword matches
+  // Check for keyword matches (must be word boundaries)
+  const intentWords = normalizedIntent.split(' ');
   for (const keyword of pattern.keywords) {
-    if (normalizedIntent.includes(keyword)) {
-      score += 50;
+    // Check for exact word match or if the word contains the keyword
+    if (intentWords.some(word => word === keyword || (keyword.length > 3 && word.includes(keyword)))) {
+      score += 25;
+      matchedKeywords++;
     }
   }
 
-  // Check for alias matches
+  // Check for alias matches (lower weight)
   for (const alias of pattern.aliases) {
-    if (normalizedIntent.includes(alias)) {
-      score += 30;
+    if (intentWords.some(word => word === alias || (alias.length > 3 && word.includes(alias)))) {
+      score += 15;
     }
   }
 
-  // Bonus for multiple matches
-  const words = normalizedIntent.split(' ');
-  const allTerms = [...pattern.keywords, ...pattern.aliases];
-  const matchingWords = words.filter(word => 
-    allTerms.some(term => word.includes(term) || term.includes(word))
-  );
-  
-  if (matchingWords.length > 1) {
-    score += matchingWords.length * 20;
+  // Require at least 2 keyword matches for a valid match
+  if (matchedKeywords < 2 && score < 80) {
+    score = score * 0.5; // Heavily penalize single keyword matches
   }
 
-  return score;
+  return Math.min(score, 100);
 }
 
 export function matchIntent(intent: string): IntentMatch | null {

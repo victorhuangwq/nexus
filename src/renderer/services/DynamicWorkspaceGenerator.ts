@@ -52,7 +52,9 @@ export class DynamicWorkspaceGenerator {
       // Limit cache size
       if (this.workspaceCache.size > 20) {
         const firstKey = this.workspaceCache.keys().next().value;
-        this.workspaceCache.delete(firstKey);
+        if (firstKey) {
+          this.workspaceCache.delete(firstKey);
+        }
       }
       
       return result;
@@ -89,7 +91,7 @@ export class DynamicWorkspaceGenerator {
     console.log(prompt);
     
     // Use the bridge to call Claude
-    const response = await window.bridge.callClaude('workspace_generation', {
+    const response = await window.bridge.callClaude('component', {
       prompt,
       type: 'workspace_generation'
     });

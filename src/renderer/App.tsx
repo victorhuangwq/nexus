@@ -50,7 +50,7 @@ export const App: React.FC = () => {
       // First, try to match against static components
       const intentMatch = matchIntent(intent);
       
-      if (intentMatch && intentMatch.confidence >= 70) {
+      if (intentMatch && intentMatch.confidence >= 80) {
         // Add artificial loading delay for demo sites to feel more realistic
         const baseDelay = 1000; // Increased base delay for better demo presentation
         const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
