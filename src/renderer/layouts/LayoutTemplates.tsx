@@ -11,35 +11,29 @@ import {
 } from '@chakra-ui/react';
 import type { LayoutSlot, LayoutTemplate } from './types';
 import { ComponentExecutor } from '../utils/ComponentExecutor';
+import { HtmlWidgetRenderer } from '../utils/HtmlWidgetRenderer';
+import { SmartFrame } from '../components/SmartFrame';
 
 // Utility component to render different slot types
 const SlotRenderer: React.FC<{ slot: LayoutSlot }> = ({ slot }) => {
   switch (slot.type) {
     case 'iframe':
       return (
-        <AspectRatio 
-          ratio={slot.props.aspectRatio || 16/9} 
-          w="full" 
-          h="full"
-          data-testid="aspect-ratio-container"
-        >
-          <Box
-            as="iframe"
-            src={slot.props.url}
-            title={slot.props.title || 'Content'}
-            borderRadius="md"
-            border="1px solid"
-            borderColor="rgba(255, 255, 255, 0.1)"
-            sandbox="allow-scripts allow-same-origin allow-forms"
-            allowFullScreen
-          />
-        </AspectRatio>
+        <SmartFrame
+          src={slot.props.url}
+          title={slot.props.title || 'Content'}
+          ratio={slot.props.aspectRatio || 16/9}
+          style={{
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        />
       );
     
     case 'widget':
-      // If we have a dynamically generated component, render it
+      // If we have a dynamically generated component, render it as HTML
       if (slot.component) {
-        return <ComponentExecutor componentCode={slot.component} fallbackProps={slot.props} />;
+        return <HtmlWidgetRenderer htmlContent={slot.component} fallbackProps={slot.props} />;
       }
       
       // Otherwise render basic widget with props

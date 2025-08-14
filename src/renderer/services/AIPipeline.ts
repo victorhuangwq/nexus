@@ -259,11 +259,13 @@ export class AIPipeline {
   }
 
   private sanitizeWidgetCode(code: string): string {
-    // Remove potentially dangerous patterns
+    // For HTML widgets, we need to allow script tags but sanitize dangerous patterns
+    // Since we're using dangerouslySetInnerHTML, we trust Claude's output
     let sanitized = code
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      // Remove javascript: protocol (but allow <script> tags)
       .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '')
+      // Don't remove onclick/onload etc as they might be intentionally used
+      // .replace(/on\w+\s*=/gi, '') // Commented out to allow event handlers
       .replace(/eval\s*\(/gi, 'eval_disabled(')
       .replace(/Function\s*\(/gi, 'Function_disabled(');
 

@@ -52,24 +52,10 @@ export const App: React.FC = () => {
     const startTime = Date.now();
     
     try {
-      // Check if intent is productivity/work-focused (new approach)
-      const lowerIntent = intent.toLowerCase();
-      const isWorkIntent = 
-        lowerIntent.includes('email') ||
-        lowerIntent.includes('research') ||
-        lowerIntent.includes('write') ||
-        lowerIntent.includes('code') ||
-        lowerIntent.includes('plan') ||
-        lowerIntent.includes('analyze') ||
-        lowerIntent.includes('search') ||
-        lowerIntent.includes('compare') ||
-        lowerIntent.includes('work') ||
-        lowerIntent.includes('task') ||
-        lowerIntent.includes('gmail') ||
-        lowerIntent.includes('docs') ||
-        lowerIntent.includes('github');
+      // Always use dynamic HTML generation for all queries (gemini-os style)
+      const useWorkspaceGeneration = true;
       
-      if (isWorkIntent) {
+      if (useWorkspaceGeneration) {
         // Use new gemini-os inspired dynamic workspace generation
         const workspaceResult = await workspaceGenerator.generateWorkspace(intent);
         

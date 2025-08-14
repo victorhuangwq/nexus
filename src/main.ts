@@ -28,6 +28,7 @@ const createWindow = (): void => {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      webviewTag: true, // Enable webview tag
     },
   });
 
@@ -318,17 +319,23 @@ ipcMain.handle('call-claude', async (_, type: string, payload: any) => {
   }
   
   if (type === 'component') {
+    const purpose = payload.slot?.props?.purpose || 'general widget';
+    const slotType = payload.slot?.type || 'widget';
     const widgetPrompt = `
-Generate a Chakra UI widget for: ${payload.slot.props.purpose || 'general widget'}
+Generate an HTML widget for: ${purpose}
 Intent context: "${payload.intent}"
-Widget type: ${payload.slot.type}
+Widget type: ${slotType}
 
-Return only the JSX component code using these Chakra components:
-Box, Text, VStack, HStack, Button, Input, Image, Grid, Card, Badge, Progress, Spinner
+Return ONLY valid HTML/CSS/JavaScript code. Do NOT include React/JSX.
+Use inline styles or <style> tags for CSS.
+Make it interactive and visually appealing with glassmorphism design.
+Include data-interaction-id attributes for clickable elements.
 
-Use placeholder data. Make it functional and visually appealing.
-Start with: import { ... } from '@chakra-ui/react';
-End with: export default function Widget() { return (...); }
+Example structure:
+<div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+  <h3>Widget Title</h3>
+  <button data-interaction-id="action1" style="...">Click Me</button>
+</div>
 `;
 
     try {

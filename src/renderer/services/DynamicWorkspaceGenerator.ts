@@ -4,7 +4,7 @@
  * This service generates complete workspace UIs dynamically based on user intent
  */
 
-import { WORKSPACE_SYSTEM_PROMPT, PRODUCTIVITY_TOOLS } from './workspacePrompts';
+import { WORKSPACE_SYSTEM_PROMPT, WORKSPACE_CSS, EXAMPLE_WORKSPACES } from './workspacePrompts';
 
 export interface InteractionData {
   id: string;
@@ -85,18 +85,31 @@ export class DynamicWorkspaceGenerator {
   private async callAIForWorkspace(intent: string): Promise<WorkspaceGenerationResult> {
     const prompt = this.buildPrompt(intent);
     
+    console.log('=== SENDING PROMPT TO CLAUDE ===');
+    console.log(prompt);
+    
     // Use the bridge to call Claude
-    const response = await window.bridge.callClaude('component', {
+    const response = await window.bridge.callClaude('workspace_generation', {
       prompt,
       type: 'workspace_generation'
     });
 
+    console.log('=== CLAUDE RESPONSE ===');
+    console.log('Success:', response.success);
+    console.log('Response type:', typeof response.data);
+    console.log('Response length:', response.data?.length);
+    console.log('First 1000 chars:', response.data?.substring(0, 1000));
+    
     if (!response.success) {
       throw new Error('AI generation failed');
     }
 
     // Parse the response to extract HTML and metadata
     const { htmlContent, metadata } = this.parseAIResponse(response.data);
+    
+    console.log('=== PARSED HTML ===');
+    console.log('HTML length:', htmlContent?.length);
+    console.log('First 500 chars of HTML:', htmlContent?.substring(0, 500));
 
     return {
       htmlContent,
@@ -121,14 +134,11 @@ User Intent: "${intent}"
 
 ${historyContext}
 
-Available Productivity Tools:
-${JSON.stringify(PRODUCTIVITY_TOOLS, null, 2)}
-
 Generate a complete HTML workspace that:
 1. Addresses the user's intent directly
-2. Includes relevant iframes for web tools/sites
+2. Creates fully functional, interactive interfaces
 3. Has interactive elements with data-interaction-id attributes
-4. Uses the provided CSS classes for consistent styling
+4. Uses the workspace CSS classes for consistent styling
 5. Embeds any necessary JavaScript for interactivity
 
 Remember to:

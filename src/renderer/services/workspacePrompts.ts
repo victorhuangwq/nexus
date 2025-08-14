@@ -6,32 +6,33 @@
 
 export const WORKSPACE_SYSTEM_PROMPT = `
 **Role:**
-You are Nexus, an AI workspace generator that creates complete, interactive HTML workspaces to help users get work done efficiently. You generate production-ready interfaces with embedded tools, websites, and interactive elements.
+You are an AI that generates interactive HTML interfaces based on user intent. Your goal is to create complete, functional content areas that respond to user interactions.
 
 **Core Principles:**
-1. Generate complete, functional HTML that accomplishes the user's task
-2. Embed real websites and tools using iframes when needed
-3. Create multi-tool workspaces for complex tasks
-4. Make everything immediately actionable - no placeholders
+1. Generate ONLY HTML content - no explanations or markdown
+2. Create fully functional, interactive interfaces
+3. Use real data and working examples, never placeholders
+4. Every element should be immediately actionable
 
-**HTML Generation Rules:**
+**HTML Output Requirements:**
 
 1. **Structure:** 
-   - Output ONLY raw HTML content for the workspace area
-   - NO markdown, NO code blocks, NO explanations
-   - NO <html>, <body>, or outer container tags
-   - Include <style> tags for custom workspace styling when needed
+   - Your response MUST be ONLY HTML for the content area
+   - DO NOT include \`\`\`html, \`\`\`, <html>, <body>, or outer container elements
+   - DO NOT add markdown formatting or explanations
+   - Include <style> tags for custom styling when needed
 
-2. **Styling Classes:**
-   - Containers: workspace-container, tool-panel, split-view, grid-layout
-   - Interactive: action-button, search-input, tool-selector
-   - Layout: main-content, sidebar, toolbar, status-bar
-   - Visual: glass-panel, dark-theme, accent-border
+2. **CSS Classes (Inspired by gemini-os):**
+   - Text: class="workspace-text"
+   - Buttons: class="workspace-button"
+   - Inputs: class="workspace-input"
+   - Containers: class="workspace-container", class="workspace-panel"
+   - Visual effects: class="glass-panel", class="dark-theme"
 
-3. **Interactive Elements:**
+3. **Interactivity (Following gemini-os pattern):**
    ALL interactive elements MUST have:
-   - data-interaction-id="unique_descriptive_id"
-   - data-interaction-type="action_type"
+   - data-interaction-id="unique_descriptive_id" (e.g., "open_document_report", "search_web_query")
+   - data-interaction-type="action_type" (e.g., "button_click", "form_submit")
    - For inputs with buttons: data-value-from="input_id"
 
 4. **Iframe Embedding:**
@@ -47,359 +48,66 @@ You are Nexus, an AI workspace generator that creates complete, interactive HTML
    - Implement real-time features (timers, calculations, etc.)
    - Handle keyboard shortcuts for power users
 
-**Workspace Patterns:**
+**Content Types You Can Generate:**
 
-1. **Research Workspace:**
-   - Split view with search and results
-   - Multiple search engines/sources
-   - Note-taking area
-   - Quick bookmarking
+1. **Web Browsing:**
+   - Google Search: src="https://www.google.com/search?igu=1&output=embed"
+   - With query: src="https://www.google.com/search?q=QUERY&igu=1&output=embed"
+   - Other sites via iframe when appropriate
 
-2. **Writing Workspace:**
-   - Document editor (Google Docs iframe)
-   - Research panel (Wikipedia, references)
-   - Grammar/style checker
-   - Export options
+2. **Interactive Tools:**
+   - Calculators with real computation
+   - Forms with validation
+   - Data visualizations
+   - File explorers
 
-3. **Coding Workspace:**
-   - Code editor or GitHub
-   - Documentation viewer
-   - Terminal/console mockup
-   - Stack Overflow search
+3. **Games (Following gemini-os approach):**
+   - Self-contained HTML5 games
+   - Use <canvas> with inline JavaScript
+   - Include keyboard/mouse controls
+   - Examples: Tic-Tac-Toe, Snake, Tetris
 
-4. **Planning Workspace:**
-   - Calendar view
-   - Task lists
-   - Time tracking
-   - Project overview
+4. **Productivity Interfaces:**
+   - Note-taking with save functionality
+   - Todo lists with checkboxes
+   - Timers and clocks
+   - Settings panels
 
-5. **Communication Workspace:**
-   - Email interface (Gmail iframe)
-   - Chat/messaging area
-   - Contact management
-   - Draft composer
+**Special Instructions for Complex Content:**
 
-6. **Analysis Workspace:**
-   - Data visualization
-   - Spreadsheet (Google Sheets iframe)
-   - Calculator/converter tools
-   - Comparison tables
+5. **For embedded content:**
+   - Use iframes sparingly and only when necessary
+   - Google Maps: src="https://www.google.com/maps?q=LOCATION&output=embed"
+   - Ensure proper sandbox and allow attributes
 
-**Special Instructions:**
+6. **JavaScript in generated content:**
+   - Wrap in <script> tags
+   - Use IIFE pattern to avoid scope pollution
+   - Focus on user interaction and dynamic updates
+   - Example: (function() { /* game or interactive logic */ })()
 
-- When user asks to search: Create a multi-search interface with Google, Bing, DuckDuckGo
-- When user mentions email: Embed Gmail or create email composer
-- When user needs documents: Embed Google Docs/Sheets
-- When user mentions code: Include GitHub, CodePen, or code editors
-- When user needs calculations: Create interactive calculators
-- When user mentions travel: Embed maps, flight searches, hotel booking
-- When user needs shopping: Create price comparison, review aggregator
+7. **Context awareness:**
+   - Adapt content based on user's interaction history
+   - Maintain consistency with previous interactions
+   - Generate unique IDs that describe their function
 
-Remember: The goal is to create a complete workspace that allows the user to accomplish their task without leaving the interface.`;
+Remember: Generate complete, functional HTML that works immediately. No placeholders, no "coming soon", no mock data - everything should be real and interactive.`;
 
-export const PRODUCTIVITY_TOOLS = {
-  search: {
-    google: {
-      name: "Google Search",
-      embedUrl: "https://www.google.com/search?igu=1&source=hp&ei=&iflsig=&output=embed",
-      searchParam: "q",
-      icon: "🔍"
-    },
-    bing: {
-      name: "Bing",
-      embedUrl: "https://www.bing.com",
-      searchParam: "q",
-      icon: "🔎"
-    },
-    duckduckgo: {
-      name: "DuckDuckGo",
-      embedUrl: "https://duckduckgo.com",
-      searchParam: "q",
-      icon: "🦆"
-    },
-    wikipedia: {
-      name: "Wikipedia",
-      embedUrl: "https://en.wikipedia.org",
-      searchPath: "/wiki/",
-      icon: "📚"
-    }
-  },
-  
-  productivity: {
-    googleDocs: {
-      name: "Google Docs",
-      embedUrl: "https://docs.google.com",
-      icon: "📝"
-    },
-    googleSheets: {
-      name: "Google Sheets",
-      embedUrl: "https://sheets.google.com",
-      icon: "📊"
-    },
-    googleSlides: {
-      name: "Google Slides",
-      embedUrl: "https://slides.google.com",
-      icon: "📰"
-    },
-    gmail: {
-      name: "Gmail",
-      embedUrl: "https://mail.google.com",
-      icon: "📧"
-    },
-    googleCalendar: {
-      name: "Google Calendar",
-      embedUrl: "https://calendar.google.com",
-      icon: "📅"
-    },
-    googleKeep: {
-      name: "Google Keep",
-      embedUrl: "https://keep.google.com",
-      icon: "📌"
-    }
-  },
-  
-  development: {
-    github: {
-      name: "GitHub",
-      embedUrl: "https://github.com",
-      icon: "💻"
-    },
-    stackoverflow: {
-      name: "Stack Overflow",
-      embedUrl: "https://stackoverflow.com",
-      searchParam: "q",
-      icon: "💡"
-    },
-    codepen: {
-      name: "CodePen",
-      embedUrl: "https://codepen.io",
-      icon: "✏️"
-    },
-    codesandbox: {
-      name: "CodeSandbox",
-      embedUrl: "https://codesandbox.io",
-      icon: "📦"
-    },
-    jsbin: {
-      name: "JS Bin",
-      embedUrl: "https://jsbin.com",
-      icon: "🔧"
-    }
-  },
-  
-  communication: {
-    gmail: {
-      name: "Gmail",
-      embedUrl: "https://mail.google.com",
-      icon: "📧"
-    },
-    slack: {
-      name: "Slack",
-      embedUrl: "https://app.slack.com",
-      icon: "💬"
-    },
-    discord: {
-      name: "Discord",
-      embedUrl: "https://discord.com/app",
-      icon: "🎮"
-    },
-    teams: {
-      name: "Microsoft Teams",
-      embedUrl: "https://teams.microsoft.com",
-      icon: "👥"
-    }
-  },
-  
-  media: {
-    youtube: {
-      name: "YouTube",
-      embedUrl: "https://www.youtube.com",
-      searchParam: "search_query",
-      icon: "📺"
-    },
-    spotify: {
-      name: "Spotify",
-      embedUrl: "https://open.spotify.com",
-      icon: "🎵"
-    },
-    soundcloud: {
-      name: "SoundCloud",
-      embedUrl: "https://soundcloud.com",
-      icon: "🎧"
-    }
-  },
-  
-  finance: {
-    googleFinance: {
-      name: "Google Finance",
-      embedUrl: "https://www.google.com/finance",
-      icon: "📈"
-    },
-    yahoo: {
-      name: "Yahoo Finance",
-      embedUrl: "https://finance.yahoo.com",
-      icon: "💹"
-    },
-    tradingview: {
-      name: "TradingView",
-      embedUrl: "https://www.tradingview.com",
-      icon: "📊"
-    }
-  },
-  
-  maps: {
-    googleMaps: {
-      name: "Google Maps",
-      embedUrl: "https://www.google.com/maps",
-      embedParam: "output=embed",
-      searchParam: "q",
-      icon: "🗺️"
-    },
-    openstreetmap: {
-      name: "OpenStreetMap",
-      embedUrl: "https://www.openstreetmap.org",
-      icon: "🌍"
-    }
-  },
-  
-  shopping: {
-    amazon: {
-      name: "Amazon",
-      embedUrl: "https://www.amazon.com",
-      searchParam: "s?k=",
-      icon: "🛒"
-    },
-    ebay: {
-      name: "eBay",
-      embedUrl: "https://www.ebay.com",
-      searchParam: "sch/i.html?_nkw=",
-      icon: "🏪"
-    }
-  },
-  
-  reference: {
-    wolfram: {
-      name: "Wolfram Alpha",
-      embedUrl: "https://www.wolframalpha.com",
-      searchParam: "input",
-      icon: "🧮"
-    },
-    arxiv: {
-      name: "arXiv",
-      embedUrl: "https://arxiv.org",
-      searchPath: "/search/?query=",
-      icon: "📄"
-    },
-    pubmed: {
-      name: "PubMed",
-      embedUrl: "https://pubmed.ncbi.nlm.nih.gov",
-      searchParam: "term",
-      icon: "🔬"
-    }
-  },
-  
-  social: {
-    twitter: {
-      name: "Twitter/X",
-      embedUrl: "https://twitter.com",
-      icon: "🐦"
-    },
-    linkedin: {
-      name: "LinkedIn",
-      embedUrl: "https://www.linkedin.com",
-      icon: "💼"
-    },
-    reddit: {
-      name: "Reddit",
-      embedUrl: "https://www.reddit.com",
-      icon: "🔶"
-    }
-  },
-  
-  ai: {
-    chatgpt: {
-      name: "ChatGPT",
-      embedUrl: "https://chat.openai.com",
-      icon: "🤖"
-    },
-    claude: {
-      name: "Claude",
-      embedUrl: "https://claude.ai",
-      icon: "🧠"
-    },
-    perplexity: {
-      name: "Perplexity",
-      embedUrl: "https://www.perplexity.ai",
-      icon: "🔮"
-    }
-  }
-};
-
+// CSS styles inspired by gemini-os styling approach
 export const WORKSPACE_CSS = `
 <style>
-  .workspace-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-    color: white;
+  /* Gemini-OS inspired styling */
+  .workspace-text {
+    color: #333;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 8px 0;
   }
   
-  .workspace-header {
-    padding: 16px 24px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .workspace-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .workspace-content {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-  }
-  
-  .split-view {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding: 16px;
-    width: 100%;
-  }
-  
-  .tool-panel {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .main-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-    background: white;
-  }
-  
-  .action-button {
+  .workspace-button {
     padding: 10px 20px;
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a3aa 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -408,143 +116,186 @@ export const WORKSPACE_CSS = `
     cursor: pointer;
     transition: all 0.3s ease;
     margin: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   
-  .action-button:hover {
+  .workspace-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
   
-  .search-input {
+  .workspace-input {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e0e0e0;
     border-radius: 8px;
-    color: white;
     font-size: 14px;
     margin-bottom: 12px;
+    transition: border-color 0.3s ease;
   }
   
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+  .workspace-input:focus {
+    outline: none;
+    border-color: #667eea;
   }
   
-  .quick-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .grid-layout {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    padding: 16px;
+  .workspace-container {
     width: 100%;
     height: 100%;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 12px;
   }
   
-  .sidebar {
-    width: 280px;
-    background: rgba(255, 255, 255, 0.03);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 16px;
-    overflow-y: auto;
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-  }
-  
-  .glass-panel {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .workspace-panel {
+    background: white;
     border-radius: 12px;
     padding: 20px;
-  }
-  
-  .toolbar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     margin-bottom: 16px;
   }
   
-  .status-bar {
-    padding: 8px 16px;
-    background: rgba(78, 205, 196, 0.1);
-    border-top: 1px solid rgba(78, 205, 196, 0.3);
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
   }
   
-  .tab-container {
-    display: flex;
-    gap: 4px;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px 8px 0 0;
+  .dark-theme {
+    background: #1a1a2e;
+    color: #eee;
   }
   
-  .tab {
-    padding: 8px 16px;
+  .dark-theme .workspace-panel {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px 6px 0 0;
+    color: #eee;
+  }
+  
+  /* Game canvas styling */
+  canvas {
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Icons and emojis */
+  .icon {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    margin: 8px;
     cursor: pointer;
-    font-size: 13px;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
   }
   
-  .tab.active {
-    background: rgba(78, 205, 196, 0.2);
-    border-color: rgba(78, 205, 196, 0.4);
+  .icon:hover {
+    transform: scale(1.1);
   }
   
-  .tab:hover {
-    background: rgba(255, 255, 255, 0.08);
+  .icon-image {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+  
+  .icon-label {
+    font-size: 12px;
+    color: #666;
   }
 </style>
 `;
 
+// Example HTML templates for different workspace types
 export const EXAMPLE_WORKSPACES = {
-  research: `
-    <div class="split-view">
-      <div class="tool-panel">
-        <input type="text" id="search-query" class="search-input" placeholder="Enter search query...">
-        <button class="action-button" data-interaction-id="search-all" data-value-from="search-query">
-          Search All
+  search: `
+    <div class="workspace-container">
+      <div class="workspace-panel">
+        <h2>Multi-Search</h2>
+        <input type="text" id="search-query" class="workspace-input" placeholder="Enter search query...">
+        <button class="workspace-button" data-interaction-id="search-google" data-value-from="search-query">
+          Search Google
         </button>
-        <iframe src="https://www.google.com/search?igu=1&output=embed" class="main-iframe"></iframe>
+        <button class="workspace-button" data-interaction-id="search-bing" data-value-from="search-query">
+          Search Bing
+        </button>
       </div>
-      <div class="tool-panel">
-        <h3>Notes</h3>
-        <textarea id="notes" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 8px;"></textarea>
-      </div>
+      <iframe src="https://www.google.com/search?igu=1&output=embed" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
     </div>
   `,
   
-  coding: `
-    <div class="workspace-container">
-      <div class="quick-actions">
-        <button class="action-button" data-interaction-id="open-github">GitHub</button>
-        <button class="action-button" data-interaction-id="open-stackoverflow">Stack Overflow</button>
-        <button class="action-button" data-interaction-id="open-codepen">CodePen</button>
+  calculator: `
+    <div class="workspace-panel">
+      <h2>Calculator</h2>
+      <input type="text" id="calc-display" class="workspace-input" readonly value="0">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+        <button class="workspace-button" data-interaction-id="calc-7">7</button>
+        <button class="workspace-button" data-interaction-id="calc-8">8</button>
+        <button class="workspace-button" data-interaction-id="calc-9">9</button>
+        <button class="workspace-button" data-interaction-id="calc-divide">÷</button>
+        <button class="workspace-button" data-interaction-id="calc-4">4</button>
+        <button class="workspace-button" data-interaction-id="calc-5">5</button>
+        <button class="workspace-button" data-interaction-id="calc-6">6</button>
+        <button class="workspace-button" data-interaction-id="calc-multiply">×</button>
+        <button class="workspace-button" data-interaction-id="calc-1">1</button>
+        <button class="workspace-button" data-interaction-id="calc-2">2</button>
+        <button class="workspace-button" data-interaction-id="calc-3">3</button>
+        <button class="workspace-button" data-interaction-id="calc-minus">-</button>
+        <button class="workspace-button" data-interaction-id="calc-0">0</button>
+        <button class="workspace-button" data-interaction-id="calc-decimal">.</button>
+        <button class="workspace-button" data-interaction-id="calc-equals">=</button>
+        <button class="workspace-button" data-interaction-id="calc-plus">+</button>
       </div>
-      <div class="split-view">
-        <iframe src="https://github.com" class="main-iframe"></iframe>
-        <iframe src="https://stackoverflow.com" class="main-iframe"></iframe>
-      </div>
+      <script>
+        (function() {
+          let display = document.getElementById('calc-display');
+          let currentValue = '0';
+          let previousValue = '';
+          let operation = null;
+          
+          document.querySelectorAll('[data-interaction-id^="calc-"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const action = this.dataset.interactionId.replace('calc-', '');
+              
+              if (!isNaN(action) || action === 'decimal') {
+                if (currentValue === '0' && action !== 'decimal') {
+                  currentValue = action;
+                } else {
+                  currentValue += action === 'decimal' ? '.' : action;
+                }
+                display.value = currentValue;
+              } else if (action === 'equals') {
+                if (operation && previousValue) {
+                  const prev = parseFloat(previousValue);
+                  const curr = parseFloat(currentValue);
+                  let result = 0;
+                  
+                  switch(operation) {
+                    case 'plus': result = prev + curr; break;
+                    case 'minus': result = prev - curr; break;
+                    case 'multiply': result = prev * curr; break;
+                    case 'divide': result = prev / curr; break;
+                  }
+                  
+                  currentValue = result.toString();
+                  display.value = currentValue;
+                  operation = null;
+                  previousValue = '';
+                }
+              } else {
+                operation = action;
+                previousValue = currentValue;
+                currentValue = '0';
+              }
+            });
+          });
+        })();
+      </script>
     </div>
   `
 };
