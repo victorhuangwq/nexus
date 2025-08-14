@@ -27,6 +27,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { tokens } from '../../design-tokens';
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -221,11 +222,11 @@ const redditRamenPosts: RedditRamenPost[] = [
 
 const getTypeColor = (type: string) => {
   switch (type) {
-    case 'food': return 'accent.pink';
-    case 'culture': return 'accent.purple';
-    case 'shopping': return 'accent.emerald';
-    case 'transport': return 'brand.500';
-    default: return 'gray.500';
+    case 'food': return tokens.colors.accent.coral;
+    case 'culture': return tokens.colors.brand.primary;
+    case 'shopping': return tokens.colors.accent.emerald;
+    case 'transport': return tokens.colors.accent.amber;
+    default: return tokens.colors.text.muted;
   }
 };
 
@@ -246,10 +247,10 @@ export const TokyoTrip: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="white">
+          <Text fontSize={tokens.typography.fontSize['2xl']} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
             Kyoto Weekend Plan
           </Text>
-          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+          <Text fontSize={tokens.typography.fontSize.md} color={tokens.colors.text.secondary} fontWeight={tokens.typography.fontWeight.normal}>
             Complete guide • Maps • Accommodations • Ramen insights
           </Text>
         </VStack>
@@ -284,14 +285,14 @@ export const TokyoTrip: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: dayIndex * 0.1 }}
-                      bg="rgba(255, 255, 255, 0.05)"
-                      backdropFilter="blur(20px)"
-                      borderRadius="24px"
-                      border="1px solid rgba(255, 255, 255, 0.1)"
+                      bg={tokens.glass.light.background}
+                      backdropFilter={tokens.glass.light.blur}
+                      borderRadius={tokens.radius['2xl']}
+                      border={tokens.glass.light.border}
                     >
-                      <CardBody p={6}>
+                      <CardBody p={tokens.space[3]}>
                         <HStack justify="space-between" mb={4}>
-                          <Text fontSize="xl" fontWeight="600" color="white">
+                          <Text fontSize={tokens.typography.fontSize.xl} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
                             {day.day}
                           </Text>
                           <Badge colorScheme="purple" variant="solid">
@@ -306,9 +307,9 @@ export const TokyoTrip: React.FC = () => {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.3, delay: (dayIndex * 0.1) + (actIndex * 0.05) }}
                             >
-                              <HStack spacing={4} align="start" p={3} borderRadius="16px" bg="rgba(255, 255, 255, 0.05)">
+                              <HStack spacing={tokens.space[2]} align="start" p={tokens.space[2]} borderRadius={tokens.radius.lg} bg={tokens.glass.light.background}>
                                 <VStack spacing={1} minW="80px" align="start">
-                                  <Text fontSize="sm" fontWeight="600" color="rgba(255, 255, 255, 0.8)">
+                                  <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.secondary}>
                                     {activity.time}
                                   </Text>
                                   <Text fontSize="lg">
@@ -317,13 +318,13 @@ export const TokyoTrip: React.FC = () => {
                                 </VStack>
                                 <Box flex="1">
                                   <VStack spacing={1} align="start">
-                                    <Text fontSize="md" fontWeight="600" color="white">
+                                    <Text fontSize={tokens.typography.fontSize.md} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
                                       {activity.title}
                                     </Text>
                                     <Text fontSize="sm" color={getTypeColor(activity.type)} fontWeight="500">
                                       {activity.location}
                                     </Text>
-                                    <Text fontSize="sm" color="rgba(255, 255, 255, 0.7)" fontWeight="400">
+                                    <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.tertiary} fontWeight={tokens.typography.fontWeight.normal}>
                                       {activity.description}
                                     </Text>
                                   </VStack>

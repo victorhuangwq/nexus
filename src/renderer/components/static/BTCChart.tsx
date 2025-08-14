@@ -332,19 +332,19 @@ export const BTCChart: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          bg="rgba(255, 255, 255, 0.05)"
-          backdropFilter="blur(20px)"
-          borderRadius="20px"
-          border="1px solid rgba(255, 255, 255, 0.1)"
+          bg={tokens.glass.light.background}
+          backdropFilter={tokens.glass.light.blur}
+          borderRadius={tokens.radius.xl}
+          border={tokens.glass.light.border}
         >
-          <CardBody p={6}>
+          <CardBody p={tokens.space[3]}>
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={2}>
                 <HStack>
                   <Avatar size="sm" src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" />
-                  <Text fontSize="lg" fontWeight="600" color="white">Bitcoin</Text>
+                  <Text fontSize={tokens.typography.fontSize.lg} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>Bitcoin</Text>
                 </HStack>
-                <Text fontSize="3xl" fontWeight="700" color="white">
+                <Text fontSize={tokens.typography.fontSize['3xl']} fontWeight={tokens.typography.fontWeight.bold} color={tokens.colors.text.primary}>
                   {formatPrice(currentPrice)}
                 </Text>
                 <Stat>
@@ -371,19 +371,19 @@ export const BTCChart: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          bg="rgba(255, 255, 255, 0.05)"
-          backdropFilter="blur(20px)"
-          borderRadius="20px"
-          border="1px solid rgba(255, 255, 255, 0.1)"
+          bg={tokens.glass.light.background}
+          backdropFilter={tokens.glass.light.blur}
+          borderRadius={tokens.radius.xl}
+          border={tokens.glass.light.border}
         >
-          <CardBody p={6}>
+          <CardBody p={tokens.space[3]}>
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={2}>
                 <HStack>
                   <Avatar size="sm" src="https://cryptologos.cc/logos/ethereum-eth-logo.png" />
-                  <Text fontSize="lg" fontWeight="600" color="white">Ethereum</Text>
+                  <Text fontSize={tokens.typography.fontSize.lg} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>Ethereum</Text>
                 </HStack>
-                <Text fontSize="3xl" fontWeight="700" color="white">
+                <Text fontSize={tokens.typography.fontSize['3xl']} fontWeight={tokens.typography.fontWeight.bold} color={tokens.colors.text.primary}>
                   {formatPrice(ethPrice)}
                 </Text>
                 <Stat>
@@ -415,10 +415,10 @@ export const BTCChart: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            bg="rgba(255, 255, 255, 0.05)"
-            backdropFilter="blur(20px)"
-            borderRadius="24px"
-            border="1px solid rgba(255, 255, 255, 0.1)"
+            bg={tokens.glass.light.background}
+            backdropFilter={tokens.glass.light.blur}
+            borderRadius={tokens.radius['2xl']}
+            border={tokens.glass.light.border}
             overflow="hidden"
           >
             <CardBody p={0}>

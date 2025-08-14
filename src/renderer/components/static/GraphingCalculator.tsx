@@ -9,6 +9,7 @@ import {
   Badge,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { tokens } from '../../design-tokens';
 
 const MotionCard = motion(Card);
 
@@ -18,10 +19,10 @@ export const GraphingCalculator: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="white">
+          <Text fontSize={tokens.typography.fontSize['2xl']} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
             Calculator
           </Text>
-          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+          <Text fontSize={tokens.typography.fontSize.md} color={tokens.colors.text.secondary} fontWeight={tokens.typography.fontWeight.normal}>
             Graph functions and solve equations
           </Text>
         </VStack>
@@ -35,11 +36,11 @@ export const GraphingCalculator: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        variant="elevated"
-        bg="rgba(255, 255, 255, 0.95)"
-        backdropFilter="blur(20px)"
-        borderRadius="24px"
-        boxShadow="0 8px 32px rgba(0, 0, 0, 0.2)"
+        bg={tokens.glass.light.background}
+        backdropFilter={tokens.glass.light.blur}
+        borderRadius={tokens.radius['2xl']}
+        border={tokens.glass.light.border}
+        boxShadow={tokens.shadow.lg}
       >
         <CardBody p={0}>
           <Box w="full" h="500px">
@@ -47,7 +48,7 @@ export const GraphingCalculator: React.FC = () => {
               src="https://www.desmos.com/calculator"
               style={{
                 border: 'none',
-                borderRadius: '24px',
+                borderRadius: tokens.radius['2xl'],
                 width: '100%',
                 height: '100%',
               }}
@@ -63,38 +64,38 @@ export const GraphingCalculator: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        bg="rgba(255, 255, 255, 0.05)"
-        backdropFilter="blur(16px)"
-        borderRadius="20px"
-        border="1px solid rgba(255, 255, 255, 0.1)"
+        bg={tokens.glass.light.background}
+        backdropFilter={tokens.glass.light.blur}
+        borderRadius={tokens.radius.xl}
+        border={tokens.glass.light.border}
       >
-        <CardBody p={6}>
+        <CardBody p={tokens.space[3]}>
           <VStack spacing={4} align="start">
-            <Text fontSize="lg" fontWeight="600" color="white">
+            <Text fontSize={tokens.typography.fontSize.lg} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
               How to use
             </Text>
-            <VStack spacing={2} align="start">
+            <VStack spacing={tokens.space[1]} align="start">
               <HStack>
-                <Box w="6px" h="6px" bg="brand.500" borderRadius="50%" />
-                <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
+                <Box w="6px" h="6px" bg={tokens.colors.brand.primary} borderRadius={tokens.radius.full} />
+                <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Type <code>y = x^2 + 2x + 1</code> to graph functions
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg="accent.emerald" borderRadius="50%" />
-                <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
+                <Box w="6px" h="6px" bg={tokens.colors.accent.emerald} borderRadius={tokens.radius.full} />
+                <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Click + to add multiple expressions
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg="accent.purple" borderRadius="50%" />
-                <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
+                <Box w="6px" h="6px" bg={tokens.colors.accent.coral} borderRadius={tokens.radius.full} />
+                <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Drag to move, scroll to zoom
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg="accent.amber" borderRadius="50%" />
-                <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
+                <Box w="6px" h="6px" bg={tokens.colors.accent.amber} borderRadius={tokens.radius.full} />
+                <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Use the gear icon for settings
                 </Text>
               </HStack>
