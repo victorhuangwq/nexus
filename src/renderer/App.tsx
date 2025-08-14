@@ -19,6 +19,8 @@ import { matchIntent, type IntentMatch } from './utils/intentMatcher';
 import { aiPipeline } from './services/AIPipeline';
 import { getLayoutByName } from './layouts/LayoutTemplates';
 import type { DynamicContent } from './layouts/types';
+import { workspaceGenerator, type InteractionData } from './services/DynamicWorkspaceGenerator';
+import { GeneratedWorkspace } from './components/GeneratedWorkspace';
 
 const MotionBox = motion(Box);
 const MotionVStack = motion(VStack);
@@ -27,12 +29,13 @@ const MotionVStack = motion(VStack);
 
 interface RenderedContent {
   id: string;
-  type: 'static' | 'generated' | 'dynamic';
+  type: 'static' | 'generated' | 'dynamic' | 'workspace';
   component?: string;
   content: any;
   timestamp: number;
   layout?: string;
   slots?: any[];
+  workspaceHtml?: string;
 }
 
 export const App: React.FC = () => {
@@ -49,74 +52,122 @@ export const App: React.FC = () => {
     const startTime = Date.now();
     
     try {
-      // First, try to match against static components
-      const intentMatch = matchIntent(intent);
+      // Check if intent is productivity/work-focused (new approach)
+      const lowerIntent = intent.toLowerCase();
+      const isWorkIntent = 
+        lowerIntent.includes('email') ||
+        lowerIntent.includes('research') ||
+        lowerIntent.includes('write') ||
+        lowerIntent.includes('code') ||
+        lowerIntent.includes('plan') ||
+        lowerIntent.includes('analyze') ||
+        lowerIntent.includes('search') ||
+        lowerIntent.includes('compare') ||
+        lowerIntent.includes('work') ||
+        lowerIntent.includes('task') ||
+        lowerIntent.includes('gmail') ||
+        lowerIntent.includes('docs') ||
+        lowerIntent.includes('github');
       
-      if (intentMatch && intentMatch.confidence >= 70) {
-        // Add artificial loading delay for demo sites to feel more realistic
-        const baseDelay = 1000; // Increased base delay for better demo presentation
-        const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
-        await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
+      if (isWorkIntent) {
+        // Use new gemini-os inspired dynamic workspace generation
+        const workspaceResult = await workspaceGenerator.generateWorkspace(intent);
         
-        // Use static component
         const endTime = Date.now();
         const processingTime = endTime - startTime;
         
         setDebugData((prev: any) => ({
           ...prev,
-          intentMatch,
+          workspaceResult,
           renderTiming: {
             ...prev.renderTiming,
-            T_schema: processingTime,
-            T_components: loadingDelayMs, // Track the artificial loading time
+            T_workspace: processingTime,
             T_firstRender: processingTime,
           },
         }));
         
         const newContent: RenderedContent = {
           id: `content-${Date.now()}`,
-          type: 'static',
-          component: intentMatch.component,
+          type: 'workspace',
+          workspaceHtml: workspaceResult.htmlContent,
           content: {
             intent,
-            match: intentMatch,
+            metadata: workspaceResult.metadata,
           },
           timestamp: Date.now(),
         };
         
         setRenderedContent([newContent]);
       } else {
-        // Use dynamic layout system powered by AI pipeline
-        const pipelineResult = await aiPipeline.process(intent);
+        // First, try to match against static components
+        const intentMatch = matchIntent(intent);
         
-        const endTime = Date.now();
-        const processingTime = endTime - startTime;
-        
-        setDebugData((prev: any) => ({
-          ...prev,
-          pipelineResult,
-          renderTiming: {
-            ...prev.renderTiming,
-            T_schema: pipelineResult.metrics.layoutSelectionTime,
-            T_components: pipelineResult.metrics.contentPlanningTime,
-            T_widgets: pipelineResult.metrics.widgetGenerationTime,
-            T_firstRender: processingTime,
-          },
-        }));
-        
-        const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
-          type: 'dynamic',
-          layout: pipelineResult.layout,
-          slots: pipelineResult.slots,
-          content: {
-            intent,
-            result: pipelineResult,
-          },
-          timestamp: Date.now(),
-        };
-        
-        setRenderedContent([newContent]);
+        if (intentMatch && intentMatch.confidence >= 70) {
+          // Add artificial loading delay for demo sites to feel more realistic
+          const baseDelay = 1000; // Increased base delay for better demo presentation
+          const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
+          await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
+          
+          // Use static component
+          const endTime = Date.now();
+          const processingTime = endTime - startTime;
+          
+          setDebugData((prev: any) => ({
+            ...prev,
+            intentMatch,
+            renderTiming: {
+              ...prev.renderTiming,
+              T_schema: processingTime,
+              T_components: loadingDelayMs, // Track the artificial loading time
+              T_firstRender: processingTime,
+            },
+          }));
+          
+          const newContent: RenderedContent = {
+            id: `content-${Date.now()}`,
+            type: 'static',
+            component: intentMatch.component,
+            content: {
+              intent,
+              match: intentMatch,
+            },
+            timestamp: Date.now(),
+          };
+          
+          setRenderedContent([newContent]);
+        } else {
+          // Use dynamic layout system powered by AI pipeline
+          const pipelineResult = await aiPipeline.process(intent);
+          
+          const endTime = Date.now();
+          const processingTime = endTime - startTime;
+          
+          setDebugData((prev: any) => ({
+            ...prev,
+            pipelineResult,
+            renderTiming: {
+              ...prev.renderTiming,
+              T_schema: pipelineResult.metrics.layoutSelectionTime,
+              T_components: pipelineResult.metrics.contentPlanningTime,
+              T_widgets: pipelineResult.metrics.widgetGenerationTime,
+              T_firstRender: processingTime,
+            },
+          }));
+          
+          const newContent: RenderedContent = {
+            id: `content-${Date.now()}`,
+            type: 'dynamic',
+            layout: pipelineResult.layout,
+            slots: pipelineResult.slots,
+            content: {
+              intent,
+              result: pipelineResult,
+            },
+            timestamp: Date.now(),
+          };
+          
+          setRenderedContent([newContent]);
+        }
       }
       
     } catch (error) {
@@ -165,6 +216,39 @@ export const App: React.FC = () => {
     setCurrentIntent('');
     setRenderedContent([]);
     setDebugData({});
+    workspaceGenerator.clearHistory();
+  };
+  
+  // Handle interactions from generated workspace
+  const handleWorkspaceInteraction = async (interaction: InteractionData) => {
+    setIsLoading(true);
+    try {
+      const workspaceResult = await workspaceGenerator.handleInteraction(interaction);
+      
+      const newContent: RenderedContent = {
+        id: `content-${Date.now()}`,
+        type: 'workspace',
+        workspaceHtml: workspaceResult.htmlContent,
+        content: {
+          intent: currentIntent,
+          metadata: workspaceResult.metadata,
+          interaction,
+        },
+        timestamp: Date.now(),
+      };
+      
+      setRenderedContent([newContent]);
+      
+      setDebugData((prev: any) => ({
+        ...prev,
+        lastInteraction: interaction,
+        workspaceHistory: workspaceGenerator.getHistory(),
+      }));
+    } catch (error) {
+      console.error('Workspace interaction failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Keyboard shortcut for Dev HUD (Option + D)
@@ -394,7 +478,27 @@ export const App: React.FC = () => {
                       display="flex"
                       justifyContent="center"
                     >
-                      {content.type === 'static' && content.component ? (
+                      {content.type === 'workspace' && content.workspaceHtml ? (
+                        <Box
+                          position="relative"
+                          zIndex={20}
+                          w="full"
+                          bg={tokens.glass.dark.background}
+                          borderRadius={tokens.radius['2xl']}
+                          backdropFilter={tokens.glass.dark.blur}
+                          border={tokens.glass.dark.border}
+                          boxShadow={tokens.shadow.lg}
+                          overflow="hidden"
+                          minH="600px"
+                        >
+                          <GeneratedWorkspace
+                            htmlContent={content.workspaceHtml}
+                            onInteract={handleWorkspaceInteraction}
+                            workspaceContext={content.id}
+                            isLoading={isLoading}
+                          />
+                        </Box>
+                      ) : content.type === 'static' && content.component ? (
                         <Box
                           position="relative"
                           zIndex={20}

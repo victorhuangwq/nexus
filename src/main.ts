@@ -9,7 +9,8 @@ dotenv.config();
 if (process.argv.includes('--dev')) {
   require('electron-reload')(__dirname, {
     electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
-    hardResetMethod: 'exit'
+    hardResetMethod: 'exit',
+    forceHardReset: true
   });
 }
 
@@ -64,9 +65,9 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  // On macOS, apps typically stay active until explicitly quit
-  // On other platforms, quit when all windows are closed
-  if (process.platform !== 'darwin') {
+  // Always quit the app when all windows are closed in development
+  // to prevent orphaned processes
+  if (process.argv.includes('--dev') || process.platform !== 'darwin') {
     app.quit();
   }
 });
@@ -286,6 +287,35 @@ Return only valid JSON:
 // Enhanced Claude component generation
 ipcMain.handle('call-claude', async (_, type: string, payload: any) => {
   console.log(`Claude call: ${type}`, payload);
+  
+  // Handle workspace generation (new gemini-os inspired approach)
+  if (type === 'workspace_generation') {
+    try {
+      const response = await callClaudeAPI(payload.prompt);
+      return { success: true, data: response, type, payload };
+    } catch (error) {
+      console.error('Workspace generation failed:', error);
+      // Return a basic fallback workspace HTML
+      return {
+        success: false,
+        data: `
+          <div class="workspace-container">
+            <div class="workspace-header">
+              <h2 class="workspace-title">Workspace</h2>
+            </div>
+            <div class="workspace-content">
+              <div class="glass-panel">
+                <p>Unable to generate workspace. Please try again.</p>
+                <button class="action-button" data-interaction-id="retry">Retry</button>
+              </div>
+            </div>
+          </div>
+        `,
+        type,
+        payload
+      };
+    }
+  }
   
   if (type === 'component') {
     const widgetPrompt = `
