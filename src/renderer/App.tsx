@@ -16,9 +16,6 @@ import { DevHUD } from './components/DevHUD';
 import { FloatingInputBar } from './components/FloatingInputBar';
 import { GraphingCalculator, TokyoTrip, BTCChart, WeatherWidget, PhysicsHomework } from './components/static';
 import { matchIntent, type IntentMatch } from './utils/intentMatcher';
-import { aiPipeline } from './services/AIPipeline';
-import { getLayoutByName } from './layouts/LayoutTemplates';
-import type { DynamicContent } from './layouts/types';
 import { workspaceGenerator, type InteractionData } from './services/DynamicWorkspaceGenerator';
 import { GeneratedWorkspace } from './components/GeneratedWorkspace';
 
@@ -29,12 +26,10 @@ const MotionVStack = motion(VStack);
 
 interface RenderedContent {
   id: string;
-  type: 'static' | 'generated' | 'dynamic' | 'workspace';
+  type: 'static' | 'generated' | 'workspace';
   component?: string;
   content: any;
   timestamp: number;
-  layout?: string;
-  slots?: any[];
   workspaceHtml?: string;
 }
 
@@ -52,11 +47,44 @@ export const App: React.FC = () => {
     const startTime = Date.now();
     
     try {
-      // Always use dynamic HTML generation for all queries (gemini-os style)
-      const useWorkspaceGeneration = true;
+      // First, try to match against static components
+      const intentMatch = matchIntent(intent);
       
-      if (useWorkspaceGeneration) {
-        // Use new gemini-os inspired dynamic workspace generation
+      if (intentMatch && intentMatch.confidence >= 70) {
+        // Add artificial loading delay for demo sites to feel more realistic
+        const baseDelay = 1000; // Increased base delay for better demo presentation
+        const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
+        await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
+        
+        // Use static component
+        const endTime = Date.now();
+        const processingTime = endTime - startTime;
+        
+        setDebugData((prev: any) => ({
+          ...prev,
+          intentMatch,
+          renderTiming: {
+            ...prev.renderTiming,
+            T_schema: processingTime,
+            T_components: loadingDelayMs, // Track the artificial loading time
+            T_firstRender: processingTime,
+          },
+        }));
+        
+        const newContent: RenderedContent = {
+          id: `content-${Date.now()}`,
+          type: 'static',
+          component: intentMatch.component,
+          content: {
+            intent,
+            match: intentMatch,
+          },
+          timestamp: Date.now(),
+        };
+        
+        setRenderedContent([newContent]);
+      } else {
+        // Use dynamic workspace generation for all unmatched queries
         const workspaceResult = await workspaceGenerator.generateWorkspace(intent);
         
         const endTime = Date.now();
@@ -84,82 +112,12 @@ export const App: React.FC = () => {
         };
         
         setRenderedContent([newContent]);
-      } else {
-        // First, try to match against static components
-        const intentMatch = matchIntent(intent);
-        
-        if (intentMatch && intentMatch.confidence >= 70) {
-          // Add artificial loading delay for demo sites to feel more realistic
-          const baseDelay = 1000; // Increased base delay for better demo presentation
-          const loadingDelayMs = baseDelay + Math.random() * 800; // 1500-2300ms random delay
-          await new Promise(resolve => setTimeout(resolve, loadingDelayMs));
-          
-          // Use static component
-          const endTime = Date.now();
-          const processingTime = endTime - startTime;
-          
-          setDebugData((prev: any) => ({
-            ...prev,
-            intentMatch,
-            renderTiming: {
-              ...prev.renderTiming,
-              T_schema: processingTime,
-              T_components: loadingDelayMs, // Track the artificial loading time
-              T_firstRender: processingTime,
-            },
-          }));
-          
-          const newContent: RenderedContent = {
-            id: `content-${Date.now()}`,
-            type: 'static',
-            component: intentMatch.component,
-            content: {
-              intent,
-              match: intentMatch,
-            },
-            timestamp: Date.now(),
-          };
-          
-          setRenderedContent([newContent]);
-        } else {
-          // Use dynamic layout system powered by AI pipeline
-          const pipelineResult = await aiPipeline.process(intent);
-          
-          const endTime = Date.now();
-          const processingTime = endTime - startTime;
-          
-          setDebugData((prev: any) => ({
-            ...prev,
-            pipelineResult,
-            renderTiming: {
-              ...prev.renderTiming,
-              T_schema: pipelineResult.metrics.layoutSelectionTime,
-              T_components: pipelineResult.metrics.contentPlanningTime,
-              T_widgets: pipelineResult.metrics.widgetGenerationTime,
-              T_firstRender: processingTime,
-            },
-          }));
-          
-          const newContent: RenderedContent = {
-            id: `content-${Date.now()}`,
-            type: 'dynamic',
-            layout: pipelineResult.layout,
-            slots: pipelineResult.slots,
-            content: {
-              intent,
-              result: pipelineResult,
-            },
-            timestamp: Date.now(),
-          };
-          
-          setRenderedContent([newContent]);
-        }
       }
       
     } catch (error) {
       console.error('Intent processing failed:', error);
       
-      // Emergency fallback: try static matching
+      // Emergency fallback: try static matching with lower confidence threshold
       const intentMatch = matchIntent(intent);
       if (intentMatch && intentMatch.confidence >= 50) {
         const newContent: RenderedContent = {
@@ -175,18 +133,46 @@ export const App: React.FC = () => {
         };
         setRenderedContent([newContent]);
       } else {
-        // Show error state
-        const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
-          type: 'generated',
-          content: {
-            intent,
-            message: 'Sorry, I encountered an error processing your request. Please try again.',
-            error: error instanceof Error ? error.message : String(error),
-          },
-          timestamp: Date.now(),
-        };
-        setRenderedContent([newContent]);
+        // Show error workspace with basic tools as fallback
+        try {
+          const fallbackHtml = `
+            <div style="padding: 40px; text-align: center; color: #e0e0e0; font-family: system-ui, -apple-system, sans-serif;">
+              <h2 style="color: #ff6b6b; margin-bottom: 20px;">Unable to process your request</h2>
+              <p style="margin-bottom: 30px; color: #999;">We encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}</p>
+              <p style="margin-bottom: 40px; color: #999;">Here are some tools you can use instead:</p>
+              <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://www.google.com/search?q=${encodeURIComponent(intent)}" target="_blank" style="padding: 12px 24px; background: #4285f4; color: white; text-decoration: none; border-radius: 8px;">Search Google</a>
+                <a href="https://www.wolframalpha.com/input?i=${encodeURIComponent(intent)}" target="_blank" style="padding: 12px 24px; background: #ff6c2c; color: white; text-decoration: none; border-radius: 8px;">Try Wolfram Alpha</a>
+              </div>
+            </div>
+          `;
+          
+          const newContent: RenderedContent = {
+            id: `content-${Date.now()}`,
+            type: 'workspace',
+            workspaceHtml: fallbackHtml,
+            content: {
+              intent,
+              error: error instanceof Error ? error.message : String(error),
+              fallback: true,
+            },
+            timestamp: Date.now(),
+          };
+          setRenderedContent([newContent]);
+        } catch (fallbackError) {
+          // Last resort: show simple error message
+          const newContent: RenderedContent = {
+            id: `content-${Date.now()}`,
+            type: 'generated',
+            content: {
+              intent,
+              message: 'Sorry, I encountered an error processing your request. Please try again.',
+              error: error instanceof Error ? error.message : String(error),
+            },
+            timestamp: Date.now(),
+          };
+          setRenderedContent([newContent]);
+        }
       }
       
       setDebugData((prev: any) => ({
@@ -501,32 +487,6 @@ export const App: React.FC = () => {
                           {content.component === 'BTCChart' && <BTCChart />}
                           {content.component === 'WeatherWidget' && <WeatherWidget />}
                           {content.component === 'PhysicsHomework' && <PhysicsHomework />}
-                        </Box>
-                      ) : content.type === 'dynamic' && content.layout && content.slots ? (
-                        <Box
-                          position="relative"
-                          zIndex={20}
-                          w="full"
-                          bg={tokens.glass.dark.background}
-                          borderRadius={tokens.radius['2xl']}
-                          p={tokens.space[3]}
-                          backdropFilter={tokens.glass.dark.blur}
-                          border={tokens.glass.dark.border}
-                          boxShadow={tokens.shadow.lg}
-                          minH="500px"
-                        >
-                          {(() => {
-                            const layoutTemplate = getLayoutByName(content.layout);
-                            if (layoutTemplate) {
-                              const LayoutComponent = layoutTemplate.component;
-                              return <LayoutComponent slots={content.slots} />;
-                            }
-                            return (
-                              <Box p={8} textAlign="center" color="rgba(255, 255, 255, 0.6)">
-                                <Text>Unknown layout: {content.layout}</Text>
-                              </Box>
-                            );
-                          })()}
                         </Box>
                       ) : (
                         <Box
