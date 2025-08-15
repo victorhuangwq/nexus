@@ -9,7 +9,7 @@ export interface ElectronBridge {
   getEnv: (key: string) => Promise<string | null>;
   
   // Claude API integration
-  callClaude: (type: 'schema' | 'component', payload: any) => Promise<{
+  callClaude: (type: 'schema' | 'component' | 'workspace_generation', payload: any) => Promise<{
     success: boolean;
     data: any;
     type: string;
@@ -25,7 +25,7 @@ export interface ElectronBridge {
 const bridge: ElectronBridge = {
   test: () => ipcRenderer.invoke('bridge-test'),
   getEnv: (key: string) => ipcRenderer.invoke('get-env', key),
-  callClaude: (type: 'schema' | 'component', payload: any) => 
+  callClaude: (type: 'schema' | 'component' | 'workspace_generation', payload: any) => 
     ipcRenderer.invoke('call-claude', type, payload),
 };
 

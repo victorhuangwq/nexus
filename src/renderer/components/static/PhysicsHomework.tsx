@@ -56,10 +56,10 @@ export const PhysicsHomework: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            bg={tokens.glass.light.background}
-            backdropFilter={tokens.glass.light.blur}
-            borderRadius={tokens.radius.xl}
-            border={tokens.glass.light.border}
+            bg="rgba(255, 255, 255, 0.05)"
+            backdropFilter="blur(10px)"
+            borderRadius="20px"
+            border="1px solid rgba(255, 255, 255, 0.1)"
           >
             <CardBody p={0}>
               <VStack spacing={0}>
@@ -106,10 +106,10 @@ export const PhysicsHomework: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            bg={tokens.glass.light.background}
-            backdropFilter={tokens.glass.light.blur}
-            borderRadius={tokens.radius.xl}
-            border={tokens.glass.light.border}
+            bg="rgba(255, 255, 255, 0.05)"
+            backdropFilter="blur(10px)"
+            borderRadius="20px"
+            border="1px solid rgba(255, 255, 255, 0.1)"
           >
             <CardBody>
               <Text fontSize="lg" fontWeight="600" color="white" mb={4}>

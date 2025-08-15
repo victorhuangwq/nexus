@@ -91,7 +91,7 @@ export class DynamicWorkspaceGenerator {
     console.log(prompt);
     
     // Use the bridge to call Claude
-    const response = await window.bridge.callClaude('component', {
+    const response = await window.bridge.callClaude('workspace_generation', {
       prompt,
       type: 'workspace_generation'
     });
@@ -175,15 +175,75 @@ ${recentInteractions}`;
    * Parse AI response to extract HTML and metadata
    */
   private parseAIResponse(data: string): { htmlContent: string; metadata?: any } {
-    // If the response includes metadata markers, extract them
-    const metadataMatch = data.match(/<!-- METADATA: (.*?) -->/s);
-    let metadata = {};
     let htmlContent = data;
+    const originalContent = data;
+    
+    // Track if we found and removed code fences
+    let removedCodeFences = false;
+    
+    // Remove markdown code fences if present
+    // First check if the content starts with ```html or ```
+    if (htmlContent.startsWith('```html') || htmlContent.startsWith('```HTML')) {
+      console.warn('⚠️ AI response included markdown code fences (```html), removing them...');
+      removedCodeFences = true;
+      // Remove opening fence
+      htmlContent = htmlContent.replace(/^```(?:html|HTML)\s*\n?/, '');
+      // Remove closing fence
+      htmlContent = htmlContent.replace(/\n?```\s*$/, '');
+    } else if (htmlContent.startsWith('```')) {
+      console.warn('⚠️ AI response included markdown code fences (```), removing them...');
+      removedCodeFences = true;
+      // Handle plain ``` fences
+      htmlContent = htmlContent.replace(/^```\s*\n?/, '');
+      htmlContent = htmlContent.replace(/\n?```\s*$/, '');
+    }
+    
+    // Also handle cases where there might be extra whitespace or line breaks
+    htmlContent = htmlContent.trim();
+    
+    // Log what we did
+    if (removedCodeFences) {
+      console.log('Original response started with:', originalContent.substring(0, 50));
+      console.log('After removing code fences:', htmlContent.substring(0, 100));
+    }
+    
+    // Validate that we have actual HTML content
+    if (!htmlContent || htmlContent.length === 0) {
+      console.error('ERROR: No HTML content after parsing!');
+      throw new Error('AI response contained no valid HTML content after removing code fences');
+    }
+    
+    // Check if it looks like HTML (very basic check)
+    if (!htmlContent.includes('<') || !htmlContent.includes('>')) {
+      console.error('ERROR: Content does not appear to be HTML:', htmlContent.substring(0, 200));
+      throw new Error('AI response does not appear to contain valid HTML');
+    }
+    
+    // Check for common AI explanation patterns that shouldn't be there
+    const explanationPatterns = [
+      /^I'll create/i,
+      /^Here's/i,
+      /^This is/i,
+      /^The following/i,
+      /^Below is/i
+    ];
+    
+    for (const pattern of explanationPatterns) {
+      if (pattern.test(htmlContent)) {
+        console.error('ERROR: AI response contains explanation text instead of pure HTML!');
+        console.error('Response starts with:', htmlContent.substring(0, 200));
+        throw new Error('AI response contains explanation text instead of pure HTML. The AI did not follow instructions to output only HTML.');
+      }
+    }
+    
+    // If the response includes metadata markers, extract them
+    const metadataMatch = htmlContent.match(/<!-- METADATA: (.*?) -->/s);
+    let metadata = {};
 
     if (metadataMatch) {
       try {
         metadata = JSON.parse(metadataMatch[1]);
-        htmlContent = data.replace(metadataMatch[0], '');
+        htmlContent = htmlContent.replace(metadataMatch[0], '');
       } catch (e) {
         console.warn('Failed to parse metadata from AI response');
       }

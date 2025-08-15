@@ -86,13 +86,43 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
         console.log('Found scripts:', scripts.length);
         
         scripts.forEach((oldScript, index) => {
-          console.log(`Processing script ${index + 1}:`, oldScript.innerHTML.substring(0, 200));
+          const scriptContent = oldScript.innerHTML.trim();
+          console.log(`Processing script ${index + 1}:`, scriptContent.substring(0, 200));
+          
+          // Skip empty scripts
+          if (!scriptContent) {
+            console.warn(`Script ${index + 1} is empty, skipping`);
+            return;
+          }
+
+          // Basic validation to check if script looks complete
+          const openBraces = (scriptContent.match(/\{/g) || []).length;
+          const closeBraces = (scriptContent.match(/\}/g) || []).length;
+          const openParens = (scriptContent.match(/\(/g) || []).length;
+          const closeParens = (scriptContent.match(/\)/g) || []).length;
+          
+          if (openBraces !== closeBraces || openParens !== closeParens) {
+            console.error(
+              `Script ${index + 1} appears to be incomplete or malformed:`,
+              {
+                openBraces,
+                closeBraces,
+                openParens,
+                closeParens,
+                scriptPreview: scriptContent.substring(0, 200) + '...',
+                scriptLength: scriptContent.length
+              }
+            );
+            // Don't execute malformed scripts
+            return;
+          }
+
           try {
             const newScript = document.createElement('script');
             Array.from(oldScript.attributes).forEach((attr) =>
               newScript.setAttribute(attr.name, attr.value),
             );
-            newScript.text = oldScript.innerHTML;
+            newScript.text = scriptContent;
 
             if (oldScript.parentNode) {
               oldScript.parentNode.replaceChild(newScript, oldScript);
@@ -107,8 +137,8 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
               'Error processing/executing script tag. This usually indicates a syntax error in the LLM-generated script.',
               {
                 scriptContent:
-                  oldScript.innerHTML.substring(0, 500) +
-                  (oldScript.innerHTML.length > 500 ? '...' : ''),
+                  scriptContent.substring(0, 500) +
+                  (scriptContent.length > 500 ? '...' : ''),
                 error: e,
               },
             );
