@@ -314,11 +314,11 @@ export const App: React.FC = () => {
                     justifyContent="center"
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="3" cy="3" r="2" fill="#FFFFFF" />
-                      <circle cx="13" cy="3" r="2" fill="#FFFFFF" />
-                      <circle cx="3" cy="13" r="2" fill="#FFFFFF" />
-                      <circle cx="13" cy="13" r="2" fill="#FFFFFF" />
-                      <path d="M3 3L13 13M13 3L3 13" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.8" />
+                      <circle cx="3" cy="3" r="2" fill={tokens.colors.brand.primary} />
+                      <circle cx="13" cy="3" r="2" fill={tokens.colors.brand.primary} />
+                      <circle cx="3" cy="13" r="2" fill={tokens.colors.brand.primary} />
+                      <circle cx="13" cy="13" r="2" fill={tokens.colors.brand.primary} />
+                      <path d="M3 3L13 13M13 3L3 13" stroke={tokens.colors.brand.primary} strokeWidth="1.5" opacity="0.6" />
                     </svg>
                   </Box>
                 </Box>

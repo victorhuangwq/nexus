@@ -141,7 +141,7 @@ export const WORKSPACE_CSS = `
   
   .workspace-button {
     padding: 10px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -150,12 +150,18 @@ export const WORKSPACE_CSS = `
     cursor: pointer;
     transition: all 0.3s ease;
     margin: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(255, 140, 66, 0.25);
   }
   
   .workspace-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #FF9652 0%, #FF7A45 100%);
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
+  }
+  
+  .workspace-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(255, 140, 66, 0.3);
   }
   
   .workspace-input {
@@ -166,12 +172,14 @@ export const WORKSPACE_CSS = `
     border-radius: 8px;
     font-size: 14px;
     margin-bottom: 12px;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    color: #333;
   }
   
   .workspace-input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #FF8C42;
+    box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
   }
   
   .workspace-container {
