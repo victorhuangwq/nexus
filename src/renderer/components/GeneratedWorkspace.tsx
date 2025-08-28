@@ -40,36 +40,41 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
       }
 
       if (targetElement && targetElement.dataset.interactionId) {
-        event.preventDefault();
+        // Only trigger workspace regeneration for explicit workspace_change type
+        if (targetElement.dataset.interactionType === 'workspace_change') {
+          event.preventDefault();
 
-        let interactionValue: string | undefined =
-          targetElement.dataset.interactionValue;
+          let interactionValue: string | undefined =
+            targetElement.dataset.interactionValue;
 
-        if (targetElement.dataset.valueFrom) {
-          const inputElement = document.getElementById(
-            targetElement.dataset.valueFrom,
-          ) as HTMLInputElement | HTMLTextAreaElement;
-          if (inputElement) {
-            interactionValue = inputElement.value;
+          if (targetElement.dataset.valueFrom) {
+            const inputElement = document.getElementById(
+              targetElement.dataset.valueFrom,
+            ) as HTMLInputElement | HTMLTextAreaElement;
+            if (inputElement) {
+              interactionValue = inputElement.value;
+            }
           }
-        }
 
-        const interactionData: InteractionData = {
-          id: targetElement.dataset.interactionId,
-          type: targetElement.dataset.interactionType || 'click',
-          value: interactionValue,
-          elementType: targetElement.tagName.toLowerCase(),
-          elementText: (
-            targetElement.innerText ||
-            (targetElement as HTMLInputElement).value ||
-            ''
-          )
-            .trim()
-            .substring(0, 100),
-          workspaceContext: workspaceContext,
-          timestamp: Date.now(),
-        };
-        onInteract(interactionData);
+          const interactionData: InteractionData = {
+            id: targetElement.dataset.interactionId,
+            type: targetElement.dataset.interactionType || 'workspace_change',
+            value: interactionValue,
+            elementType: targetElement.tagName.toLowerCase(),
+            elementText: (
+              targetElement.innerText ||
+              (targetElement as HTMLInputElement).value ||
+              ''
+            )
+              .trim()
+              .substring(0, 100),
+            workspaceContext: workspaceContext,
+            timestamp: Date.now(),
+          };
+          onInteract(interactionData);
+        }
+        // For all other interaction types, let the local JavaScript handle it
+        // The click will bubble up normally and be handled by onclick or event listeners
       }
     };
 

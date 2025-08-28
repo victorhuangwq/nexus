@@ -22,18 +22,42 @@ You are an AI that generates interactive HTML interfaces based on user intent. Y
    - DO NOT add markdown formatting or explanations
    - Include <style> tags for custom styling when needed
 
-2. **CSS Classes (Inspired by gemini-os):**
+2. **CSS Classes:**
    - Text: class="workspace-text"
    - Buttons: class="workspace-button"
    - Inputs: class="workspace-input"
    - Containers: class="workspace-container", class="workspace-panel"
    - Visual effects: class="glass-panel", class="dark-theme"
 
-3. **Interactivity (Following gemini-os pattern):**
-   ALL interactive elements MUST have:
-   - data-interaction-id="unique_descriptive_id" (e.g., "open_document_report", "search_web_query")
-   - data-interaction-type="action_type" (e.g., "button_click", "form_submit")
-   - For inputs with buttons: data-value-from="input_id"
+3. **Interactivity (TWO TYPES - CRITICAL TO UNDERSTAND):**
+   
+   **Type A: Workspace Regeneration (New Task/Context)**
+   Use these data attributes ONLY for actions that need a completely new workspace:
+   - data-interaction-id="unique_descriptive_id" (e.g., "new_task_calculator", "switch_to_email")
+   - data-interaction-type="workspace_change" (ONLY use this specific value for workspace changes)
+   - For inputs: data-value-from="input_id"
+   
+   Examples that need workspace regeneration:
+   - "Switch to email composer"
+   - "Open a different tool"
+   - "Start new task"
+   - Major context switches
+   
+   **Type B: Local Actions (Same Workspace)**
+   DO NOT add data-interaction attributes for these. Instead, use inline JavaScript:
+   - Calculator buttons → onclick handlers that update display
+   - Tab switches → JavaScript to show/hide content
+   - Form validation → JavaScript validation
+   - Iframe navigation → JavaScript to change src
+   - Any UI state change within the same tool
+   
+   Example of local action (calculator button):
+   <button class="workspace-button" onclick="updateDisplay('7')">7</button>
+   
+   Example of workspace regeneration (switching tools):
+   <button class="workspace-button" data-interaction-id="open_email" data-interaction-type="workspace_change">
+     Switch to Email
+   </button>
 
 4. **Iframe Embedding:**
    Use iframes to embed real tools and websites:
@@ -41,12 +65,17 @@ You are an AI that generates interactive HTML interfaces based on user intent. Y
    - Use allow attributes for necessary permissions
    - Always set width/height or use CSS for responsive sizing
 
-5. **JavaScript:**
-   Include inline <script> tags for dynamic functionality:
+5. **JavaScript (ESSENTIAL for Local Actions):**
+   Include inline <script> tags for ALL local interactivity:
    - Use modern ES6+ JavaScript
-   - Add event listeners for interactions
-   - Implement real-time features (timers, calculations, etc.)
-   - Handle keyboard shortcuts for power users
+   - Handle ALL button clicks, form submissions that don't need new workspaces
+   - Implement real-time features (timers, calculations, state updates)
+   - Manage UI state changes (tabs, accordions, modals)
+   - Update iframe sources dynamically
+   - Handle keyboard shortcuts
+   
+   CRITICAL: Most user interactions should be handled locally with JavaScript.
+   Only use data-interaction-type="workspace_change" for major context switches.
 
 **Content Types You Can Generate:**
 
@@ -61,7 +90,7 @@ You are an AI that generates interactive HTML interfaces based on user intent. Y
    - Data visualizations
    - File explorers
 
-3. **Games (Following gemini-os approach):**
+3. **Games:**
    - Self-contained HTML5 games
    - Use <canvas> with inline JavaScript
    - Include keyboard/mouse controls
@@ -227,15 +256,31 @@ export const EXAMPLE_WORKSPACES = {
       <div class="workspace-panel">
         <h2>Multi-Search</h2>
         <input type="text" id="search-query" class="workspace-input" placeholder="Enter search query...">
-        <button class="workspace-button" data-interaction-id="search-google" data-value-from="search-query">
+        <!-- Local actions - no data-interaction attributes -->
+        <button class="workspace-button" onclick="searchGoogle()">
           Search Google
         </button>
-        <button class="workspace-button" data-interaction-id="search-bing" data-value-from="search-query">
+        <button class="workspace-button" onclick="searchBing()">
           Search Bing
         </button>
+        <!-- Workspace change - has data-interaction attributes -->
+        <button class="workspace-button" data-interaction-id="open_calculator" data-interaction-type="workspace_change">
+          Switch to Calculator
+        </button>
       </div>
-      <iframe src="https://www.google.com/search?igu=1&output=embed" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
+      <iframe id="search-frame" src="https://www.google.com/search?igu=1&output=embed" style="width: 100%; height: 500px; border: none; border-radius: 8px;"></iframe>
     </div>
+    <script>
+      function searchGoogle() {
+        const query = document.getElementById('search-query').value;
+        document.getElementById('search-frame').src = 'https://www.google.com/search?q=' + encodeURIComponent(query) + '&igu=1&output=embed';
+      }
+      function searchBing() {
+        const query = document.getElementById('search-query').value;
+        // Note: Bing doesn't have an embeddable search, so we use Google with site:bing.com
+        document.getElementById('search-frame').src = 'https://www.google.com/search?q=site:bing.com+' + encodeURIComponent(query) + '&igu=1&output=embed';
+      }
+    </script>
   `,
   
   calculator: `
@@ -243,67 +288,65 @@ export const EXAMPLE_WORKSPACES = {
       <h2>Calculator</h2>
       <input type="text" id="calc-display" class="workspace-input" readonly value="0">
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-        <button class="workspace-button" data-interaction-id="calc-7">7</button>
-        <button class="workspace-button" data-interaction-id="calc-8">8</button>
-        <button class="workspace-button" data-interaction-id="calc-9">9</button>
-        <button class="workspace-button" data-interaction-id="calc-divide">÷</button>
-        <button class="workspace-button" data-interaction-id="calc-4">4</button>
-        <button class="workspace-button" data-interaction-id="calc-5">5</button>
-        <button class="workspace-button" data-interaction-id="calc-6">6</button>
-        <button class="workspace-button" data-interaction-id="calc-multiply">×</button>
-        <button class="workspace-button" data-interaction-id="calc-1">1</button>
-        <button class="workspace-button" data-interaction-id="calc-2">2</button>
-        <button class="workspace-button" data-interaction-id="calc-3">3</button>
-        <button class="workspace-button" data-interaction-id="calc-minus">-</button>
-        <button class="workspace-button" data-interaction-id="calc-0">0</button>
-        <button class="workspace-button" data-interaction-id="calc-decimal">.</button>
-        <button class="workspace-button" data-interaction-id="calc-equals">=</button>
-        <button class="workspace-button" data-interaction-id="calc-plus">+</button>
+        <!-- Local actions only - no data-interaction attributes needed -->
+        <button class="workspace-button" onclick="calcButton('7')">7</button>
+        <button class="workspace-button" onclick="calcButton('8')">8</button>
+        <button class="workspace-button" onclick="calcButton('9')">9</button>
+        <button class="workspace-button" onclick="calcButton('/')">÷</button>
+        <button class="workspace-button" onclick="calcButton('4')">4</button>
+        <button class="workspace-button" onclick="calcButton('5')">5</button>
+        <button class="workspace-button" onclick="calcButton('6')">6</button>
+        <button class="workspace-button" onclick="calcButton('*')">×</button>
+        <button class="workspace-button" onclick="calcButton('1')">1</button>
+        <button class="workspace-button" onclick="calcButton('2')">2</button>
+        <button class="workspace-button" onclick="calcButton('3')">3</button>
+        <button class="workspace-button" onclick="calcButton('-')">-</button>
+        <button class="workspace-button" onclick="calcButton('0')">0</button>
+        <button class="workspace-button" onclick="calcButton('.')">.</button>
+        <button class="workspace-button" onclick="calcButton('=')">=</button>
+        <button class="workspace-button" onclick="calcButton('+')">+</button>
       </div>
       <script>
-        (function() {
-          let display = document.getElementById('calc-display');
-          let currentValue = '0';
-          let previousValue = '';
-          let operation = null;
-          
-          document.querySelectorAll('[data-interaction-id^="calc-"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const action = this.dataset.interactionId.replace('calc-', '');
+        let display = document.getElementById('calc-display');
+        let currentValue = '0';
+        let previousValue = '';
+        let operation = null;
+        
+        window.calcButton = function(action) {
+          if (!isNaN(action) || action === '.') {
+            if (currentValue === '0' && action !== '.') {
+              currentValue = action;
+            } else if (action === '.' && !currentValue.includes('.')) {
+              currentValue += action;
+            } else if (action !== '.') {
+              currentValue = currentValue === '0' ? action : currentValue + action;
+            }
+            display.value = currentValue;
+          } else if (action === '=') {
+            if (operation && previousValue) {
+              const prev = parseFloat(previousValue);
+              const curr = parseFloat(currentValue);
+              let result = 0;
               
-              if (!isNaN(action) || action === 'decimal') {
-                if (currentValue === '0' && action !== 'decimal') {
-                  currentValue = action;
-                } else {
-                  currentValue += action === 'decimal' ? '.' : action;
-                }
-                display.value = currentValue;
-              } else if (action === 'equals') {
-                if (operation && previousValue) {
-                  const prev = parseFloat(previousValue);
-                  const curr = parseFloat(currentValue);
-                  let result = 0;
-                  
-                  switch(operation) {
-                    case 'plus': result = prev + curr; break;
-                    case 'minus': result = prev - curr; break;
-                    case 'multiply': result = prev * curr; break;
-                    case 'divide': result = prev / curr; break;
-                  }
-                  
-                  currentValue = result.toString();
-                  display.value = currentValue;
-                  operation = null;
-                  previousValue = '';
-                }
-              } else {
-                operation = action;
-                previousValue = currentValue;
-                currentValue = '0';
+              switch(operation) {
+                case '+': result = prev + curr; break;
+                case '-': result = prev - curr; break;
+                case '*': result = prev * curr; break;
+                case '/': result = prev / curr; break;
               }
-            });
-          });
-        })();
+              
+              currentValue = result.toString();
+              display.value = currentValue;
+              operation = null;
+              previousValue = '';
+            }
+          } else {
+            // It's an operation (+, -, *, /)
+            operation = action;
+            previousValue = currentValue;
+            currentValue = '0';
+          }
+        };
       </script>
     </div>
   `
