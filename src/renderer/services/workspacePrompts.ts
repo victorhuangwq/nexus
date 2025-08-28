@@ -97,6 +97,11 @@ Remember: Generate complete, functional HTML that works immediately. No placehol
 export const WORKSPACE_CSS = `
 <style>
   /* Gemini-OS inspired styling */
+  /* Default text color for all workspace content */
+  body, div, p, h1, h2, h3, h4, h5, h6, span, label {
+    color: #333 !important;
+  }
+  
   .workspace-text {
     color: #333;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -167,12 +172,16 @@ export const WORKSPACE_CSS = `
   
   .dark-theme {
     background: #1a1a2e;
-    color: #eee;
+    color: #eee !important;
+  }
+  
+  .dark-theme * {
+    color: #eee !important;
   }
   
   .dark-theme .workspace-panel {
     background: rgba(255, 255, 255, 0.05);
-    color: #eee;
+    color: #eee !important;
   }
   
   /* Game canvas styling */

@@ -30,85 +30,85 @@ export const tokens = {
     full: '9999px',
   },
 
-  // Consistent shadows
+  // Consistent shadows - Softer for minimalist look
   shadow: {
     none: 'none',
-    sm: '0 2px 4px rgba(0, 0, 0, 0.05)',
-    md: '0 4px 12px rgba(0, 0, 0, 0.08)',
-    lg: '0 8px 24px rgba(0, 0, 0, 0.12)',
-    xl: '0 12px 40px rgba(0, 0, 0, 0.15)',
-    focus: '0 0 0 3px rgba(78, 205, 196, 0.1)',
+    sm: '0 1px 3px rgba(0, 0, 0, 0.05)',
+    md: '0 2px 8px rgba(0, 0, 0, 0.06)',
+    lg: '0 4px 16px rgba(0, 0, 0, 0.08)',
+    xl: '0 8px 32px rgba(0, 0, 0, 0.10)',
+    focus: '0 0 0 3px rgba(255, 140, 66, 0.2)',
   },
 
-  // Color palette
+  // Color palette - Minimalist yellow theme
   colors: {
-    // Canvas layers
+    // Canvas layers - Light, clean backgrounds
     canvas: {
-      base: '#0F0F23',
-      raised: 'rgba(255, 255, 255, 0.02)',
-      overlay: 'rgba(255, 255, 255, 0.03)',
-      section: 'rgba(255, 255, 255, 0.02)',
+      base: '#FAFAF8',  // Warm off-white
+      raised: '#FFFFFF',
+      overlay: 'rgba(255, 255, 255, 0.95)',
+      section: '#FCFCFA',
     },
 
-    // Text hierarchy
+    // Text hierarchy - Dark for contrast
     text: {
-      primary: 'rgba(255, 255, 255, 0.95)',
-      secondary: 'rgba(255, 255, 255, 0.85)',
-      tertiary: 'rgba(255, 255, 255, 0.7)',
-      muted: 'rgba(255, 255, 255, 0.6)',
-      placeholder: 'rgba(255, 255, 255, 0.4)',
-      disabled: 'rgba(255, 255, 255, 0.3)',
+      primary: '#1A1A1A',
+      secondary: '#4A4A4A',
+      tertiary: '#6A6A6A',
+      muted: '#8A8A8A',
+      placeholder: '#AAAAAA',
+      disabled: '#CCCCCC',
     },
 
-    // Brand colors
+    // Brand colors - Soft orange-focused
     brand: {
-      primary: '#4ECDC4',
-      primaryAlpha: 'rgba(78, 205, 196, 0.9)',
-      primaryHover: 'rgba(78, 205, 196, 1)',
-      primaryFocus: 'rgba(78, 205, 196, 0.3)',
-      primarySubtle: 'rgba(78, 205, 196, 0.1)',
+      primary: '#FF8C42',  // Soft orange
+      primaryAlpha: 'rgba(255, 140, 66, 0.9)',
+      primaryHover: '#FF7A2E',
+      primaryFocus: 'rgba(255, 140, 66, 0.2)',
+      primarySubtle: 'rgba(255, 140, 66, 0.08)',
     },
 
-    // Accent colors
+    // Accent colors - Complementary minimal palette
     accent: {
-      coral: '#FF6B6B',
-      coralAlpha: 'rgba(255, 107, 107, 0.9)',
-      amber: '#FFE66D',
-      amberAlpha: 'rgba(255, 230, 109, 0.9)',
-      emerald: '#10B981',
-      emeraldAlpha: 'rgba(16, 185, 129, 0.9)',
+      warm: '#FFB084',  // Light peach
+      warmAlpha: 'rgba(255, 176, 132, 0.9)',
+      light: '#FFF8F3',  // Very light cream
+      lightAlpha: 'rgba(255, 248, 243, 0.9)',
+      dark: '#2C2C2C',  // Almost black
+      darkAlpha: 'rgba(44, 44, 44, 0.9)',
     },
 
-    // Borders
+    // Borders - Subtle and minimal
     border: {
-      default: 'rgba(255, 255, 255, 0.06)',
-      hover: 'rgba(255, 255, 255, 0.08)',
-      focus: 'rgba(78, 205, 196, 0.3)',
-      subtle: 'rgba(255, 255, 255, 0.04)',
+      default: 'rgba(0, 0, 0, 0.08)',
+      hover: 'rgba(0, 0, 0, 0.12)',
+      focus: 'rgba(255, 140, 66, 0.4)',
+      subtle: 'rgba(0, 0, 0, 0.04)',
     },
   },
 
-  // Glass morphism effects
+  // Glass morphism effects - Subtle for light theme
   glass: {
     light: {
-      background: 'rgba(255, 255, 255, 0.03)',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
-      blur: 'blur(40px)',
+      background: 'rgba(255, 255, 255, 0.7)',
+      border: '1px solid rgba(0, 0, 0, 0.06)',
+      blur: 'blur(10px)',
     },
     medium: {
-      background: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(255, 255, 255, 0.08)',
-      blur: 'blur(40px)',
+      background: 'rgba(255, 255, 255, 0.8)',
+      border: '1px solid rgba(0, 0, 0, 0.08)',
+      blur: 'blur(12px)',
     },
     strong: {
-      background: 'rgba(255, 255, 255, 0.08)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      blur: 'blur(40px)',
+      background: 'rgba(255, 255, 255, 0.9)',
+      border: '1px solid rgba(0, 0, 0, 0.1)',
+      blur: 'blur(16px)',
     },
     dark: {
-      background: 'rgba(15, 15, 35, 0.8)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      blur: 'blur(20px)',
+      background: 'rgba(250, 250, 248, 0.95)',
+      border: '1px solid rgba(0, 0, 0, 0.08)',
+      blur: 'blur(8px)',
     },
   },
 

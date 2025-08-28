@@ -132,6 +132,8 @@ export class DynamicWorkspaceGenerator {
     
     return `${WORKSPACE_SYSTEM_PROMPT}
 
+${WORKSPACE_CSS}
+
 User Intent: "${intent}"
 
 ${historyContext}
@@ -142,12 +144,17 @@ Generate a complete HTML workspace that:
 3. Has interactive elements with data-interaction-id attributes
 4. Uses the workspace CSS classes for consistent styling
 5. Embeds any necessary JavaScript for interactivity
+6. ALWAYS ensure text is visible - use color: #333 for text on light backgrounds
+
+CRITICAL: Include the CSS styles above in your HTML output within <style> tags.
+CRITICAL: Ensure all text has proper contrast - never use light colors on light backgrounds.
 
 Remember to:
 - Use iframes for embedding websites (Google, GitHub, etc.)
 - Add search functionality where appropriate
 - Include multiple tools if the task requires it
 - Make the workspace immediately actionable
+- Always set text color to #333 for readability on light backgrounds
 
 Output the HTML content only, no markdown or explanations.`;
   }
@@ -257,6 +264,42 @@ ${recentInteractions}`;
    */
   private generateFallbackWorkspace(intent: string): WorkspaceGenerationResult {
     const htmlContent = `
+      <style>
+        /* Ensure proper text colors */
+        .workspace-container, .workspace-container * {
+          color: #333;
+        }
+        .workspace-container {
+          padding: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .workspace-title {
+          color: #1A1A1A;
+          font-size: 24px;
+          font-weight: 600;
+          margin-bottom: 20px;
+        }
+        .quick-actions {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .action-button {
+          padding: 10px 20px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        .main-iframe {
+          width: 100%;
+          height: 500px;
+          border: none;
+          border-radius: 8px;
+        }
+      </style>
       <div class="workspace-container">
         <div class="workspace-header">
           <h2 class="workspace-title">Workspace for: ${this.escapeHtml(intent)}</h2>

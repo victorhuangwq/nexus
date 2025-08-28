@@ -136,10 +136,10 @@ export const App: React.FC = () => {
         // Show error workspace with basic tools as fallback
         try {
           const fallbackHtml = `
-            <div style="padding: 40px; text-align: center; color: #e0e0e0; font-family: system-ui, -apple-system, sans-serif;">
+            <div style="padding: 40px; text-align: center; color: #333; font-family: system-ui, -apple-system, sans-serif;">
               <h2 style="color: #ff6b6b; margin-bottom: 20px;">Unable to process your request</h2>
-              <p style="margin-bottom: 30px; color: #999;">We encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}</p>
-              <p style="margin-bottom: 40px; color: #999;">Here are some tools you can use instead:</p>
+              <p style="margin-bottom: 30px; color: #666;">We encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}</p>
+              <p style="margin-bottom: 40px; color: #666;">Here are some tools you can use instead:</p>
               <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
                 <a href="https://www.google.com/search?q=${encodeURIComponent(intent)}" target="_blank" style="padding: 12px 24px; background: #4285f4; color: white; text-decoration: none; border-radius: 8px;">Search Google</a>
                 <a href="https://www.wolframalpha.com/input?i=${encodeURIComponent(intent)}" target="_blank" style="padding: 12px 24px; background: #ff6c2c; color: white; text-decoration: none; border-radius: 8px;">Try Wolfram Alpha</a>
@@ -261,25 +261,21 @@ export const App: React.FC = () => {
     <ChakraProvider theme={theme}>
       <Box 
         minH="100vh" 
-        bg={`
-          radial-gradient(
-            ellipse at top left, 
-            rgba(78, 205, 196, 0.03) 0%, 
-            transparent 50%
-          ),
-          radial-gradient(
-            ellipse at bottom right, 
-            rgba(255, 107, 107, 0.02) 0%, 
-            transparent 50%
-          ),
-          linear-gradient(
-            135deg, 
-            #0F0F23 0%, 
-            #1A1A2E 100%
-          )
-        `}
+        bg={tokens.colors.canvas.base}
         position="relative"
         overflow="hidden"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `radial-gradient(circle, ${tokens.colors.border.subtle} 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+          opacity: 0.5,
+          pointerEvents: "none",
+        }}
       >
 
         <Container maxW="100%" minH="100vh" px={8} position="relative" zIndex={1}>
@@ -297,7 +293,7 @@ export const App: React.FC = () => {
                   w="32px"
                   h="32px"
                   borderRadius={tokens.radius.sm}
-                  bgGradient="linear(135deg, #FF6B6B 0%, #4ECDC4 50%, #FFE66D 100%)"
+                  bg={tokens.colors.brand.primary}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -307,7 +303,7 @@ export const App: React.FC = () => {
                     position: "absolute",
                     inset: "2px",
                     borderRadius: "6px",
-                    bg: "rgba(15, 15, 35, 0.9)",
+                    bg: tokens.colors.canvas.base,
                   }}
                 >
                   <Box
@@ -318,19 +314,18 @@ export const App: React.FC = () => {
                     justifyContent="center"
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="3" cy="3" r="2" fill="white" />
-                      <circle cx="13" cy="3" r="2" fill="white" />
-                      <circle cx="3" cy="13" r="2" fill="white" />
-                      <circle cx="13" cy="13" r="2" fill="white" />
-                      <path d="M3 3L13 13M13 3L3 13" stroke="white" strokeWidth="1.5" opacity="0.6" />
+                      <circle cx="3" cy="3" r="2" fill="#FFFFFF" />
+                      <circle cx="13" cy="3" r="2" fill="#FFFFFF" />
+                      <circle cx="3" cy="13" r="2" fill="#FFFFFF" />
+                      <circle cx="13" cy="13" r="2" fill="#FFFFFF" />
+                      <path d="M3 3L13 13M13 3L3 13" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.8" />
                     </svg>
                   </Box>
                 </Box>
                 <Text
                   fontSize="2xl"
                   fontWeight="700"
-                  bgGradient="linear(135deg, #FFFFFF 0%, #E0E0E0 100%)"
-                  bgClip="text"
+                  color={tokens.colors.text.primary}
                   userSelect="none"
                   letterSpacing="-0.02em"
                 >
@@ -347,7 +342,7 @@ export const App: React.FC = () => {
               border={tokens.glass.light.border}
               backdropFilter={tokens.glass.light.blur}
             >
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.6)" fontWeight="500">
+              <Text fontSize="xs" color={tokens.colors.text.tertiary} fontWeight="500">
                 v2.0 Beta
               </Text>
             </Box>
@@ -381,7 +376,7 @@ export const App: React.FC = () => {
                       <Text
                         fontSize="6xl"
                         fontWeight="800"
-                        bgGradient="linear(135deg, #FFFFFF 0%, #FFE66D 30%, #4ECDC4 70%, #FF6B6B 100%)"
+                        bgGradient={`linear(135deg, ${tokens.colors.text.primary} 0%, ${tokens.colors.brand.primary} 100%)`}
                         bgClip="text"
                         lineHeight="1.1"
                         letterSpacing="-0.02em"
@@ -400,7 +395,7 @@ export const App: React.FC = () => {
                     >
                       <Text
                         fontSize="2xl"
-                        color="rgba(255, 255, 255, 0.8)"
+                        color={tokens.colors.text.secondary}
                         fontWeight="400"
                         lineHeight="1.6"
                         maxW="700px"
@@ -508,30 +503,30 @@ export const App: React.FC = () => {
                             left: 0,
                             right: 0,
                             height: "1px",
-                            bgGradient: "linear(to-r, transparent, rgba(255, 255, 255, 0.3), transparent)"
+                            bgGradient: `linear(to-r, transparent, ${tokens.colors.border.default}, transparent)`
                           }}
                         >
                           <VStack spacing={6}>
-                            <Text fontSize="2xl" fontWeight="700" color="white">
+                            <Text fontSize="2xl" fontWeight="700" color={tokens.colors.text.primary}>
                               "{content.content.intent}"
                             </Text>
-                            <Text fontSize="lg" color="rgba(255, 255, 255, 0.8)" fontWeight="400" lineHeight="1.6">
+                            <Text fontSize="lg" color={tokens.colors.text.secondary} fontWeight="400" lineHeight="1.6">
                               {content.content.message}
                             </Text>
                             {content.content.intentMatch && (
                               <Box
                                 px={3}
                                 py={1}
-                                bg="rgba(255, 230, 109, 0.1)"
+                                bg={tokens.colors.brand.primarySubtle}
                                 borderRadius="full"
-                                border="1px solid rgba(255, 230, 109, 0.2)"
+                                border={`1px solid ${tokens.colors.brand.primaryFocus}`}
                               >
-                                <Text fontSize="sm" color="rgba(255, 230, 109, 0.9)" fontWeight="500">
+                                <Text fontSize="sm" color={tokens.colors.brand.primary} fontWeight="500">
                                   {content.content.intentMatch.confidence}% match found
                                 </Text>
                               </Box>
                             )}
-                            <Text fontSize="sm" color="rgba(255, 255, 255, 0.5)" fontWeight="400">
+                            <Text fontSize="sm" color={tokens.colors.text.muted} fontWeight="400">
                               Click Nexus to start over
                             </Text>
                           </VStack>
@@ -547,11 +542,11 @@ export const App: React.FC = () => {
           {/* Footer */}
           <HStack justify="center" py={6} mt={8}>
             <HStack spacing={6}>
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.4)" fontWeight="400">
+              <Text fontSize="xs" color={tokens.colors.text.muted} fontWeight="400">
                 Press ⌥ + D for dev tools
               </Text>
-              <Box w="1px" h="12px" bg="rgba(255, 255, 255, 0.1)" />
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.4)" fontWeight="400">
+              <Box w="1px" h="12px" bg={tokens.colors.border.subtle} />
+              <Text fontSize="xs" color={tokens.colors.text.muted} fontWeight="400">
                 Your AI workspace builder • One task at a time
               </Text>
             </HStack>

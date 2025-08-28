@@ -37,10 +37,10 @@ export const PhysicsHomework: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="white">
+          <Text fontSize="2xl" fontWeight="600" color="#1A1A1A">
             Physics Homework Toolkit
           </Text>
-          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+          <Text fontSize="md" color="#4A4A4A" fontWeight="400">
             Everything you need for high school physics
           </Text>
         </VStack>
@@ -68,10 +68,10 @@ export const PhysicsHomework: React.FC = () => {
                     <HStack spacing={3}>
                       <Text fontSize="2xl">🧮</Text>
                       <VStack align="start" spacing={0}>
-                        <Text fontSize="xl" fontWeight="600" color="white">
+                        <Text fontSize="xl" fontWeight="600" color="#1A1A1A">
                           Graphing Calculator
                         </Text>
-                        <Text fontSize="sm" color="rgba(255, 255, 255, 0.8)">
+                        <Text fontSize="sm" color="#4A4A4A">
                           Desmos for equations and functions
                         </Text>
                       </VStack>
@@ -112,7 +112,7 @@ export const PhysicsHomework: React.FC = () => {
             border="1px solid rgba(255, 255, 255, 0.1)"
           >
             <CardBody>
-              <Text fontSize="lg" fontWeight="600" color="white" mb={4}>
+              <Text fontSize="lg" fontWeight="600" color="#1A1A1A" mb={4}>
                 Physics Formula Reference
               </Text>
               <VStack spacing={4} align="stretch">
@@ -123,7 +123,7 @@ export const PhysicsHomework: React.FC = () => {
                     </Text>
                     <VStack spacing={2} align="start">
                       {category.formulas.map((formula, idx) => (
-                        <Text key={idx} fontSize="sm" fontFamily="mono" color="white" bg="rgba(255, 255, 255, 0.1)" px={3} py={2} borderRadius="8px" w="full">
+                        <Text key={idx} fontSize="sm" fontFamily="mono" color="#1A1A1A" bg="rgba(0, 0, 0, 0.05)" px={3} py={2} borderRadius="8px" w="full">
                           {formula}
                         </Text>
                       ))}
@@ -156,7 +156,7 @@ export const PhysicsHomework: React.FC = () => {
               <Text fontSize="sm" fontWeight="600" color="brand.600">
                 📝 Problem Solving
               </Text>
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.8)">
+              <Text fontSize="xs" color="#6A6A6A">
                 Always draw diagrams, identify given values, and list what you need to find
               </Text>
             </VStack>
@@ -164,7 +164,7 @@ export const PhysicsHomework: React.FC = () => {
               <Text fontSize="sm" fontWeight="600" color="accent.purple">
                 🧮 Use the Calculator
               </Text>
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.8)">
+              <Text fontSize="xs" color="#6A6A6A">
                 Graph functions to visualize relationships, plot data points, and verify solutions
               </Text>
             </VStack>
@@ -172,7 +172,7 @@ export const PhysicsHomework: React.FC = () => {
               <Text fontSize="sm" fontWeight="600" color="accent.emerald">
                 🔍 Check Your Work
               </Text>
-              <Text fontSize="xs" color="rgba(255, 255, 255, 0.8)">
+              <Text fontSize="xs" color="#6A6A6A">
                 Verify units, check order of magnitude, and ask "Does this answer make sense?"
               </Text>
             </VStack>

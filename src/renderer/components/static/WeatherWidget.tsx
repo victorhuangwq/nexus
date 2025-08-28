@@ -51,10 +51,10 @@ export const WeatherWidget: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="white">
+          <Text fontSize="2xl" fontWeight="600" color="#1A1A1A">
             Weather Radar
           </Text>
-          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+          <Text fontSize="md" color="#4A4A4A" fontWeight="400">
             Interactive weather maps powered by Windy
           </Text>
         </VStack>
@@ -144,7 +144,7 @@ export const WeatherWidget: React.FC = () => {
         <CardBody p={0}>
           <VStack spacing={0}>
             <Box p={6} w="full">
-              <Text fontSize="xl" fontWeight="600" color="white" textAlign="center">
+              <Text fontSize="xl" fontWeight="600" color="#1A1A1A" textAlign="center">
                 {city} Live Weather Map
               </Text>
             </Box>
