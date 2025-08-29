@@ -359,7 +359,7 @@ export const App: React.FC = () => {
         }}
       >
 
-        <Container maxW="100%" minH="100vh" px={8} position="relative" zIndex={1}>
+        <Container maxW="100%" minH="100vh" px={8} pt={12} position="relative" zIndex={1}>
           {/* Minimal Header */}
           <HStack justify="space-between" align="center" py={4} mb={2}>
             <MotionBox

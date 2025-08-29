@@ -172,19 +172,29 @@ export const HistoricalWorkspaces: React.FC<HistoricalWorkspacesProps> = ({
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.15 }}
                       position="absolute"
-                      top={2}
-                      right={2}
-                      zIndex={2}
+                      top={1}
+                      right={1}
+                      zIndex={10}
                     >
                       <IconButton
                         aria-label="Delete workspace"
                         icon={<CloseIcon />}
                         size="xs"
-                        variant="ghost"
+                        variant="solid"
                         colorScheme="red"
                         borderRadius="full"
+                        w="20px"
+                        h="20px"
+                        minW="20px"
+                        fontSize="8px"
+                        bg="red.500"
+                        color="white"
                         onClick={(e) => handleDeleteWorkspace(e, workspace.id)}
-                        _hover={{ bg: 'red.100' }}
+                        _hover={{ 
+                          bg: 'red.600',
+                          transform: 'scale(1.1)'
+                        }}
+                        boxShadow="0 2px 8px rgba(0,0,0,0.2)"
                       />
                     </MotionBox>
                   )}
