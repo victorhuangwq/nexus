@@ -68,7 +68,7 @@ export const OmniPrompt: React.FC<OmniPromptProps> = ({
     <VStack spacing={4} align="center" w="full">
       <MotionBox
         w="full"
-        maxW="480px"
+        maxW="100%"
       >
         <InputGroup size="lg">
           <MotionInput
@@ -80,50 +80,52 @@ export const OmniPrompt: React.FC<OmniPromptProps> = ({
             onBlur={() => setIsFocused(false)}
             placeholder={placeholder}
             variant="unstyled"
-            fontSize={tokens.typography.fontSize.base}
-            h={tokens.space[6]}
-            pl={tokens.space[2]}
-            pr="56px"
+            fontSize="15px"
+            h="44px"
+            pl={tokens.space[3]}
+            pr="50px"
             animate={focusEffect}
-            transition={{ duration: 0.2 }}
-            bg={tokens.glass.light.background}
-            backdropFilter={tokens.glass.light.blur}
-            style={{ WebkitBackdropFilter: tokens.glass.light.blur }}
+            transition={{ duration: 0.15 }}
+            bg="white"
+            backdropFilter="none"
             border="1px solid"
             borderColor={tokens.colors.border.default}
-            borderRadius={tokens.radius.lg}
+            borderRadius="22px"
             color={tokens.colors.text.primary}
             fontWeight={tokens.typography.fontWeight.normal}
+            boxShadow={isFocused ? tokens.shadow.md : tokens.shadow.sm}
             _placeholder={{
-              color: tokens.colors.text.placeholder,
-              fontSize: tokens.typography.fontSize.base,
+              color: tokens.colors.text.muted,
+              fontSize: "15px",
               fontWeight: tokens.typography.fontWeight.normal,
             }}
             _hover={{
-              borderColor: tokens.colors.border.hover,
+              boxShadow: tokens.shadow.md,
             }}
             disabled={isLoading}
           />
-          <InputRightElement h={tokens.space[6]} pr={tokens.space[1]}>
+          <InputRightElement h="44px" pr="6px">
             <IconButton
               aria-label="Submit"
-              icon={<ArrowForwardIcon />}
+              icon={<ArrowForwardIcon boxSize={3} />}
               variant="ghost"
               size="sm"
-              borderRadius={tokens.radius.md}
+              h="32px"
+              w="32px"
+              borderRadius="16px"
               onClick={handleSubmit}
               isLoading={isLoading}
               disabled={!value.trim() || isLoading}
-              color={tokens.colors.text.secondary}
+              color={value.trim() ? tokens.colors.brand.primary : tokens.colors.text.muted}
+              bg={value.trim() ? tokens.colors.brand.primarySubtle : 'transparent'}
               _hover={{
-                transform: 'scale(1.05)',
-                bg: tokens.colors.brand.primarySubtle,
+                bg: value.trim() ? tokens.colors.brand.primaryFocus : tokens.colors.brand.primarySubtle,
                 color: tokens.colors.brand.primary,
               }}
               _active={{
-                transform: 'scale(0.98)',
+                transform: 'scale(0.95)',
               }}
-              transition={`all ${tokens.transition.duration.fast}`}
+              transition={`all ${tokens.transition.duration.instant}`}
             />
           </InputRightElement>
         </InputGroup>

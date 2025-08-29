@@ -6,6 +6,7 @@ import {
   HStack,
   Text,
   Container,
+  Button,
   useDisclosure,
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,6 +19,8 @@ import { GraphingCalculator, TokyoTrip, BTCChart, WeatherWidget, PhysicsHomework
 import { matchIntent, type IntentMatch } from './utils/intentMatcher';
 import { workspaceGenerator, type InteractionData } from './services/DynamicWorkspaceGenerator';
 import { GeneratedWorkspace } from './components/GeneratedWorkspace';
+import { HistoricalWorkspaces } from './components/HistoricalWorkspaces';
+import { workspaceCache, type CachedWorkspace } from './services/WorkspaceCache';
 
 const MotionBox = motion(Box);
 const MotionVStack = motion(VStack);
@@ -40,6 +43,11 @@ export const App: React.FC = () => {
   const [debugData, setDebugData] = useState<any>({});
   const { isOpen: isDevHUDOpen, onOpen: onDevHUDOpen, onClose: onDevHUDClose } = useDisclosure();
 
+  // Load workspace cache on app initialization
+  useEffect(() => {
+    workspaceCache.loadCache();
+  }, []);
+
   const handleIntentSubmit = async (intent: string) => {
     setCurrentIntent(intent);
     setIsLoading(true);
@@ -47,7 +55,14 @@ export const App: React.FC = () => {
     const startTime = Date.now();
     
     try {
-      // First, try to match against static components
+      // First, check if we have a cached workspace for this intent
+      const cachedWorkspace = workspaceCache.findByIntent(intent);
+      if (cachedWorkspace) {
+        await handleCachedWorkspaceSelect(cachedWorkspace);
+        return;
+      }
+      
+      // Then, try to match against static components
       const intentMatch = matchIntent(intent);
       
       if (intentMatch && intentMatch.confidence >= 80) {
@@ -82,6 +97,14 @@ export const App: React.FC = () => {
           timestamp: Date.now(),
         };
         
+        // Cache the static workspace
+        await workspaceCache.cacheWorkspace(
+          intent,
+          '', // Static components don't have HTML content
+          'static',
+          intentMatch.component
+        );
+        
         setRenderedContent([newContent]);
       } else {
         // Use dynamic workspace generation for all unmatched queries
@@ -110,6 +133,13 @@ export const App: React.FC = () => {
           },
           timestamp: Date.now(),
         };
+        
+        // Cache the dynamic workspace
+        await workspaceCache.cacheWorkspace(
+          intent,
+          workspaceResult.htmlContent,
+          'dynamic'
+        );
         
         setRenderedContent([newContent]);
       }
@@ -191,6 +221,50 @@ export const App: React.FC = () => {
     workspaceGenerator.clearHistory();
   };
   
+  // Handle selecting a cached workspace
+  const handleCachedWorkspaceSelect = async (workspace: CachedWorkspace) => {
+    setCurrentIntent(workspace.intent);
+    setIsLoading(true);
+    
+    try {
+      if (workspace.metadata.workspaceType === 'static' && workspace.metadata.component) {
+        // Render static component from cache
+        const newContent: RenderedContent = {
+          id: `content-${Date.now()}`,
+          type: 'static',
+          component: workspace.metadata.component,
+          content: {
+            intent: workspace.intent,
+            cached: true,
+          },
+          timestamp: Date.now(),
+        };
+        setRenderedContent([newContent]);
+      } else if (workspace.metadata.workspaceType === 'dynamic' && workspace.htmlContent) {
+        // Render dynamic workspace from cache
+        const newContent: RenderedContent = {
+          id: `content-${Date.now()}`,
+          type: 'workspace',
+          workspaceHtml: workspace.htmlContent,
+          content: {
+            intent: workspace.intent,
+            cached: true,
+          },
+          timestamp: Date.now(),
+        };
+        setRenderedContent([newContent]);
+      }
+      
+      // Update access time for cache
+      await workspaceCache.updateWorkspaceState(workspace.id, {});
+      
+    } catch (error) {
+      console.error('Failed to load cached workspace:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   // Handle interactions from generated workspace
   const handleWorkspaceInteraction = async (interaction: InteractionData) => {
     setIsLoading(true);
@@ -223,9 +297,10 @@ export const App: React.FC = () => {
     }
   };
 
-  // Keyboard shortcut for Dev HUD (Option + D)
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Dev HUD (Option + D)
       if (event.altKey && event.key === 'd') {
         event.preventDefault();
         if (isDevHUDOpen) {
@@ -234,11 +309,17 @@ export const App: React.FC = () => {
           onDevHUDOpen();
         }
       }
+      
+      // Clear workspace (ESC)
+      if (event.key === 'Escape' && renderedContent.length > 0) {
+        event.preventDefault();
+        handleLogoClick();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDevHUDOpen, onDevHUDOpen, onDevHUDClose]);
+  }, [isDevHUDOpen, onDevHUDOpen, onDevHUDClose, renderedContent]);
 
   const logoVariants = {
     idle: {
@@ -272,26 +353,29 @@ export const App: React.FC = () => {
           right: 0,
           bottom: 0,
           backgroundImage: `radial-gradient(circle, ${tokens.colors.border.subtle} 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-          opacity: 0.5,
+          backgroundSize: "24px 24px",
+          opacity: 0.2,
           pointerEvents: "none",
         }}
       >
 
         <Container maxW="100%" minH="100vh" px={8} position="relative" zIndex={1}>
-          {/* Header */}
-          <HStack justify="space-between" align="center" py={6} mb={4}>
+          {/* Minimal Header */}
+          <HStack justify="space-between" align="center" py={4} mb={2}>
             <MotionBox
               variants={logoVariants}
               initial="idle"
               whileHover="hover"
               onClick={handleLogoClick}
               cursor="pointer"
+              opacity={renderedContent.length > 0 ? 1 : 0}
+              pointerEvents={renderedContent.length > 0 ? 'auto' : 'none'}
+              transition={{ opacity: { duration: 0.3 } }}
             >
-              <HStack spacing={3} align="center">
+              <HStack spacing={2} align="center">
                 <Box
-                  w="32px"
-                  h="32px"
+                  w="24px"
+                  h="24px"
                   borderRadius={tokens.radius.sm}
                   bg={tokens.colors.brand.primary}
                   display="flex"
@@ -302,7 +386,7 @@ export const App: React.FC = () => {
                     content: '""',
                     position: "absolute",
                     inset: "2px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     bg: tokens.colors.canvas.base,
                   }}
                 >
@@ -313,21 +397,21 @@ export const App: React.FC = () => {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                       <circle cx="3" cy="3" r="2" fill={tokens.colors.brand.primary} />
                       <circle cx="13" cy="3" r="2" fill={tokens.colors.brand.primary} />
                       <circle cx="3" cy="13" r="2" fill={tokens.colors.brand.primary} />
                       <circle cx="13" cy="13" r="2" fill={tokens.colors.brand.primary} />
-                      <path d="M3 3L13 13M13 3L3 13" stroke={tokens.colors.brand.primary} strokeWidth="1.5" opacity="0.6" />
+                      <path d="M3 3L13 13M13 3L3 13" stroke={tokens.colors.brand.primary} strokeWidth="1.5" opacity="0.5" />
                     </svg>
                   </Box>
                 </Box>
                 <Text
-                  fontSize="2xl"
-                  fontWeight="700"
-                  color={tokens.colors.text.primary}
+                  fontSize="lg"
+                  fontWeight="600"
+                  color={tokens.colors.text.secondary}
                   userSelect="none"
-                  letterSpacing="-0.02em"
+                  letterSpacing="-0.01em"
                 >
                   Nexus
                 </Text>
@@ -335,15 +419,11 @@ export const App: React.FC = () => {
             </MotionBox>
             
             <Box
-              px={tokens.space[2]}
-              py={tokens.space[1]}
-              bg={tokens.glass.light.background}
-              borderRadius={tokens.radius.full}
-              border={tokens.glass.light.border}
-              backdropFilter={tokens.glass.light.blur}
+              opacity={renderedContent.length > 0 ? 1 : 0}
+              transition="opacity 0.3s"
             >
-              <Text fontSize="xs" color={tokens.colors.text.tertiary} fontWeight="500">
-                v2.0 Beta
+              <Text fontSize="xs" color={tokens.colors.text.muted} fontWeight="400">
+                v2.5
               </Text>
             </Box>
           </HStack>
@@ -358,67 +438,128 @@ export const App: React.FC = () => {
                   animate="visible"
                   exit="exit"
                   variants={contentVariants}
-                  transition={{ duration: 0.5 }}
-                  spacing={8}
+                  transition={{ duration: 0.3 }}
+                  spacing={0}
                   align="center"
                   w="full"
-                  maxW="900px"
+                  maxW="600px"
                   mx="auto"
                   justify="center"
-                  minH="70vh"
+                  minH="60vh"
+                  position="relative"
+                  top="-5vh"
                 >
-                  <VStack spacing={6} textAlign="center">
-                    <MotionBox
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                      <Text
-                        fontSize="6xl"
-                        fontWeight="800"
-                        bgGradient={`linear(135deg, ${tokens.colors.text.primary} 0%, ${tokens.colors.brand.primary} 100%)`}
-                        bgClip="text"
-                        lineHeight="1.1"
-                        letterSpacing="-0.02em"
-                        mb={6}
-                      >
-                        Type a task.
-                        <br />
-                        Nexus builds the workspace.
-                      </Text>
-                    </MotionBox>
-                    
-                    <MotionBox
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                      <Text
-                        fontSize="2xl"
-                        color={tokens.colors.text.secondary}
-                        fontWeight="400"
-                        lineHeight="1.6"
-                        maxW="700px"
-                      >
-                        Stop chasing menus and juggling tabs. Just work.
-                      </Text>
-                    </MotionBox>
-                    
-                  </VStack>
-                  
+                  {/* Minimal logo - smaller, centered */}
                   <MotionBox
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    mb={8}
+                  >
+                    <Box
+                      w="48px"
+                      h="48px"
+                      borderRadius={tokens.radius.md}
+                      bg={tokens.colors.brand.primary}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      position="relative"
+                      _before={{
+                        content: '""',
+                        position: "absolute",
+                        inset: "3px",
+                        borderRadius: "9px",
+                        bg: tokens.colors.canvas.base,
+                      }}
+                    >
+                      <Box
+                        position="relative"
+                        zIndex={1}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 16 16" fill="none">
+                          <circle cx="3" cy="3" r="2" fill={tokens.colors.brand.primary} />
+                          <circle cx="13" cy="3" r="2" fill={tokens.colors.brand.primary} />
+                          <circle cx="3" cy="13" r="2" fill={tokens.colors.brand.primary} />
+                          <circle cx="13" cy="13" r="2" fill={tokens.colors.brand.primary} />
+                          <path d="M3 3L13 13M13 3L3 13" stroke={tokens.colors.brand.primary} strokeWidth="1.5" opacity="0.5" />
+                        </svg>
+                      </Box>
+                    </Box>
+                  </MotionBox>
+
+                  {/* Clean, simple tagline */}
+                  <MotionBox
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    mb={10}
+                  >
+                    <Text
+                      fontSize="md"
+                      color={tokens.colors.text.tertiary}
+                      fontWeight="400"
+                      letterSpacing="0.02em"
+                    >
+                      Your AI workspace builder
+                    </Text>
+                  </MotionBox>
+                  
+                  {/* Clean search bar */}
+                  <MotionBox
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
                     w="full"
-                    maxW="700px"
+                    maxW="560px"
                   >
                     <OmniPrompt
                       onSubmit={handleIntentSubmit}
                       isLoading={isLoading}
-                      placeholder="plan a weekend in Kyoto, track BTC/ETH, export slides + email Alice..."
+                      placeholder="What do you want to work on?"
                     />
                   </MotionBox>
+
+                  {/* Subtle suggestions */}
+                  <MotionBox
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    mt={6}
+                  >
+                    <HStack spacing={3} flexWrap="wrap" justify="center">
+                      <Text fontSize="xs" color={tokens.colors.text.muted}>
+                        Try:
+                      </Text>
+                      {['Track crypto prices', 'Plan a trip', 'Build a calculator'].map((suggestion, index) => (
+                        <Button
+                          key={suggestion}
+                          size="xs"
+                          variant="ghost"
+                          color={tokens.colors.text.tertiary}
+                          fontSize="xs"
+                          fontWeight="400"
+                          px={2}
+                          py={1}
+                          h="auto"
+                          borderRadius={tokens.radius.sm}
+                          _hover={{
+                            bg: tokens.colors.brand.primarySubtle,
+                            color: tokens.colors.brand.primary,
+                          }}
+                          onClick={() => handleIntentSubmit(suggestion)}
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </HStack>
+                  </MotionBox>
+
+                  {/* Historical Workspaces */}
+                  <HistoricalWorkspaces onWorkspaceSelect={handleCachedWorkspaceSelect} />
                 </MotionVStack>
               ) : (
                 <MotionVStack
@@ -539,18 +680,14 @@ export const App: React.FC = () => {
             </AnimatePresence>
           </Box>
 
-          {/* Footer */}
-          <HStack justify="center" py={6} mt={8}>
-            <HStack spacing={6}>
+          {/* Minimal Footer - only show when content is visible */}
+          {renderedContent.length > 0 && (
+            <HStack justify="center" py={4} mt={8}>
               <Text fontSize="xs" color={tokens.colors.text.muted} fontWeight="400">
-                Press ⌥ + D for dev tools
-              </Text>
-              <Box w="1px" h="12px" bg={tokens.colors.border.subtle} />
-              <Text fontSize="xs" color={tokens.colors.text.muted} fontWeight="400">
-                Your AI workspace builder • One task at a time
+                ⌥+D for dev • ESC to clear
               </Text>
             </HStack>
-          </HStack>
+          )}
         </Container>
 
         {/* Floating Input Bar - only show when viewing generated content */}
