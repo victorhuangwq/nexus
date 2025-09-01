@@ -3,6 +3,8 @@
  * Stores and retrieves previously generated workspaces with full state preservation
  */
 
+import { workspaceStateManager, WorkspaceSnapshot } from './WorkspaceStateManager';
+
 export interface CachedWorkspace {
   id: string;
   intent: string;                    // Original user intent
@@ -100,28 +102,186 @@ export class WorkspaceCache {
       return previews[component] || { title: intent, description: 'Workspace', icon: '💼' };
     }
 
-    // Dynamic workspace previews based on intent
-    if (/crypto|bitcoin|btc/i.test(lowerIntent)) {
-      return { title: 'Crypto Tracker', description: intent, icon: '₿' };
-    }
-    if (/weather|temperature/i.test(lowerIntent)) {
-      return { title: 'Weather Info', description: intent, icon: '🌤️' };
-    }
-    if (/travel|trip|plan/i.test(lowerIntent)) {
-      return { title: 'Travel Planner', description: intent, icon: '✈️' };
-    }
-    if (/calculator|math/i.test(lowerIntent)) {
-      return { title: 'Calculator', description: intent, icon: '🧮' };
-    }
-    if (/research|study/i.test(lowerIntent)) {
-      return { title: 'Research', description: intent, icon: '📚' };
-    }
+    // Enhanced dynamic workspace previews with smarter categorization
+    return this.generateSmartPreview(intent);
+  }
 
+  /**
+   * Generate smart preview titles and descriptions for dynamic workspaces
+   */
+  private generateSmartPreview(intent: string): { title: string; description: string; icon: string } {
+    const lowerIntent = intent.toLowerCase();
+    
+    // Financial & Crypto
+    if (/crypto|bitcoin|btc|ethereum|eth|price|stock|trading|finance|investment/i.test(lowerIntent)) {
+      const titles = ['Market Dashboard', 'Price Tracker', 'Crypto Monitor', 'Financial Hub'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '₿' 
+      };
+    }
+    
+    // Weather & Environment
+    if (/weather|temperature|forecast|climate|rain|snow|storm|wind/i.test(lowerIntent)) {
+      const titles = ['Weather Station', 'Climate Monitor', 'Forecast Center', 'Weather Hub'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '🌤️' 
+      };
+    }
+    
+    // Travel & Places
+    if (/travel|trip|vacation|hotel|flight|city|country|visit|tour|plan/i.test(lowerIntent)) {
+      const titles = ['Travel Planner', 'Trip Dashboard', 'Journey Hub', 'Travel Guide'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '✈️' 
+      };
+    }
+    
+    // Math & Calculations
+    if (/math|calculate|equation|formula|solve|algebra|geometry|statistics/i.test(lowerIntent)) {
+      const titles = ['Math Studio', 'Calculator Pro', 'Formula Hub', 'Math Tools'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '🧮' 
+      };
+    }
+    
+    // Research & Learning
+    if (/research|study|learn|education|course|tutorial|guide|how to/i.test(lowerIntent)) {
+      const titles = ['Research Hub', 'Study Center', 'Learning Lab', 'Knowledge Base'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '📚' 
+      };
+    }
+    
+    // Development & Code
+    if (/code|programming|development|github|api|database|software|app/i.test(lowerIntent)) {
+      const titles = ['Dev Console', 'Code Studio', 'Developer Hub', 'Tech Workspace'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '💻' 
+      };
+    }
+    
+    // Health & Fitness
+    if (/health|fitness|exercise|diet|nutrition|medical|doctor|symptoms/i.test(lowerIntent)) {
+      const titles = ['Health Hub', 'Wellness Center', 'Fitness Studio', 'Health Monitor'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '🏥' 
+      };
+    }
+    
+    // Shopping & Products
+    if (/shop|buy|product|price|compare|deal|store|purchase/i.test(lowerIntent)) {
+      const titles = ['Shopping Hub', 'Product Finder', 'Deal Center', 'Price Compare'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '🛍️' 
+      };
+    }
+    
+    // Entertainment & Media
+    if (/movie|music|game|entertainment|video|watch|play|stream/i.test(lowerIntent)) {
+      const titles = ['Media Center', 'Entertainment Hub', 'Content Studio', 'Media Dashboard'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '🎬' 
+      };
+    }
+    
+    // News & Information
+    if (/news|current|events|information|update|latest|breaking/i.test(lowerIntent)) {
+      const titles = ['News Center', 'Info Hub', 'Update Station', 'News Dashboard'];
+      return { 
+        title: this.selectRandomTitle(titles), 
+        description: this.capitalizeFirst(intent), 
+        icon: '📰' 
+      };
+    }
+    
+    // Default: Create a smart title from the intent
+    return this.generateDefaultTitle(intent);
+  }
+
+  /**
+   * Select a random title from an array
+   */
+  private selectRandomTitle(titles: string[]): string {
+    return titles[Math.floor(Math.random() * titles.length)];
+  }
+
+  /**
+   * Capitalize first letter of string
+   */
+  private capitalizeFirst(str: string): string {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  /**
+   * Generate a default title when no category matches
+   */
+  private generateDefaultTitle(intent: string): { title: string; description: string; icon: string } {
+    // Extract key words from intent to create a meaningful title
+    const words = intent.toLowerCase().split(/\s+/);
+    const meaningfulWords = words.filter(word => 
+      word.length > 2 && 
+      !['the', 'and', 'for', 'with', 'how', 'what', 'why', 'when', 'where'].includes(word)
+    );
+    
+    if (meaningfulWords.length > 0) {
+      // Create title from first 2-3 meaningful words
+      const titleWords = meaningfulWords.slice(0, 3).map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      );
+      
+      const title = titleWords.join(' ') + (meaningfulWords.length > 3 ? ' Hub' : ' Workspace');
+      
+      return {
+        title: title.length > 25 ? titleWords.slice(0, 2).join(' ') + ' Hub' : title,
+        description: this.capitalizeFirst(intent),
+        icon: this.selectContextualIcon(meaningfulWords[0])
+      };
+    }
+    
+    // Fallback
     return { 
-      title: intent.length > 30 ? intent.substring(0, 30) + '...' : intent, 
-      description: 'Custom workspace', 
+      title: intent.length > 25 ? intent.substring(0, 22) + '...' : intent, 
+      description: 'Dynamic workspace', 
       icon: '💼' 
     };
+  }
+
+  /**
+   * Select contextual icon based on the main word
+   */
+  private selectContextualIcon(mainWord: string): string {
+    const iconMap: Record<string, string> = {
+      'data': '📊', 'chart': '📈', 'graph': '📉', 'analytics': '📊',
+      'email': '📧', 'message': '💬', 'chat': '💬', 'communication': '📞',
+      'document': '📄', 'file': '📁', 'text': '📝', 'write': '✍️',
+      'photo': '📸', 'image': '🖼️', 'picture': '🖼️', 'camera': '📷',
+      'music': '🎵', 'audio': '🔊', 'sound': '🔊', 'song': '🎵',
+      'calendar': '📅', 'schedule': '⏰', 'time': '⏰', 'date': '📅',
+      'location': '📍', 'map': '🗺️', 'place': '📍', 'address': '📍',
+      'security': '🔒', 'password': '🔑', 'login': '🔐', 'safe': '🔒',
+      'book': '📚', 'read': '📖', 'library': '📚', 'article': '📄'
+    };
+    
+    return iconMap[mainWord] || '💼';
   }
 
   /**
@@ -240,6 +400,82 @@ export class WorkspaceCache {
 
     await this.persistCache();
     return true;
+  }
+
+  /**
+   * Capture and store current workspace state
+   */
+  async captureWorkspaceState(workspaceId: string): Promise<boolean> {
+    const workspace = this.findById(workspaceId);
+    if (!workspace) {
+      return false;
+    }
+
+    // Get the latest state snapshot from the state manager
+    const snapshot = workspaceStateManager.getSnapshot(workspaceId);
+    if (snapshot) {
+      // Convert snapshot to WorkspaceState format
+      const workspaceState: Partial<WorkspaceState> = {
+        inputValues: {},
+        scrollPositions: {},
+        activeTab: '',
+        customizations: {}
+      };
+
+      // Convert element states to input values
+      snapshot.elements.forEach(element => {
+        if (element.value !== undefined) {
+          workspaceState.inputValues![element.elementId] = element.value;
+        }
+        if (element.checked !== undefined) {
+          workspaceState.inputValues![element.elementId] = element.checked.toString();
+        }
+        if (element.customData) {
+          workspaceState.customizations![element.elementId] = element.customData;
+        }
+      });
+
+      // Convert scroll positions
+      Object.entries(snapshot.scrollPositions).forEach(([elementId, position]) => {
+        workspaceState.scrollPositions![elementId] = position.top;
+      });
+
+      // Update the workspace state
+      await this.updateWorkspaceState(workspaceId, workspaceState);
+    }
+
+    return true;
+  }
+
+  /**
+   * Restore workspace state from cache
+   */
+  async restoreWorkspaceState(workspaceId: string, container: HTMLElement): Promise<boolean> {
+    const workspace = this.findById(workspaceId);
+    if (!workspace || !workspace.state) {
+      return false;
+    }
+
+    try {
+      // Start state management for this workspace
+      workspaceStateManager.startCapturing(workspaceId, container);
+      
+      // Restore state after a delay to allow content to load
+      setTimeout(async () => {
+        const virtualFrame = {
+          contentDocument: document,
+          addEventListener: () => {},
+          removeEventListener: () => {}
+        } as HTMLIFrameElement;
+        
+        await workspaceStateManager.restoreState(workspaceId, virtualFrame);
+      }, 1500);
+
+      return true;
+    } catch (error) {
+      console.error('Failed to restore workspace state:', error);
+      return false;
+    }
   }
 
   /**

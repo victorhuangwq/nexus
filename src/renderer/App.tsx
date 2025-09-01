@@ -98,12 +98,17 @@ export const App: React.FC = () => {
         };
         
         // Cache the static workspace
-        await workspaceCache.cacheWorkspace(
+        const cachedId = await workspaceCache.cacheWorkspace(
           intent,
           '', // Static components don't have HTML content
           'static',
           intentMatch.component
         );
+        
+        // Capture any existing state for this workspace
+        if (cachedId) {
+          await workspaceCache.captureWorkspaceState(cachedId);
+        }
         
         setRenderedContent([newContent]);
       } else {
@@ -135,11 +140,16 @@ export const App: React.FC = () => {
         };
         
         // Cache the dynamic workspace
-        await workspaceCache.cacheWorkspace(
+        const cachedId = await workspaceCache.cacheWorkspace(
           intent,
           workspaceResult.htmlContent,
           'dynamic'
         );
+        
+        // Capture any existing state for this workspace
+        if (cachedId) {
+          await workspaceCache.captureWorkspaceState(cachedId);
+        }
         
         setRenderedContent([newContent]);
       }
@@ -604,6 +614,8 @@ export const App: React.FC = () => {
                             onInteract={handleWorkspaceInteraction}
                             workspaceContext={content.id}
                             isLoading={isLoading}
+                            workspaceId={content.id}
+                            shouldRestoreState={content.content?.cached || false}
                           />
                         </Box>
                       ) : content.type === 'static' && content.component ? (
