@@ -373,11 +373,13 @@ export class WorkspaceCache {
   async deleteWorkspace(id: string): Promise<boolean> {
     for (const [key, workspace] of this.cache.entries()) {
       if (workspace.id === id) {
+        console.log(`🗑️ Deleting workspace: "${workspace.intent}"`);
         this.cache.delete(key);
         await this.persistCache();
         return true;
       }
     }
+    console.warn(`Workspace ${id} not found for deletion`);
     return false;
   }
 
@@ -385,8 +387,11 @@ export class WorkspaceCache {
    * Clear all cached workspaces
    */
   async clearCache(): Promise<void> {
+    const currentCount = this.cache.size;
+    console.log(`🗑️ Clearing all workspace cache (${currentCount} workspaces)`);
+    
     this.cache.clear();
-    await this.persistCache();
+    localStorage.removeItem('nexus_workspace_cache');
   }
 
   /**
@@ -471,6 +476,7 @@ export class WorkspaceCache {
       )?.metadata.createdAt,
     };
   }
+
 }
 
 // Export singleton instance
