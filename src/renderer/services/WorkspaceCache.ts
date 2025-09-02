@@ -3,13 +3,12 @@
  * Stores and retrieves previously generated workspaces with full state preservation
  */
 
-import { workspaceStateManager, WorkspaceSnapshot } from './WorkspaceStateManager';
+// Removed state manager dependencies
 
 export interface CachedWorkspace {
   id: string;
   intent: string;                    // Original user intent
   htmlContent: string;              // Generated workspace HTML
-  state: WorkspaceState;            // Dynamic state data
   metadata: {
     createdAt: Date;
     lastAccessedAt: Date;
@@ -25,16 +24,7 @@ export interface CachedWorkspace {
   };
 }
 
-export interface WorkspaceState {
-  inputValues: Record<string, string>;     // Form inputs, search queries
-  scrollPositions: Record<string, number>; // Scroll state of iframes/panels
-  activeTab: string;                       // Which tab/panel was active
-  customizations: Record<string, any>;     // User modifications
-  lastCursorPosition?: {                   // For text inputs
-    elementId: string;
-    position: number;
-  };
-}
+// Removed WorkspaceState interface - no longer tracking form state
 
 export class WorkspaceCache {
   private static instance: WorkspaceCache;
@@ -291,8 +281,7 @@ export class WorkspaceCache {
     intent: string, 
     htmlContent: string, 
     workspaceType: 'static' | 'dynamic',
-    component?: string,
-    initialState?: Partial<WorkspaceState>
+    component?: string
   ): Promise<string> {
     const cacheKey = this.generateCacheKey(intent);
     const now = new Date();
@@ -310,13 +299,6 @@ export class WorkspaceCache {
       id: `workspace_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       intent,
       htmlContent,
-      state: {
-        inputValues: {},
-        scrollPositions: {},
-        activeTab: '',
-        customizations: {},
-        ...initialState,
-      },
       metadata: {
         createdAt: now,
         lastAccessedAt: now,
@@ -383,100 +365,7 @@ export class WorkspaceCache {
       .sort((a, b) => b.metadata.lastAccessedAt.getTime() - a.metadata.lastAccessedAt.getTime());
   }
 
-  /**
-   * Update workspace state
-   */
-  async updateWorkspaceState(id: string, stateUpdate: Partial<WorkspaceState>): Promise<boolean> {
-    const workspace = this.findById(id);
-    if (!workspace) {
-      return false;
-    }
-
-    workspace.state = {
-      ...workspace.state,
-      ...stateUpdate,
-    };
-    workspace.metadata.lastAccessedAt = new Date();
-
-    await this.persistCache();
-    return true;
-  }
-
-  /**
-   * Capture and store current workspace state
-   */
-  async captureWorkspaceState(workspaceId: string): Promise<boolean> {
-    const workspace = this.findById(workspaceId);
-    if (!workspace) {
-      return false;
-    }
-
-    // Get the latest state snapshot from the state manager
-    const snapshot = workspaceStateManager.getSnapshot(workspaceId);
-    if (snapshot) {
-      // Convert snapshot to WorkspaceState format
-      const workspaceState: Partial<WorkspaceState> = {
-        inputValues: {},
-        scrollPositions: {},
-        activeTab: '',
-        customizations: {}
-      };
-
-      // Convert element states to input values
-      snapshot.elements.forEach(element => {
-        if (element.value !== undefined) {
-          workspaceState.inputValues![element.elementId] = element.value;
-        }
-        if (element.checked !== undefined) {
-          workspaceState.inputValues![element.elementId] = element.checked.toString();
-        }
-        if (element.customData) {
-          workspaceState.customizations![element.elementId] = element.customData;
-        }
-      });
-
-      // Convert scroll positions
-      Object.entries(snapshot.scrollPositions).forEach(([elementId, position]) => {
-        workspaceState.scrollPositions![elementId] = position.top;
-      });
-
-      // Update the workspace state
-      await this.updateWorkspaceState(workspaceId, workspaceState);
-    }
-
-    return true;
-  }
-
-  /**
-   * Restore workspace state from cache
-   */
-  async restoreWorkspaceState(workspaceId: string, container: HTMLElement): Promise<boolean> {
-    const workspace = this.findById(workspaceId);
-    if (!workspace || !workspace.state) {
-      return false;
-    }
-
-    try {
-      // Start state management for this workspace
-      workspaceStateManager.startCapturing(workspaceId, container);
-      
-      // Restore state after a delay to allow content to load
-      setTimeout(async () => {
-        const virtualFrame = {
-          contentDocument: document,
-          addEventListener: () => {},
-          removeEventListener: () => {}
-        } as HTMLIFrameElement;
-        
-        await workspaceStateManager.restoreState(workspaceId, virtualFrame);
-      }, 1500);
-
-      return true;
-    } catch (error) {
-      console.error('Failed to restore workspace state:', error);
-      return false;
-    }
-  }
+  // Removed state management methods - no longer tracking form state
 
   /**
    * Delete workspace from cache

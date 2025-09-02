@@ -7,15 +7,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@chakra-ui/react';
 import { InteractionData } from '../services/DynamicWorkspaceGenerator';
-import { workspaceStateManager } from '../services/WorkspaceStateManager';
 
 interface GeneratedWorkspaceProps {
   htmlContent: string;
   onInteract: (data: InteractionData) => void;
   workspaceContext: string | null;
   isLoading: boolean;
-  workspaceId?: string;
-  shouldRestoreState?: boolean;
 }
 
 export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
@@ -23,12 +20,9 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
   onInteract,
   workspaceContext,
   isLoading,
-  workspaceId,
-  shouldRestoreState = false,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const processedHtmlContentRef = useRef<string | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     const container = contentRef.current;
@@ -156,24 +150,6 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
           }
         });
         processedHtmlContentRef.current = htmlContent;
-        
-        // Handle state management after content is processed
-        if (workspaceId && container) {
-          if (shouldRestoreState) {
-            // Restore state from cache using the container
-            setTimeout(() => {
-              const virtualFrame = {
-                contentDocument: document,
-                addEventListener: () => {},
-                removeEventListener: () => {}
-              } as HTMLIFrameElement;
-              workspaceStateManager.restoreState(workspaceId, virtualFrame);
-            }, 1000);
-          }
-          
-          // Start capturing state using the actual container
-          workspaceStateManager.startCapturing(workspaceId, container);
-        }
       }
     } else {
       processedHtmlContentRef.current = null;
@@ -181,13 +157,8 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
 
     return () => {
       container.removeEventListener('click', handleClick);
-      
-      // Stop state capturing when component unmounts or content changes
-      if (workspaceId) {
-        workspaceStateManager.stopCapturing();
-      }
     };
-  }, [htmlContent, onInteract, workspaceContext, isLoading, workspaceId, shouldRestoreState]);
+  }, [htmlContent, onInteract, workspaceContext, isLoading]);
 
   return (
     <Box

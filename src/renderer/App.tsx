@@ -86,8 +86,16 @@ export const App: React.FC = () => {
           },
         }));
         
+        // Cache the static workspace first to get stable ID
+        const cachedId = await workspaceCache.cacheWorkspace(
+          intent,
+          '', // Static components don't have HTML content
+          'static',
+          intentMatch.component
+        );
+        
         const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
+          id: cachedId, // Use the cached workspace ID for consistency
           type: 'static',
           component: intentMatch.component,
           content: {
@@ -97,18 +105,7 @@ export const App: React.FC = () => {
           timestamp: Date.now(),
         };
         
-        // Cache the static workspace
-        const cachedId = await workspaceCache.cacheWorkspace(
-          intent,
-          '', // Static components don't have HTML content
-          'static',
-          intentMatch.component
-        );
-        
-        // Capture any existing state for this workspace
-        if (cachedId) {
-          await workspaceCache.captureWorkspaceState(cachedId);
-        }
+        // State management removed - no longer capturing workspace state
         
         setRenderedContent([newContent]);
       } else {
@@ -128,8 +125,15 @@ export const App: React.FC = () => {
           },
         }));
         
+        // Cache the dynamic workspace first to get stable ID
+        const cachedId = await workspaceCache.cacheWorkspace(
+          intent,
+          workspaceResult.htmlContent,
+          'dynamic'
+        );
+        
         const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
+          id: cachedId, // Use the cached workspace ID for consistency
           type: 'workspace',
           workspaceHtml: workspaceResult.htmlContent,
           content: {
@@ -139,17 +143,7 @@ export const App: React.FC = () => {
           timestamp: Date.now(),
         };
         
-        // Cache the dynamic workspace
-        const cachedId = await workspaceCache.cacheWorkspace(
-          intent,
-          workspaceResult.htmlContent,
-          'dynamic'
-        );
-        
-        // Capture any existing state for this workspace
-        if (cachedId) {
-          await workspaceCache.captureWorkspaceState(cachedId);
-        }
+        // State management removed - no longer capturing workspace state
         
         setRenderedContent([newContent]);
       }
@@ -240,7 +234,7 @@ export const App: React.FC = () => {
       if (workspace.metadata.workspaceType === 'static' && workspace.metadata.component) {
         // Render static component from cache
         const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
+          id: workspace.id, // Use original workspace ID
           type: 'static',
           component: workspace.metadata.component,
           content: {
@@ -253,7 +247,7 @@ export const App: React.FC = () => {
       } else if (workspace.metadata.workspaceType === 'dynamic' && workspace.htmlContent) {
         // Render dynamic workspace from cache
         const newContent: RenderedContent = {
-          id: `content-${Date.now()}`,
+          id: workspace.id, // Use original workspace ID
           type: 'workspace',
           workspaceHtml: workspace.htmlContent,
           content: {
@@ -265,8 +259,8 @@ export const App: React.FC = () => {
         setRenderedContent([newContent]);
       }
       
-      // Update access time for cache
-      await workspaceCache.updateWorkspaceState(workspace.id, {});
+      // State management removed - only updating access time via metadata
+      workspace.metadata.lastAccessedAt = new Date();
       
     } catch (error) {
       console.error('Failed to load cached workspace:', error);
@@ -614,8 +608,6 @@ export const App: React.FC = () => {
                             onInteract={handleWorkspaceInteraction}
                             workspaceContext={content.id}
                             isLoading={isLoading}
-                            workspaceId={content.id}
-                            shouldRestoreState={content.content?.cached || false}
                           />
                         </Box>
                       ) : content.type === 'static' && content.component ? (
