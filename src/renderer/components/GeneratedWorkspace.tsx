@@ -1,12 +1,141 @@
 /**
- * Generated Workspace Component
+ * GeneratedWorkspace Component
  * Renders dynamically generated HTML workspaces with interaction tracking
  * Based directly on gemini-os's GeneratedContent component
  */
 
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@chakra-ui/react';
+import styled from '@emotion/styled';
 import { InteractionData } from '../services/DynamicWorkspaceGenerator';
+import { tokens } from '../design-tokens';
+
+// Styled components that match homepage aesthetic
+const WorkspaceContainer = styled(Box)`
+  * {
+    font-family: ${tokens.typography.fontFamily.sans} !important;
+  }
+
+  /* Override ANY loud backgrounds with clean glass effect */
+  div[style*="background"],
+  div[style*="background-color"],
+  .header,
+  .hero,
+  [class*="header"],
+  [class*="hero"] {
+    background: ${tokens.glass.light.background} !important;
+    backdrop-filter: ${tokens.glass.light.blur} !important;
+    border: ${tokens.glass.light.border} !important;
+    border-radius: ${tokens.radius.xl} !important;
+    padding: ${tokens.space[5]} !important;
+    margin-bottom: ${tokens.space[4]} !important;
+    box-shadow: ${tokens.glass.light.shadow} !important;
+    color: ${tokens.colors.text.primary} !important;
+  }
+
+  /* Typography - clean and elegant */
+  h1, h2, h3, h4, h5, h6 {
+    color: ${tokens.colors.text.primary} !important;
+    font-weight: ${tokens.typography.fontWeight.semibold} !important;
+    margin-bottom: ${tokens.space[3]} !important;
+    text-shadow: none !important;
+  }
+
+  h1 {
+    font-size: ${tokens.typography.fontSize['2xl']} !important;
+    font-weight: ${tokens.typography.fontWeight.bold} !important;
+  }
+
+  p {
+    color: ${tokens.colors.text.secondary} !important;
+    line-height: ${tokens.typography.lineHeight.relaxed} !important;
+    margin-bottom: ${tokens.space[3]} !important;
+  }
+
+  /* Clean card styling like homepage */
+  .card,
+  [class*="card"],
+  .container,
+  [class*="container"],
+  .form-section,
+  [class*="form"] {
+    background: ${tokens.surface.card.background} !important;
+    border: ${tokens.surface.card.border} !important;
+    border-radius: ${tokens.radius.lg} !important;
+    padding: ${tokens.space[4]} !important;
+    margin-bottom: ${tokens.space[4]} !important;
+    box-shadow: ${tokens.surface.card.shadow} !important;
+    transition: all ${tokens.transition.duration.fast} !important;
+  }
+
+  .card:hover,
+  [class*="card"]:hover {
+    box-shadow: ${tokens.surface.card.hoverShadow} !important;
+  }
+
+  /* Modern button styling */
+  button {
+    background: ${tokens.surface.card.background} !important;
+    border: ${tokens.surface.card.border} !important;
+    border-radius: ${tokens.radius.md} !important;
+    padding: ${tokens.space[3]} ${tokens.space[4]} !important;
+    color: ${tokens.colors.text.primary} !important;
+    font-weight: ${tokens.typography.fontWeight.medium} !important;
+    box-shadow: ${tokens.surface.card.shadow} !important;
+    cursor: pointer !important;
+    transition: all ${tokens.transition.duration.fast} !important;
+  }
+
+  button:hover {
+    box-shadow: ${tokens.surface.card.hoverShadow} !important;
+    border-color: ${tokens.colors.brand.primary} !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Clean input styling */
+  input, textarea, select {
+    background: ${tokens.surface.input.background} !important;
+    border: ${tokens.surface.input.border} !important;
+    border-radius: ${tokens.radius.md} !important;
+    padding: ${tokens.space[3]} !important;
+    color: ${tokens.colors.text.primary} !important;
+    box-shadow: ${tokens.surface.input.shadow} !important;
+    transition: all ${tokens.transition.duration.fast} !important;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border: ${tokens.surface.input.focusBorder} !important;
+    box-shadow: ${tokens.surface.input.focusShadow} !important;
+    outline: none !important;
+  }
+
+  /* Navigation/tab styling */
+  .nav, .tabs, [class*="nav"], [class*="tab"] {
+    background: transparent !important;
+    border-bottom: 1px solid ${tokens.colors.surface.divider} !important;
+    margin-bottom: ${tokens.space[4]} !important;
+  }
+
+  .nav button, .tabs button, [class*="nav"] button, [class*="tab"] button {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    padding: ${tokens.space[3]} ${tokens.space[4]} !important;
+    margin-bottom: -1px !important;
+    box-shadow: none !important;
+  }
+
+  .nav button.active, 
+  .tabs button.active,
+  [class*="nav"] button.active,
+  [class*="tab"] button.active,
+  .nav button[aria-selected="true"],
+  .tabs button[aria-selected="true"] {
+    border-bottom-color: ${tokens.colors.brand.primary} !important;
+    color: ${tokens.colors.brand.primary} !important;
+  }
+`;
 
 interface GeneratedWorkspaceProps {
   htmlContent: string;
@@ -22,138 +151,45 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
   isLoading,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const processedHtmlContentRef = useRef<string | null>(null);
 
   useEffect(() => {
     const container = contentRef.current;
     if (!container) return;
 
+    // Set up click handlers for interaction tracking
     const handleClick = (event: MouseEvent) => {
       let targetElement = event.target as HTMLElement;
 
-      while (
-        targetElement &&
-        targetElement !== container &&
-        !targetElement.dataset.interactionId
-      ) {
-        targetElement = targetElement.parentElement as HTMLElement;
-      }
+      // Walk up the DOM tree to find a clickable element with interaction data
+      while (targetElement && targetElement !== container) {
+        const interactionId = targetElement.dataset.interactionId;
 
-      if (targetElement && targetElement.dataset.interactionId) {
-        // Only trigger workspace regeneration for explicit workspace_change type
-        if (targetElement.dataset.interactionType === 'workspace_change') {
+        if (interactionId) {
           event.preventDefault();
+          event.stopPropagation();
 
-          let interactionValue: string | undefined =
-            targetElement.dataset.interactionValue;
-
-          if (targetElement.dataset.valueFrom) {
-            const inputElement = document.getElementById(
-              targetElement.dataset.valueFrom,
-            ) as HTMLInputElement | HTMLTextAreaElement;
-            if (inputElement) {
-              interactionValue = inputElement.value;
-            }
+          // Only trigger workspace regeneration for explicit workspace_change type
+          if (targetElement.dataset.interactionType === 'workspace_change') {
+            console.log('🔄 Triggering workspace change:', interactionId);
           }
 
-          const interactionData: InteractionData = {
-            id: targetElement.dataset.interactionId,
-            type: targetElement.dataset.interactionType || 'workspace_change',
-            value: interactionValue,
-            elementType: targetElement.tagName.toLowerCase(),
-            elementText: (
-              targetElement.innerText ||
-              (targetElement as HTMLInputElement).value ||
-              ''
-            )
-              .trim()
-              .substring(0, 100),
-            workspaceContext: workspaceContext,
+          onInteract({
+            id: interactionId,
+            element: targetElement.tagName.toLowerCase(),
+            text: targetElement.textContent?.slice(0, 100) || '',
+            context: workspaceContext || 'unknown',
             timestamp: Date.now(),
-          };
-          onInteract(interactionData);
+            elementHtml: targetElement.outerHTML.slice(0, 200),
+            type: targetElement.dataset.interactionType || 'workspace_change',
+          });
+          return;
         }
-        // For all other interaction types, let the local JavaScript handle it
-        // The click will bubble up normally and be handled by onclick or event listeners
+
+        targetElement = targetElement.parentElement as HTMLElement;
       }
     };
 
     container.addEventListener('click', handleClick);
-
-    // Process scripts only when loading is complete and content has changed
-    if (!isLoading) {
-      if (htmlContent !== processedHtmlContentRef.current) {
-        console.log('=== PROCESSING HTML IN COMPONENT ===');
-        console.log('HTML content length:', htmlContent?.length);
-        console.log('First 500 chars:', htmlContent?.substring(0, 500));
-        
-        const scripts = Array.from(container.getElementsByTagName('script'));
-        console.log('Found scripts:', scripts.length);
-        
-        scripts.forEach((oldScript, index) => {
-          const scriptContent = oldScript.innerHTML.trim();
-          console.log(`Processing script ${index + 1}:`, scriptContent.substring(0, 200));
-          
-          // Skip empty scripts
-          if (!scriptContent) {
-            console.warn(`Script ${index + 1} is empty, skipping`);
-            return;
-          }
-
-          // Basic validation to check if script looks complete
-          const openBraces = (scriptContent.match(/\{/g) || []).length;
-          const closeBraces = (scriptContent.match(/\}/g) || []).length;
-          const openParens = (scriptContent.match(/\(/g) || []).length;
-          const closeParens = (scriptContent.match(/\)/g) || []).length;
-          
-          if (openBraces !== closeBraces || openParens !== closeParens) {
-            console.error(
-              `Script ${index + 1} appears to be incomplete or malformed:`,
-              {
-                openBraces,
-                closeBraces,
-                openParens,
-                closeParens,
-                scriptPreview: scriptContent.substring(0, 200) + '...',
-                scriptLength: scriptContent.length
-              }
-            );
-            // Don't execute malformed scripts
-            return;
-          }
-
-          try {
-            const newScript = document.createElement('script');
-            Array.from(oldScript.attributes).forEach((attr) =>
-              newScript.setAttribute(attr.name, attr.value),
-            );
-            newScript.text = scriptContent;
-
-            if (oldScript.parentNode) {
-              oldScript.parentNode.replaceChild(newScript, oldScript);
-            } else {
-              console.warn(
-                'Script tag found without a parent node:',
-                oldScript,
-              );
-            }
-          } catch (e) {
-            console.error(
-              'Error processing/executing script tag. This usually indicates a syntax error in the LLM-generated script.',
-              {
-                scriptContent:
-                  scriptContent.substring(0, 500) +
-                  (scriptContent.length > 500 ? '...' : ''),
-                error: e,
-              },
-            );
-          }
-        });
-        processedHtmlContentRef.current = htmlContent;
-      }
-    } else {
-      processedHtmlContentRef.current = null;
-    }
 
     return () => {
       container.removeEventListener('click', handleClick);
@@ -161,11 +197,13 @@ export const GeneratedWorkspace: React.FC<GeneratedWorkspaceProps> = ({
   }, [htmlContent, onInteract, workspaceContext, isLoading]);
 
   return (
-    <Box
+    <WorkspaceContainer
       ref={contentRef}
       w="full"
       h="full"
+      p={tokens.space[4]}
       overflow="auto"
+      bg={tokens.colors.canvas.base}
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );

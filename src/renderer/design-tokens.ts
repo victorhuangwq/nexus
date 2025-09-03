@@ -41,78 +41,147 @@ export const tokens = {
     glow: '0 4px 20px rgba(255, 140, 66, 0.3)',
   },
 
-  // Color palette - Warm, energetic, cohesive
+  // Color palette - Sophisticated, elegant, readable
   colors: {
-    // Canvas layers - Warm, inviting backgrounds
+    // Canvas layers - Clean, sophisticated backgrounds
     canvas: {
-      base: '#FFF9F5',  // Warm white with orange tint
-      raised: '#FFFFFF',
-      overlay: 'rgba(255, 255, 255, 0.95)',
-      section: '#FFFBF8',
+      base: '#FEFEFE',         // Pure white base
+      raised: '#FFFFFF',       // Crisp white for elevated content
+      overlay: 'rgba(255, 255, 255, 0.98)',
+      section: '#FAFAFA',      // Subtle warm off-white
+      subtle: '#F8F9FA',       // Very light neutral background
     },
 
-    // Text hierarchy - Refined contrast
+    // Text hierarchy - High contrast, readable
     text: {
-      primary: '#1F1611',     // Rich warm black
-      secondary: '#5C4033',    // Warm brown
-      tertiary: '#8B6750',     // Muted warm brown
-      muted: '#A08875',        // Light brown
-      placeholder: '#BFAB9E',  // Very light brown
-      disabled: '#D4C4B8',    // Lightest brown
+      primary: '#1A1D21',      // Rich charcoal (high contrast)
+      secondary: '#4A5568',    // Professional gray
+      tertiary: '#718096',     // Muted gray
+      muted: '#A0AEC0',        // Light gray
+      placeholder: '#CBD5E0',  // Placeholder gray
+      disabled: '#E2E8F0',     // Disabled gray
+      inverse: '#FFFFFF',      // White text for dark backgrounds
     },
 
-    // Brand colors - Vibrant orange gradient
+    // Brand colors - Refined orange with better contrast
     brand: {
-      primary: '#FF8C42',      // Core orange
-      primaryAlpha: 'rgba(255, 140, 66, 0.9)',
-      primaryHover: '#FF9652',  // Lighter on hover
-      primaryActive: '#FF7A35', // Darker on press
-      primaryFocus: 'rgba(255, 140, 66, 0.15)',
-      primarySubtle: 'rgba(255, 140, 66, 0.06)',
+      primary: '#F56500',      // More sophisticated orange
+      primaryAlpha: 'rgba(245, 101, 0, 0.9)',
+      primaryHover: '#E55D00',  // Darker on hover for better UX
+      primaryActive: '#D4550A', // Darker on press
+      primaryFocus: 'rgba(245, 101, 0, 0.12)',
+      primarySubtle: 'rgba(245, 101, 0, 0.04)',
+      primaryGradient: 'linear-gradient(135deg, #F56500 0%, #FF8A50 100%)',
     },
 
-    // Accent colors - Harmonious warm palette
+    // Surface colors - For cards, headers, backgrounds
+    surface: {
+      primary: '#FFFFFF',      // Pure white surfaces
+      secondary: '#F7FAFC',    // Light neutral surface
+      tertiary: '#EDF2F7',     // Lighter neutral
+      accent: '#FFF4E6',       // Warm accent surface (very light orange)
+      accentStrong: '#FFE5CC', // Stronger warm accent
+      border: '#E2E8F0',       // Clean borders
+      divider: '#F1F5F9',      // Subtle dividers
+    },
+
+    // Accent colors - Expanded sophisticated palette
     accent: {
-      warm: '#FFB084',         // Peach
-      warmAlpha: 'rgba(255, 176, 132, 0.9)',
-      light: '#FFF0E5',        // Light peach
-      lightAlpha: 'rgba(255, 240, 229, 0.9)',
-      dark: '#3D2817',         // Rich dark brown
-      darkAlpha: 'rgba(61, 40, 23, 0.9)',
-      success: '#7FB069',      // Sage green for success states
-      error: '#E56B6F',        // Coral red for errors
+      // Warm tones
+      warm: '#FF8A50',         // Warm accent
+      warmAlpha: 'rgba(255, 138, 80, 0.9)',
+      warmSubtle: '#FFF7F0',   // Very light warm
+      
+      // Cool balance
+      cool: '#4299E1',         // Cool blue accent
+      coolAlpha: 'rgba(66, 153, 225, 0.9)',
+      coolSubtle: '#F0F8FF',   // Very light blue
+      
+      // Neutrals
+      light: '#F7FAFC',        // Light neutral
+      dark: '#2D3748',         // Dark neutral
+      darkAlpha: 'rgba(45, 55, 72, 0.9)',
+      
+      // Status colors
+      success: '#48BB78',      // Modern green
+      successSubtle: '#F0FFF4', // Light green background
+      warning: '#ED8936',      // Warm warning
+      warningSubtle: '#FFFAF0', // Light warning background
+      error: '#F56565',        // Modern red
+      errorSubtle: '#FFF5F5',   // Light error background
+      info: '#4299E1',         // Info blue
+      infoSubtle: '#F0F8FF',    // Light info background
     },
 
-    // Borders - Subtle and minimal
+    // Borders - More nuanced border system
     border: {
-      default: 'rgba(0, 0, 0, 0.08)',
-      hover: 'rgba(0, 0, 0, 0.12)',
-      focus: 'rgba(255, 140, 66, 0.4)',
-      subtle: 'rgba(0, 0, 0, 0.04)',
+      default: 'rgba(226, 232, 240, 1)',      // Clean default border
+      hover: 'rgba(203, 213, 224, 1)',        // Hover state
+      focus: 'rgba(245, 101, 0, 0.5)',        // Focus state
+      subtle: 'rgba(241, 245, 249, 1)',       // Very subtle border
+      strong: 'rgba(160, 174, 192, 1)',       // Strong border for emphasis
     },
   },
 
-  // Glass morphism effects - Warm and inviting
+  // Glass morphism effects - Modern, sophisticated
   glass: {
+    // Subtle glass effects
     light: {
-      background: 'rgba(255, 249, 245, 0.7)',
-      border: '1px solid rgba(255, 140, 66, 0.08)',
-      blur: 'blur(10px)',
+      background: 'rgba(255, 255, 255, 0.8)',
+      border: '1px solid rgba(255, 255, 255, 0.18)',
+      blur: 'blur(20px)',
+      shadow: '0 8px 32px rgba(31, 38, 135, 0.1)',
     },
     medium: {
-      background: 'rgba(255, 249, 245, 0.85)',
-      border: '1px solid rgba(255, 140, 66, 0.1)',
-      blur: 'blur(12px)',
+      background: 'rgba(255, 255, 255, 0.9)',
+      border: '1px solid rgba(255, 255, 255, 0.25)',
+      blur: 'blur(16px)',
+      shadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
     },
     strong: {
-      background: 'rgba(255, 249, 245, 0.95)',
-      border: '1px solid rgba(255, 140, 66, 0.12)',
-      blur: 'blur(16px)',
+      background: 'rgba(255, 255, 255, 0.95)',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      blur: 'blur(12px)',
+      shadow: '0 8px 32px rgba(31, 38, 135, 0.2)',
     },
+    // For dark/accent backgrounds
     dark: {
-      background: 'rgba(255, 251, 248, 0.98)',
-      border: '1px solid rgba(255, 140, 66, 0.1)',
-      blur: 'blur(8px)',
+      background: 'rgba(26, 29, 33, 0.9)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      blur: 'blur(20px)',
+      shadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    },
+    // Accent glass with warm tint
+    accent: {
+      background: 'rgba(255, 244, 230, 0.85)',
+      border: '1px solid rgba(245, 101, 0, 0.12)',
+      blur: 'blur(16px)',
+      shadow: '0 8px 32px rgba(245, 101, 0, 0.15)',
+    },
+  },
+
+  // Surface treatments - For different UI contexts
+  surface: {
+    // Card surfaces
+    card: {
+      background: '#FFFFFF',
+      border: '1px solid rgba(226, 232, 240, 1)',
+      shadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+      hoverShadow: '0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06)',
+    },
+    // Header/hero surfaces
+    hero: {
+      background: 'linear-gradient(135deg, #F56500 0%, #FF8A50 100%)',
+      overlay: 'rgba(0, 0, 0, 0.1)',
+      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)',
+    },
+    // Input surfaces
+    input: {
+      background: '#FFFFFF',
+      border: '2px solid rgba(226, 232, 240, 1)',
+      focusBorder: '2px solid rgba(245, 101, 0, 0.5)',
+      shadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      focusShadow: '0 0 0 3px rgba(245, 101, 0, 0.1)',
     },
   },
 
