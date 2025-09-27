@@ -9,8 +9,6 @@ import {
   Badge,
   Select,
   Stat,
-  StatLabel,
-  StatNumber,
   StatHelpText,
   StatArrow,
   Grid,
@@ -20,16 +18,12 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Divider,
   Avatar,
-  Progress,
   Flex,
   SimpleGrid,
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -37,9 +31,8 @@ import {
   ResponsiveContainer,
   Area,
   AreaChart,
-  ComposedChart,
-  Bar,
 } from 'recharts';
+import { tokens } from '../../design-tokens';
 
 const MotionCard = motion(Card);
 
@@ -159,7 +152,6 @@ const generateMockRedditSentiment = (): RedditPost[] => {
 };
 
 export const BTCChart: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(0);
   const [timeframe, setTimeframe] = useState('7d');
   const [data, setData] = useState<PriceData[]>([]);
   const [ethData, setEthData] = useState<PriceData[]>([]);
@@ -261,13 +253,12 @@ export const BTCChart: React.FC = () => {
 
   // Use real 24h change from API, or calculate from chart data as fallback
   const priceChangePercent = dayChange !== 0 ? dayChange : (data.length > 1 ? ((currentPrice - data[data.length - 2].price) / data[data.length - 2].price) * 100 : 0);
-  const priceChange = (currentPrice * priceChangePercent) / 100;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <Box
-          bg="rgba(255, 255, 255, 0.95)"
+          bg={tokens.surface.card.background}
           backdropFilter="blur(12px)"
           p={3}
           borderRadius="12px"
@@ -291,10 +282,10 @@ export const BTCChart: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="white">
+          <Text fontSize="2xl" fontWeight="600" color={tokens.colors.text.primary}>
             Crypto Trading Dashboard
           </Text>
-          <Text fontSize="md" color="rgba(255, 255, 255, 0.8)" fontWeight="400">
+          <Text fontSize="md" color={tokens.colors.text.secondary} fontWeight="400">
             BTC/ETH live data • Whale alerts • Community sentiment
           </Text>
         </VStack>
@@ -303,9 +294,9 @@ export const BTCChart: React.FC = () => {
             value={timeframe}
             onChange={(e) => setTimeframe(e.target.value)}
             size="sm"
-            bg="rgba(255, 255, 255, 0.1)"
-            borderColor="rgba(255, 255, 255, 0.2)"
-            color="white"
+            bg={tokens.glass.light.background}
+            borderColor={tokens.colors.surface.divider}
+            color={tokens.colors.text.primary}
             _focus={{ borderColor: 'brand.500' }}
             borderRadius="12px"
             w="100px"
@@ -543,7 +534,7 @@ export const BTCChart: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              bg="rgba(255, 255, 255, 0.9)"
+              bg={tokens.surface.card.background}
               backdropFilter="blur(20px)"
               borderRadius="20px"
               border="1px solid rgba(0, 0, 0, 0.05)"
@@ -607,7 +598,7 @@ export const BTCChart: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              bg="rgba(255, 255, 255, 0.9)"
+              bg={tokens.surface.card.background}
               backdropFilter="blur(20px)"
               borderRadius="20px"
               border="1px solid rgba(0, 0, 0, 0.05)"

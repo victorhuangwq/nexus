@@ -82,19 +82,19 @@ export const GraphingCalculator: React.FC = () => {
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg={tokens.colors.accent.emerald} borderRadius={tokens.radius.full} />
+                <Box w="6px" h="6px" bg={tokens.colors.accent.success} borderRadius={tokens.radius.full} />
                 <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Click + to add multiple expressions
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg={tokens.colors.accent.coral} borderRadius={tokens.radius.full} />
+                <Box w="6px" h="6px" bg={tokens.colors.accent.warm} borderRadius={tokens.radius.full} />
                 <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Drag to move, scroll to zoom
                 </Text>
               </HStack>
               <HStack>
-                <Box w="6px" h="6px" bg={tokens.colors.accent.amber} borderRadius={tokens.radius.full} />
+                <Box w="6px" h="6px" bg={tokens.colors.accent.warning} borderRadius={tokens.radius.full} />
                 <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                   Use the gear icon for settings
                 </Text>

@@ -595,10 +595,10 @@ export const App: React.FC = () => {
                           position="relative"
                           zIndex={20}
                           w="full"
-                          bg={tokens.glass.dark.background}
+                          bg={tokens.glass.light.background}
                           borderRadius={tokens.radius['2xl']}
-                          backdropFilter={tokens.glass.dark.blur}
-                          border={tokens.glass.dark.border}
+                          backdropFilter={tokens.glass.light.blur}
+                          border={tokens.glass.light.border}
                           boxShadow={tokens.shadow.lg}
                           overflow="hidden"
                           minH="600px"
@@ -615,11 +615,11 @@ export const App: React.FC = () => {
                           position="relative"
                           zIndex={20}
                           w="full"
-                          bg={tokens.glass.dark.background}
+                          bg={tokens.glass.light.background}
                           borderRadius={tokens.radius['2xl']}
                           p={tokens.space[3]}
-                          backdropFilter={tokens.glass.dark.blur}
-                          border={tokens.glass.dark.border}
+                          backdropFilter={tokens.glass.light.blur}
+                          border={tokens.glass.light.border}
                           boxShadow={tokens.shadow.lg}
                         >
                           {content.component === 'GraphingCalculator' && <GraphingCalculator />}

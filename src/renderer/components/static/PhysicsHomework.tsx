@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   VStack,
   HStack,
@@ -10,15 +10,9 @@ import {
   Grid,
   GridItem,
   AspectRatio,
-  Select,
-  Button,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { tokens } from '../../design-tokens';
 
 const MotionCard = motion(Card);
 
@@ -37,10 +31,10 @@ export const PhysicsHomework: React.FC = () => {
       {/* Header */}
       <HStack justify="space-between" align="center">
         <VStack align="start" spacing={1}>
-          <Text fontSize="2xl" fontWeight="600" color="#1A1A1A">
+          <Text fontSize={tokens.typography.fontSize['2xl']} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
             Physics Homework Toolkit
           </Text>
-          <Text fontSize="md" color="#4A4A4A" fontWeight="400">
+          <Text fontSize={tokens.typography.fontSize.md} color={tokens.colors.text.secondary} fontWeight={tokens.typography.fontWeight.normal}>
             Everything you need for high school physics
           </Text>
         </VStack>
@@ -56,10 +50,10 @@ export const PhysicsHomework: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            bg="rgba(255, 255, 255, 0.05)"
+            bg={tokens.glass.light.background}
             backdropFilter="blur(10px)"
             borderRadius="20px"
-            border="1px solid rgba(255, 255, 255, 0.1)"
+            border={tokens.glass.light.border}
           >
             <CardBody p={0}>
               <VStack spacing={0}>
@@ -68,10 +62,10 @@ export const PhysicsHomework: React.FC = () => {
                     <HStack spacing={3}>
                       <Text fontSize="2xl">🧮</Text>
                       <VStack align="start" spacing={0}>
-                        <Text fontSize="xl" fontWeight="600" color="#1A1A1A">
+                        <Text fontSize={tokens.typography.fontSize.xl} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary}>
                           Graphing Calculator
                         </Text>
-                        <Text fontSize="sm" color="#4A4A4A">
+                        <Text fontSize={tokens.typography.fontSize.sm} color={tokens.colors.text.secondary}>
                           Desmos for equations and functions
                         </Text>
                       </VStack>
@@ -106,24 +100,24 @@ export const PhysicsHomework: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            bg="rgba(255, 255, 255, 0.05)"
+            bg={tokens.glass.light.background}
             backdropFilter="blur(10px)"
             borderRadius="20px"
-            border="1px solid rgba(255, 255, 255, 0.1)"
+            border={tokens.glass.light.border}
           >
             <CardBody>
-              <Text fontSize="lg" fontWeight="600" color="#1A1A1A" mb={4}>
+              <Text fontSize={tokens.typography.fontSize.lg} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.text.primary} mb={4}>
                 Physics Formula Reference
               </Text>
               <VStack spacing={4} align="stretch">
                 {quickFormulas.map((category, index) => (
                   <Box key={category.category}>
-                    <Text fontSize="sm" fontWeight="600" color="brand.600" mb={2}>
+                    <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.brand.primary} mb={2}>
                       {category.category}
                     </Text>
                     <VStack spacing={2} align="start">
                       {category.formulas.map((formula, idx) => (
-                        <Text key={idx} fontSize="sm" fontFamily="mono" color="#1A1A1A" bg="rgba(0, 0, 0, 0.05)" px={3} py={2} borderRadius="8px" w="full">
+                        <Text key={idx} fontSize={tokens.typography.fontSize.sm} fontFamily={tokens.typography.fontFamily.mono} color={tokens.colors.text.primary} bg={tokens.glass.light.background} px={3} py={2} borderRadius={tokens.radius.md} w="full">
                           {formula}
                         </Text>
                       ))}
@@ -142,37 +136,37 @@ export const PhysicsHomework: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        bg="rgba(255, 255, 255, 0.05)"
+        bg={tokens.glass.light.background}
         backdropFilter="blur(16px)"
         borderRadius="16px"
-        border="1px solid rgba(255, 255, 255, 0.1)"
+        border={tokens.glass.light.border}
       >
         <CardBody>
-          <Text fontSize="lg" fontWeight="600" color="white" mb={4}>
+          <Text fontSize="lg" fontWeight="600" color={tokens.colors.text.primary} mb={4}>
             Physics Study Tips
           </Text>
           <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={4}>
             <VStack spacing={2} align="start">
-              <Text fontSize="sm" fontWeight="600" color="brand.600">
+              <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.brand.primary}>
                 📝 Problem Solving
               </Text>
-              <Text fontSize="xs" color="#6A6A6A">
+              <Text fontSize={tokens.typography.fontSize.xs} color={tokens.colors.text.secondary}>
                 Always draw diagrams, identify given values, and list what you need to find
               </Text>
             </VStack>
             <VStack spacing={2} align="start">
-              <Text fontSize="sm" fontWeight="600" color="accent.purple">
+              <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.accent.cool}>
                 🧮 Use the Calculator
               </Text>
-              <Text fontSize="xs" color="#6A6A6A">
+              <Text fontSize={tokens.typography.fontSize.xs} color={tokens.colors.text.secondary}>
                 Graph functions to visualize relationships, plot data points, and verify solutions
               </Text>
             </VStack>
             <VStack spacing={2} align="start">
-              <Text fontSize="sm" fontWeight="600" color="accent.emerald">
+              <Text fontSize={tokens.typography.fontSize.sm} fontWeight={tokens.typography.fontWeight.semibold} color={tokens.colors.accent.success}>
                 🔍 Check Your Work
               </Text>
-              <Text fontSize="xs" color="#6A6A6A">
+              <Text fontSize={tokens.typography.fontSize.xs} color={tokens.colors.text.secondary}>
                 Verify units, check order of magnitude, and ask "Does this answer make sense?"
               </Text>
             </VStack>
