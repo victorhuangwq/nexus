@@ -11,7 +11,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
 
-*A desktop command bar that turns any job-to-be-done into an instant, single-window workspace*
+*A desktop command bar that turns any job into an instant, single-window workspace*
 
 [🚀 Features](#-features) • [📸 Demo](#-demo) • [⚡ Quick Start](#-quick-start) • [🛠️ Tech Stack](#️-tech-stack) • [🤝 Contributing](#-contributing)
 
@@ -21,7 +21,7 @@
 
 ## 🎯 What is Nexus?
 
-**Nexus** is a desktop command bar that turns any job-to-be-done—"plan a weekend in Kyoto," "track BTC/ETH," "export slides + email Alice"—into an instant, single-window workspace. It embeds the right web apps, pre-filters them, and remembers your layout so you stop chasing menus and juggling tabs.
+**Nexus** is a desktop command bar that turns any job-to-be-done ("plan a weekend in Kyoto," "track BTC/ETH," "export slides + email Alice") into an instant, single-window workspace. It embeds the right web apps, pre-filters them, and remembers your layout so you stop chasing menus and juggling tabs.
 
 <div align="center">
   <img src="screenshots/nexus-homepage.png" alt="Nexus Homepage" width="600">
@@ -41,19 +41,19 @@ Type any task and get a perfectly configured workspace in seconds
 AI understands your task and embeds the right web apps automatically
 
 ### 🖥️ Single-Window Focus
-All your tools in one place - no more tab juggling or window chaos
+All your tools in one place. No more tab juggling or window chaos
 
 </td>
 <td width="50%">
 
 ### ⚡ Pre-Filtered Content
-Apps open with the right context - search results, specific pages, relevant data
+Apps open with the right context: search results, specific pages, relevant data
 
 ### 🎯 Layout Memory
 Nexus remembers how you like your tools arranged for each type of task
 
 ### 🔧 Stop Menu Hunting
-Direct access to what you need - no navigating through endless menus
+Direct access to what you need. No navigating through endless menus
 
 </td>
 </tr>
@@ -71,7 +71,7 @@ Direct access to what you need - no navigating through endless menus
         <br />
         <b>✈️ "plan a weekend in Kyoto"</b>
         <br />
-        <i>Complete itinerary with maps & weather</i>
+        <i>Complete itinerary with maps and weather</i>
       </td>
       <td align="center">
         <img src="screenshots/nexus-crypto-dashboard.png" alt="Crypto Trading Dashboard" width="400">
@@ -87,7 +87,7 @@ Direct access to what you need - no navigating through endless menus
         <br />
         <b>📐 "physics homework"</b>
         <br />
-        <i>Calculator + formulas for high school physics</i>
+        <i>Calculator and formulas for high school physics</i>
       </td>
       <td align="center">
         <img src="screenshots/nexus-weather-radar.png" alt="Weather Radar" width="400">
