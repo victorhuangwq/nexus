@@ -13,7 +13,7 @@
 
 *A desktop command bar that turns any job into an instant, single-window workspace*
 
-[🚀 Features](#-features) • [📸 Demo](#-demo) • [⚡ Quick Start](#-quick-start) • [🛠️ Tech Stack](#️-tech-stack) • [🤝 Contributing](#-contributing)
+[📸 Demo](#-demo) • [⚡ Quick Start](#-quick-start) • [🛠️ Tech Stack](#️-tech-stack) • [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -27,37 +27,6 @@
   <img src="screenshots/nexus-homepage.png" alt="Nexus Homepage" width="600">
   <p><i>Type. Generate. Use. It's that simple.</i></p>
 </div>
-
-## 🚀 Features
-
-<table>
-<tr>
-<td width="50%">
-
-### 🎨 Instant Workspace Creation
-Type any task and get a perfectly configured workspace in seconds
-
-### 🧠 Smart App Selection
-AI understands your task and embeds the right web apps automatically
-
-### 🖥️ Single-Window Focus
-All your tools in one place. No more tab juggling or window chaos
-
-</td>
-<td width="50%">
-
-### ⚡ Pre-Filtered Content
-Apps open with the right context: search results, specific pages, relevant data
-
-### 🎯 Layout Memory
-Nexus remembers how you like your tools arranged for each type of task
-
-### 🔧 Stop Menu Hunting
-Direct access to what you need. No navigating through endless menus
-
-</td>
-</tr>
-</table>
 
 ## 📸 Demo
 
